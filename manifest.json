@@ -1,0 +1,27 @@
+{
+  "name": "Timetabler by Ben Maggacis",
+  "version": "1.0",
+  "description": "Plan your perfect timetable with this free open-source utility for QUT students.",
+  "permissions": [
+      "tabs", 
+      "activeTab",
+      "contextMenus",
+      "notifications",
+      "https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show"
+  ],
+  "background": { 
+      //"scripts": ["timetable_launcher.js"],
+      "page": "timetabler.html"
+  },
+  "browser_action": {
+      "name": "Click to change the icon's color"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show"],
+      "js": ["lib/jquery.js", "import_times.js"]
+    }
+  ], 
+  "manifest_version": 2
+
+}
