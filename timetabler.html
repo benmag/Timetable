@@ -56,6 +56,9 @@
     
     .lec {background: yellow; color: #000; }
     .wor { background: #3366CC; }
+    .clb { background: rgb(220, 201, 201); }
+    .prc { background: #a0dfbf; }
+
     .preview { opacity:0.4; border: 3px dashed #ccc; }
     .focus { border: 10px solid red !important; background: green;}
 
@@ -84,6 +87,7 @@
     .content { 
 		float:right;
 		width: 900px;
+		margin-top:-20px;
 	}
 
 	#calendar {
@@ -96,16 +100,21 @@
     	float:left;
     }
 </style>
+<title>Timetabler</title>
 </head>
 <body>
 <div id='wrap'>
 <div class="class_container"><a href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></div> 
-<div class="content">   
+<div class="content">
+	<p><h3>Timetabler - Plan your perfect timetable.</h3></p>
 	<div id='calendar'></div>
 	<div id="output"></div>
+
+	<p style="float: right; text-align:right;">v1.0 // Ben Maggacis &bull; <a href="https://www.facebook.com/groups/QUTProgramming/">QUT Programmers Society</a> &bull; <a href="https://github.com/benmag/Timetable">Source Code</a></p>
+
 </div>
 <div style='clear:both'></div>
-</div>
 
+</div>
 </body>
 </html>

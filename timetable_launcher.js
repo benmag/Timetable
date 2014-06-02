@@ -1,6 +1,7 @@
 
 var class_info;
 
+
 /**
  * Open up the timetabler application or if it's already open,  
  * bring the user to it 
@@ -23,7 +24,8 @@ function openOrFocusOptionsPage() {
 }
 
 /** 
- * Called when the user clicks on the browser action icon.
+ * Called when the user clicks on the browser action icon (the extension icon in the address bar)
+ * NOTE: Might get rid of this... Seems kinda pointless 
  */
 chrome.browserAction.onClicked.addListener(function(tab) {
    openOrFocusOptionsPage();
@@ -40,12 +42,15 @@ function notify(unit) {
 	// Check their bowser can handle notifications
 	if (!('Notification' in window)) { 
 
-		// this browser doesn't support the web notifications API
+		// this browser doesn't support the web notifications API. Just open up the timetabler view for them
 		openOrFocusOptionsPage();
 	
 	} else {
 		
-		title = 'Class times for '+unit+' imported!';
+		/* NOTE: Too lazy to work this out. It shows duplicate notifications (annoying), likely 
+				because this script is loaded within the timetabler & the content script.
+				 For now, I'm just making it open up the timetabler. Will fix later. */
+		/*title = 'Class times for '+unit+' imported!';
         options = { body: 'Click here to start planning.' };
 
 		notification = Notification.requestPermission(function() {
@@ -55,8 +60,9 @@ function notify(unit) {
  				console.log(class_info);
 				openOrFocusOptionsPage();
 			};
-      	});
+      	});*/
 
+		openOrFocusOptionsPage();
 
 	}
 
@@ -64,10 +70,9 @@ function notify(unit) {
 
 
 /** 
- * Update the subject times on the timetabler page. 
- * NOTE: It would be nice if this was done automatically
+ * Adds the subject and class elements into the list on the left hand side of the timetabler page. 
  */
-function importUnit() { 
+function updateClassTimesList() { 
 	
 	var unit = class_info.unit;
 	var subject = class_info.subject;
@@ -88,8 +93,9 @@ function importUnit() {
 	
 	// Add the element to the class list in the sidebar
 	$('.class_container').append(el);
-	
-	renderEvents();
+
+	// Notify the user that their times have been imported
+	notify(unit);
 
 }
 
@@ -97,26 +103,18 @@ function importUnit() {
 
 // Listen for 'importComplete' message (triggered when classes are imported)
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-	if (request.type == "importComplete"){
+	if(request.type == "init") {
+
+		// Open up the timetabler page
+    	openOrFocusOptionsPage();
+    	
+    } else if (request.type == "importComplete"){
 		
 		// Update the global class_info var to hold this subject now
 		class_info = JSON.parse(request.class_info);
 		
-		// Notify the user that their times have been imported
-		notify(request.unit);
-		
 		// Update timetable options
-		importUnit();
-
-        return true;
-    }
+		updateClassTimesList();
+    } 
 });
 
-
-$(function() {
-
-	$( "#updateTimes" ).click(function() {
-		importUnit();
-	});
-
-});

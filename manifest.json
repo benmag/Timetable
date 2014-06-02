@@ -10,9 +10,7 @@
       "https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show"
   ],
   "background": { 
-      //"scripts": ["timetable_launcher.js"],
-      "page": "timetabler.html",
-      "persistent": false
+      "page": "timetabler.html"
   },
   "browser_action": {
       "name": "Click to change the icon's color"
