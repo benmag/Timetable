@@ -21,18 +21,25 @@ $(function() {
             
             // Construct an object containing the row information
             var rows = {
+                'subject_name': shit.subject,
+                'subject_code': shit.unit,
                 'class': $(this).children('td').eq(0).html(),
                 'activity': $(this).children('td').eq(1).html(),
                 'day': $(this).children('td').eq(2).html(),
-                'time':  $(this).children('td').eq(3).html(),
-                'location': $(this).children('td').eq(4).html(),
+                'time':  {
+                    'raw' : $(this).children('td').eq(3).html(),
+                    'start' : $(this).children('td').eq(3).html().split("-")[0],
+                    'end' : $(this).children('td').eq(3).html().split("-")[1],
+                },
+                'location': $.trim($(this).children('td').eq(4).text()),
                 'teaching_staff': $(this).children('td').eq(5).html()
             }
             
+
+            console.log($(this).children('td').eq(4).text());
+
             // Push it in
 			shit['times'].push(rows);
-			
-			
 			
         });        
 		
@@ -40,10 +47,12 @@ $(function() {
     }
 
     function fireCompletionMessage(unit) {
-	
+	   
+        // Trigger import complete method in timetable_launcher.js
         chrome.runtime.sendMessage({type: "importComplete", unit: unit, class_info: JSON.stringify(shit)}, function(response) {
           console.log(response)
         });
+
     }
     
     

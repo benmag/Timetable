@@ -1,5 +1,5 @@
 {
-  "name": "Timetabler by Ben Maggacis",
+  "name": "Timetabler",
   "version": "1.0",
   "description": "Plan your perfect timetable with this free open-source utility for QUT students.",
   "permissions": [
@@ -11,7 +11,8 @@
   ],
   "background": { 
       //"scripts": ["timetable_launcher.js"],
-      "page": "timetabler.html"
+      "page": "timetabler.html",
+      "persistent": false
   },
   "browser_action": {
       "name": "Click to change the icon's color"

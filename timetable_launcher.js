@@ -36,27 +36,30 @@ chrome.browserAction.onClicked.addListener(function(tab) {
  * notification will open up the timetabler 
  */
 function notify(unit) {
-    var havePermission = window.webkitNotifications.checkPermission();
-    
-    if (havePermission == 0) {
-        // 0 is PERMISSION_ALLOWED
-        
-        var notification = window.webkitNotifications.createNotification(
-            'http://i.stack.imgur.com/dmHl0.png',
-            'Class times for '+unit+' imported!',
-            'Click here to start planning.'
-        );
-        
-        notification.onclick = function () {
-            openOrFocusOptionsPage();
-            //window.open(chrome.extension.getURL('timetabler.html'));
-            //notification.close();
-        }
-        
-        notification.show();
-    } else {
-        window.webkitNotifications.requestPermission();
-    }
+
+	// Check their bowser can handle notifications
+	if (!('Notification' in window)) { 
+
+		// this browser doesn't support the web notifications API
+		openOrFocusOptionsPage();
+	
+	} else {
+		
+		title = 'Class times for '+unit+' imported!';
+        options = { body: 'Click here to start planning.' };
+
+		notification = Notification.requestPermission(function() {
+            var notification = new Notification(title, options);
+
+ 			notification.onclick = function() {
+ 				console.log(class_info);
+				openOrFocusOptionsPage();
+			};
+      	});
+
+
+	}
+
 }  
 
 
@@ -74,8 +77,8 @@ function importUnit() {
 	// Convert the times into a bunch of elements
 	for(time in times) {
 		
-		timeEl = timeEl + '<div class="class '+times[time].activity.toLowerCase()+' ui-draggable" activity="activity" day="'+times[time].day+'" start="10:00" end="12:00" location="" style="position: relative;">';
-		timeEl = timeEl + '<b>['+times[time].activity+'] '+times[time].day+' @ </b><br>'+times[time].time;
+		timeEl = timeEl + '<div class="class '+times[time].activity.toLowerCase()+' ui-draggable" title="['+times[time].activity+'] '+times[time].subject_name+'" activity="'+times[time].activity+'" day="'+times[time].day+'" start="'+times[time].time.start+'" end="'+times[time].time.end+'" location="'+times[time].location+'" style="position: relative;">';
+		timeEl = timeEl + '<b>['+times[time].activity+'] '+times[time].day+' @ '+times[time].location+ '</b><br>'+times[time].time.raw;
 		timeEl = timeEl + '</div>';
 			
 	}
@@ -104,7 +107,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 		
 		// Update timetable options
 		importUnit();
-		
+
         return true;
     }
 });
