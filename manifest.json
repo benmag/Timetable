@@ -1,5 +1,6 @@
 {
-  "name": "Timetabler",
+  "name": "Timetable Planner for QUT students",
+  "short_name": "TimetablerQUT",
   "version": "1.0",
   "description": "Plan your perfect timetable with this free open-source utility for QUT students.",
   "permissions": [
@@ -21,6 +22,10 @@
       "js": ["lib/jquery.js", "import_times.js"]
     }
   ], 
+  "icons": { "16": "icon16.png",
+           "48": "icon48.png",
+          "128": "icon128.png" },
+
   "manifest_version": 2
 
 }
