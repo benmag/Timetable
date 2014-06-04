@@ -82,7 +82,7 @@ function updateClassTimesList() {
 	// Convert the times into a bunch of elements
 	for(time in times) {
 		
-		timeEl = timeEl + '<div class="class '+times[time].activity.toLowerCase()+' ui-draggable" title="['+times[time].activity+'] '+times[time].subject_name+'" activity="'+times[time].activity+'" day="'+times[time].day+'" start="'+times[time].time.start+'" end="'+times[time].time.end+'" location="'+times[time].location+'" style="position: relative;">';
+		timeEl = timeEl + '<div class="class '+times[time].activity.toLowerCase()+' ui-draggable" title="['+times[time].activity+'] '+times[time].subject_name+'" activity="'+times[time].activity+'" day="'+times[time].day+'" start="'+times[time].time.start+'" end="'+times[time].time.end+'" location="'+times[time].location+'" subject="'+subject+'" style="position: relative;">';
 		timeEl = timeEl + '<b>['+times[time].activity+'] '+times[time].day+' @ '+times[time].location+ '</b><br>'+times[time].time.raw;
 		timeEl = timeEl + '</div>';
 			
@@ -96,6 +96,9 @@ function updateClassTimesList() {
 
 	// Notify the user that their times have been imported
 	notify(unit);
+
+	// Track this with GA
+	_gaq.push(['_trackEvent', subject, 'imported'])
 
 }
 
@@ -118,3 +121,14 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     } 
 });
 
+
+
+var _gaq = _gaq || [];
+_gaq.push(['_setAccount', 'UA-51599319-1']);
+_gaq.push(['_trackPageview']);
+
+(function() {
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+})();
