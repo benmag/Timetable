@@ -1,16 +1,16 @@
 {
   "name": "Timetable Planner for QUT students",
   "short_name": "TimetablerQUT",
-  "version": "1.0.2",
+  "version": "1.1.0",
   "description": "Plan your perfect timetable with this free open-source utility for QUT students.",
   "permissions": [
-      "tabs", 
+      "tabs",
       "activeTab",
       "contextMenus",
       "notifications",
       "https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show"
   ],
-  "background": { 
+  "background": {
       "page": "timetabler.html"
   },
   "browser_action": {
@@ -20,8 +20,12 @@
     {
       "matches": ["https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show"],
       "js": ["lib/jquery.js", "import_times.js"]
+    },
+    {
+      "matches": ["https://qutvirtual3.qut.edu.au/qv/ttab_unit_search_p.process_search*"],
+      "js": ["lib/jquery.js", "import_times_from_search.js"]
     }
-  ], 
+  ],
   "icons": { "16": "icon16.png",
            "48": "icon48.png",
           "128": "icon128.png" },
