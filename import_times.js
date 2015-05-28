@@ -17,12 +17,21 @@ $(function() {
      * it to the timetabler page
      */
     function importClasses(table) {
+        // Get the unit ID and subject name from above the table
+        var subject_name = '';
+        console.log(location.pathname);
 
-        // Get the unit ID from above the table
-        var unit = $.trim($(table).prev().prev().find('strong').html()).split(' ')[0];
+        // Current enrollment page
+        if (location.pathname == "/qv/ttab_student_p.show")
+            subject_name = $.trim($(table).prev().prev().find('strong').html());
+        // Search page
+        else
+            subject_name = $.trim($(table).prev().prev().prev().prev().html());
+
+        var unit = subject_name.split(' ')[0];
 
         // Create a new array for the unit
-        subject = { 'unit': unit, 'subject': $.trim($(table).prev().prev().find('strong').html()) };
+        subject = { 'unit': unit, 'subject': subject_name };
         subject['times'] = [];
 
         // Loop through table and get times
