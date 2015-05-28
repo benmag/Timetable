@@ -19,10 +19,10 @@ $(function() {
     function importClasses(table) {
 
         // Get the unit ID from above the table
-        var unit = $.trim($(table).prev().prev().find('strong').html()).split(' ')[0];
+        var unit = $.trim($(table).prev().prev().prev().prev().html()).split(' ')[0];
 
         // Create a new array for the unit
-        subject = { 'unit': unit, 'subject': $.trim($(table).prev().prev().find('strong').html()) };
+        subject = { 'unit': unit, 'subject': $.trim($(table).prev().prev().prev().prev().html()) };
         subject['times'] = [];
 
         // Loop through table and get times
