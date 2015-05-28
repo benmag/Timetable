@@ -8,7 +8,7 @@
       "activeTab",
       "contextMenus",
       "notifications",
-      "https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show"
+      "https://qutvirtual3.qut.edu.au/*"
   ],
   "background": {
       "page": "timetabler.html"
