@@ -1,122 +1,213 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-<script src='lib/jquery.js'></script>
-<script src="timetable_launcher.js"></script>
-<link href='lib/cal/fullcalendar.css' rel='stylesheet' />
-<link href='lib/cal/fullcalendar.print.css' rel='stylesheet' media='print' />
-<script src='lib/jquery-ui.custom.min.js'></script>
-<script src="lib/date.js"></script>
-<script src='lib/cal/fullcalendar.min.js'></script>
-<script src="lib/cal/cal.js"></script>
-<!-- Latest compiled and minified CSS -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 
-<!-- Optional theme -->
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap-theme.min.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="">
+    <meta name="author" content="">
 
-<!-- Latest compiled and minified JavaScript -->
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/js/bootstrap.min.js"></script>
-<style>
-.top-buffer {
-    margin-top: 20px;
-}
+    <title>Timetabler</title>
 
-.class_list {
-    display:block;
-    width: 150px;
-    padding: 0 10px;
-    border: 1px solid #ccc;
-    background: #eee;
-    text-align: left;
-    max-height: 500px;
-    overflow-x: hidden;
-    overflow-y: scroll;
-}
+    <!-- Bootstrap Core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
 
-.class_list h4 {
-    font-size: 16px;
-    margin-top: 0;
-    padding-top: 1em;
-}
+    <!-- Custom CSS -->
+    <link href="css/simple-sidebar.css" rel="stylesheet">
+	
+	<!-- Custom Font -->
+	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
 
-.classes {
-    display:none;
-}
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+	
+	<!-- Custom CSS -->
+	<link href='lib/printing.css' rel='stylesheet' media='print'/>
+	<link href='lib/cal/fullcalendar.css' rel='stylesheet' />
+	<link href='lib/cal/fullcalendar.print.css' rel='stylesheet' media='print' />
+    
+	<style type="text/css">
+		
+		.close_btn {
+		
+		}
+		
+		.remove_unit {
+			cursor: pointer;
+			color: #fff;
+			float: right;
+			width: 40px;
+		}
+		
+		.classes {
+			background-color: #fff;
+		}
+		
+		.fc-event {
+			margin: 0 -1px -1px -1px;
+			padding: 5px;
+		}
+		
+		/* Yellow */
+		.fc-event.lec { background: #FFEB3B; }
+		/* Blue */
+		.fc-event.tut { background: #2196F3; }
+		/* Green */
+		.fc-event.prc { background: #4CAF50; }
+		/* Pink */
+		.fc-event.wor { background: #E91E63; }
+		/* Purple */
+		.fc-event.clb { background: #AB47BC; }
+		
+		.preview { opacity:0.4; }
+		.focus { border: 10px solid red !important; background: green;}
+		
+		#calendar {
+			margin-bottom: 20px;
+			color: #000;
+		}
+		
+		.classes b, .class {
+			cursor: default;
+		}
+		
+		.classes b {
+			-webkit-touch-callout: none; /* iOS Safari */
+			-webkit-user-select: none;   /* Chrome/Safari/Opera */
+			-moz-user-select: none;      /* Firefox */
+			-ms-user-select: none;       /* IE/Edge */
+			user-select: none;           /* non-prefixed version, currently not supported by any browser */
+		}
+		
+		#output {
+			columns: 4;
+			-webkit-columns: 4;
+			-moz-columns: 4;
+		}
+		
+		@media screen and (max-width: 1420px) {
+			#output {
+				columns: 3;
+				-webkit-columns: 3;
+				-moz-columns: 3;
+			}
+		}
+		
+		@media screen and (max-width: 1150px) {
+			#output {
+				columns: 2;
+				-webkit-columns: 2;
+				-moz-columns: 2;
+			}
+		}
+		
+		@media screen and (max-width: 650px) {
+			#output {
+				columns: 1;
+				-webkit-columns: 1;
+				-moz-columns: 1;
+			}
+		}
+		
+		.h1, .h2, .h3, h1, h2, h3 {
+			margin-top: 0;
+		}
+		
+		#output>div {
+			padding-top: 20px;
+			
+			-moz-column-break-inside:avoid;
+			-webkit-column-break-inside:avoid;
+			column-break-inside:avoid;
+		}
+		
+		.fc-content .fc-time{
+		   display : none;
+		}
+		
+	</style>
 
-.class { /* try to mimick the look of a real event */
-    margin: 10px 0;
-    padding: 2px 4px;
-    color: #fff;
-    font-size: .85em;
-    cursor: pointer;
-    background: #3a87ad;
-}
-
-
-.lec {background: yellow; color: #000; }
-.wor { background: #3366CC; }
-.clb { background: rgb(220, 201, 201); }
-.prc { background: #a0dfbf; }
-
-.preview { opacity:0.4; border: 3px dashed #ccc; }
-.focus { border: 10px solid red !important; background: green;}
-
-.close_btn {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    background: grey;
-    /* width: 15px; */
-    padding: 9px;
-    cursor: pointer;
-}
-
-.class_list p {
-    margin: 1.5em 0;
-    font-size: 11px;
-    color: #666;
-}
-
-.class_list p input {
-    margin: 0;
-    vertical-align: middle;
-}
-
-#calendar {
-    float: right;
-    width:100%;
-}
-
-#output {
-    text-align: left !important;
-    float:left;
-    margin-top: -10px;
-}
-</style>
-<title>Timetabler</title>
 </head>
+	
 <body>
-<div id='wrap' class='container'>
-  <div class='row'>
-    <div class="class_container col-md-3">
-      <h1>Timetabler</h1>
-      <div class="lead">Plan your perfect timetable</div>
-      <a href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></br>
-      <a href="https://qutvirtual3.qut.edu.au/qv/ttab_unit_search_p.show" target="_blank">Search for a unit by unit code</a>
+	
+    <div id="wrapper">
+
+        <!-- Sidebar -->
+        <div id="sidebar-wrapper">
+            <ul class="sidebar-nav class_container">
+                <li class="sidebar-brand">
+                    <a>
+                        Timetabler
+                    </a>
+                </li>
+				
+				<!-- Search bar -->
+				<li class="sidebar-search">
+					<div class="search-icon">
+						<img src="img/search.png"></img>
+					</div>
+					<input id="unit-search" placeholder="Unit Search" type="text" tabindex="0">
+				</li>
+				
+				<!-- Class content -->
+				
+            </ul>
+        </div>
+        <!-- /#sidebar-wrapper -->
+
+        <!-- Page Content -->
+        <div id="page-content-wrapper">
+            <div class="container-fluid">
+                <div class="row">
+                    <div class="col-lg-12">   
+					
+                        <div id='calendar'></div>
+						
+						<div class="alert alert-info alert-dismissable">
+							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+							Hover your mouse over a class type to preview all available classes of that type. <a class="alert-link" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">Import a unit</a> and give it a try on <b>Lectures</b>!.
+						</div>
+						
+						<div class="row">
+							<div class="col-xs-6">
+								<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+							</div>
+							<div class="col-xs-6">
+								<a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></br>
+								<a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_unit_search_p.show" target="_blank">Search for a unit by unit code</a>
+							</div>
+						</div>
+						
+						<div class="col-md-12" id="output"></div>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /#page-content-wrapper -->
+
     </div>
-    <div class="content col-md-9 top-buffer">
-      <div id='calendar'></div>
-      <div id="output"></div>
+    <!-- /#wrapper -->
+	
+    <!-- Javascript -->
+    <script src="js/jquery.js"></script>
+	<script src="timetable_launcher.js"></script>
+	<script src='lib/jquery-ui.custom.min.js'></script>
+	<script src="lib/date.js"></script>
+	<script src='lib/cal/lib/moment.min.js'></script>
+	<script src='lib/cal/fullcalendar.min.js'></script>
+	<script src="lib/cal/cal.js"></script>
 
-      <p style="float: right; text-align:right;">v1.1.1 // Ben Maggacis & Dave Allie &bull; <a href="https://www.facebook.com/groups/QUTProgramming/">QUT Programmers Society</a> &bull; <a href="https://github.com/benmag/Timetable">Source Code</a></p>
+    <!-- Bootstrap Core JavaScript -->
+    <script src="js/bootstrap.min.js"></script>
 
-    </div>
-    <div style='clear:both'></div>
-  </div>
-</div>
-
-</div>
 </body>
+
 </html>

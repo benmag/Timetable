@@ -1,0 +1,27 @@
+Order of subject colour
+
+1. Yellow
+2. Blue
+3. Pink
+4. Green
+5. Purple
+6+ Default
+
+.yellow_fill  {
+background-color: #F9F48C;
+}
+.blue_fill {
+background-color: #B2DFEE;
+}
+.pink_fill {
+background-color: #FFC1C1;
+}
+.green_fill {
+background-color: #CAE081;
+}
+.purple_fill {
+background-color: #9999CC;
+}
+.default_fill {
+background-color: #CCCCCC;
+}

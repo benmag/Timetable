@@ -6,20 +6,56 @@ var class_info;
  * Open up the timetabler application or if it's already open,
  * bring the user to it
  */
-function openOrFocusOptionsPage() {
-   var optionsUrl = chrome.extension.getURL('timetabler.html');
-   chrome.tabs.query({}, function(extensionTabs) {
-      var found = false;
-      for (var i=0; i < extensionTabs.length; i++) {
-         if (optionsUrl == extensionTabs[i].url) {
-            found = true;
-            console.log("tab id: " + extensionTabs[i].id);
-            chrome.tabs.update(extensionTabs[i].id, {"selected": true});
-         }
-      }
-      if (found == false) {
-          chrome.tabs.create({url: "timetabler.html"});
-      }
+function openOrFocusOptionsPage(selectTab) {
+	var optionsUrl = chrome.extension.getURL('timetabler.html');
+	// Check all tabs for the timetabler
+	chrome.tabs.query({}, function(extensionTabs) {
+		var found = false;
+		for (var i=0; i < extensionTabs.length; i++) {
+			if (optionsUrl == extensionTabs[i].url) {
+				found = true;
+				if (selectTab) {
+					console.log("tab id: " + extensionTabs[i].id);
+					chrome.tabs.update(extensionTabs[i].id, {"selected": true});
+				}
+			}
+		}
+		
+		if (!found) {
+			// Get original tab ID
+			chrome.tabs.query({
+				active: true,
+				lastFocusedWindow: true
+			}, function(tabs) {
+				var oldTab = tabs[0];
+
+				// Open the Timetabler next to the current tab
+				chrome.tabs.create({index: oldTab.index + 1, url: "timetabler.html"});
+
+				// Get the new tab ID
+				chrome.tabs.query({
+					active: true,
+					lastFocusedWindow: true
+				}, function(newTabs) {
+					var newTabID = newTabs[0].id;
+					
+					// Wait for the new tab to finish loading...
+					chrome.tabs.onUpdated.addListener(function CheckLoaded(newTabID, info) {
+						if (info.status == "complete") {
+							chrome.tabs.onUpdated.removeListener(CheckLoaded);
+							sendResponse("Done!");
+						}
+					});
+
+				});
+				
+				if (!selectTab) {
+					chrome.tabs.update(oldTab.id, {"selected": true});
+				}
+				
+			});			
+			
+		}
    });
 }
 
@@ -28,7 +64,7 @@ function openOrFocusOptionsPage() {
  * NOTE: Might get rid of this... Seems kinda pointless
  */
 chrome.browserAction.onClicked.addListener(function(tab) {
-   openOrFocusOptionsPage();
+   openOrFocusOptionsPage(true);
 });
 
 
@@ -37,32 +73,26 @@ chrome.browserAction.onClicked.addListener(function(tab) {
  * that their class times have been imported. Clicking the
  * notification will open up the timetabler
  */
-function notify(unit) {
-
+function notify(title) {
     // Check their bowser can handle notifications
-    if (!('Notification' in window)) {
-        // this browser doesn't support the web notifications API. Just open up the timetabler view for them
-        openOrFocusOptionsPage();
-    } else {
-        /* NOTE: Too lazy to work this out. It shows duplicate notifications (annoying), likely
-        because this script is loaded within the timetabler & the content script.
-        For now, I'm just making it open up the timetabler. Will fix later. */
-        /*title = 'Class times for '+unit+' imported!';
-        options = { body: 'Click here to start planning.' };
+	if (!Notification) {
+		openOrFocusOptionsPage();
+	}
 
-        notification = Notification.requestPermission(function() {
-            var notification = new Notification(title, options);
+	if (Notification.permission !== "granted") {
+		Notification.requestPermission();
+	}
+	else {
+		var notification = new Notification(title, {
+		icon: 'https://www.qut.edu.au/qut-logo-og-200.jpg',
+		body: 'Click here to start planning.' 
+		});
+	}
 
-            notification.onclick = function() {
-            console.log(class_info);
-            openOrFocusOptionsPage();
-        };
-    });*/
-
-    openOrFocusOptionsPage();
-
-  }
-
+	notification.onclick = function () {
+		console.log(class_info);
+		openOrFocusOptionsPage();  
+	};
 }
 
 
@@ -74,41 +104,115 @@ function updateClassTimesList() {
     var unit = class_info.unit;
     var subject = class_info.subject;
     var times = class_info.times;
-    var timeEl = "";
+	
+	// Check if the class is already imported
+	if ($('.class_container').find('a:contains(' + unit + ')').length > 0) {
+		notify(unit + ' has already been imported!');
+		return;
+	}
+	
+	// Check if the max units has been reached
+	if ($('.class_container').find('.class_list').length >= 10) {
+		notify('Max units imported. Take it easy, tiger!');
+		return;
+	}
+	
+	// Enum for readability
+	var classTypes = {
+		Lecture: "LEC",
+		Tutorial: "TUT",
+		Practical: "PRC",
+		Workshops: "WOR",
+		ComputerLab: "CLB"
+	}
 
+	var lectures = "";
+	var tutorials = "";
+	var practicals = "";
+	var workshops = "";
+	var computerLabs = "";
+	var otherTypes = "";
+		
     // Convert the times into a bunch of elements
-    for(time in times) {
-
-        timeEl = timeEl + '<div class="class '+times[time].activity.toLowerCase()+' ui-draggable" title="['+times[time].activity+'] '+times[time].subject_name+'" activity="'+times[time].activity+'" day="'+times[time].day+'" start="'+times[time].time.start+'" end="'+times[time].time.end+'" location="'+times[time].location+'" subject="'+subject+'" style="position: relative;">';
-        timeEl = timeEl + '<b>['+times[time].activity+'] '+times[time].day+' @ '+times[time].location+ '</b><br>'+times[time].time.raw;
-        timeEl = timeEl + '</div>';
-
+    for (time in times) {
+		var classType = times[time].activity;
+		
+		var classElement = 
+			'<div class="class ' + times[time].activity.toLowerCase() + ' ui-draggable"' + 
+			'title="' + unit + '\n' + times[time].activity + ' ' + times[time].location + '\n\n' + subject + '" ' +
+			'activity="' + times[time].activity + '" ' +
+			'day="' + times[time].day + '" ' +
+			'start="' + times[time].time.start + '" ' +
+			'end="' + times[time].time.end + '" ' +
+			'location="' + times[time].location + '" ' +
+			'subject="' + subject + '" ' +
+			'style="position: relative;">' +
+				times[time].day + ': ' + /*' @ ' + times[time].location + '<br>' + */
+				times[time].time.raw +
+			'</div>';
+		
+		// Add each class type to their respective variable
+		if (classType == classTypes.Lecture) {
+			lectures += classElement;
+		}
+		else if (classType == classTypes.Tutorial) {
+			tutorials += classElement;
+		}
+		else if (classType == classTypes.Practical) {
+			practicals += classElement;
+		}
+		else if (classType == classTypes.Workshops) {
+			workshops += classElement;
+		}
+		else if (classType == classTypes.ComputerLab) {
+			computerLabs += classElement;
+		}
+		else {
+			otherTypes += classElement;
+		}
     }
 
     // Create a new subject element
-    el = '<div class="class_list"><h4>'+unit+'</h4><div class="classes">'+timeEl+'</div></div>';
+    classListElement = 
+		'<li class="class_list">' + 
+			'<div class="remove_unit">x</div>' +
+			'<a>' + unit + '</a>' +
+			'<div class="classes" style="display: none;">' +
+				// Add each class type to their own subheading iff classes of that type exist
+				((lectures == "") ? "" : '<div class="lectures"><b class="lec">Lectures</b>' + lectures + '</div>') +
+				((tutorials == "") ? "" : '<div class="tutorials"><b class="tut">Tutorials</b>' + tutorials + '</div>') +
+				((practicals == "") ? "" : '<div class="practicals"><b class="prc">Practicals</b>' + practicals + '</div>') +
+				((workshops == "") ? "" : '<div class="workshops"><b class="wor">Workshops</b>' + workshops + '</div>') +
+				((computerLabs == "") ? "" : '<div class="computerLabs"><b class="clb">Computer Labs</b>' + computerLabs + '</div>') +
+				((otherTypes == "") ? "" : '<div class="otherTypes"><b class="other">Other</b>' + otherTypes + '</div>') +
+			'</div>' + 
+		'</li>';
 
     // Add the element to the class list in the sidebar
-    $('.class_container').append(el);
+    $('.class_container').append(classListElement);
 
     // Notify the user that their times have been imported
-    notify(unit);
+    notify('Class times for ' + unit + ' imported!');
 
     // Track this with GA
-    _gaq.push(['_trackEvent', subject, 'imported'])
+    /*_gaq.push(['_trackEvent', subject, 'imported'])*/
 
 }
-
-
 
 // Listen for 'importComplete' message (triggered when classes are imported)
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if(request.type == "init") {
 
         // Open up the timetabler page
-        openOrFocusOptionsPage();
-
-    } else if (request.type == "importComplete"){
+        openOrFocusOptionsPage(true);
+		
+	} else if (request.type == "checkTab"){
+		
+        // Check the timetabler is open, but do not focus the tab
+        openOrFocusOptionsPage(false);
+		sendResponse("Done!");
+		
+	} else if (request.type == "importComplete"){
 
         // Update the global class_info var to hold this subject now
         class_info = JSON.parse(request.class_info);
@@ -118,8 +222,7 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     }
 });
 
-
-
+/*
 var _gaq = _gaq || [];
 _gaq.push(['_setAccount', 'UA-51599319-1']);
 _gaq.push(['_trackPageview']);
@@ -129,3 +232,4 @@ _gaq.push(['_trackPageview']);
     ga.src = 'https://ssl.google-analytics.com/ga.js';
     var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
+*/

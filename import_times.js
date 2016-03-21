@@ -4,28 +4,61 @@ $(function() {
     var subject;  // hold all the imported times
 
     /**
-     * Shows a 'Launch Timetabler' and adds the import button for later use
+     * Shows buttons to allow the user to import subjects into the timetabler
      */
     function showImportButton() {
-        $('.qv_table').append('<button class="launchButton">Launch Timetabler</button>');
-        $('.qv_table').append('<button style="display:none;" class="importButton">Classes Found. Import?</button>');
+		// CSS to style our buttons
+		$('head').append(`<style type='text/css'>
+			.btn {
+				color: #fff;
+				background-color: #1E88E5;
+				display: inline-block;
+				padding: 6px 12px;
+				margin-bottom: 0;
+				font-size: 14px;
+				font-weight: 400;
+				line-height: 1.42857143;
+				text-align: center;
+				white-space: nowrap;
+				vertical-align: middle;
+				ms-touch-action: manipulation;
+				touch-action: manipulation;
+				cursor: pointer;
+				-webkit-user-select: none;
+				-moz-user-select: none;
+				-ms-user-select: none;
+				user-select: none;
+				background-image: none;
+				border: 1px solid transparent;
+				border-radius: 4px;
+				margin-bottom: 10px;
+			}
+			
+			.importAllButton {
+				background-color: #F44336;
+			}
+		</style>`);
+		
+		// Add import button to each subject
+        $('.qv_table').prepend('<button class="importButton btn">Subject Found. Import Classes?</button>');
+		
+		// Add importAll button if more than one subject exists
+		if ($('.qv_table').length > 1) {
+			$('.divider:nth-of-type(1)').prepend('<button class="importAllButton btn">Multiple Subjects Found. Import ALL Classes?</button>');
+		}
     }
 
-
     /**
-     * Handles the importing of class times. Grabs the data from the table and sends
-     * it to the timetabler page
+     * Handles the importing of class times. Grabs the data from the table and sends it to the timetabler page
      */
     function importClasses(table) {
         // Get the unit ID and subject name from above the table
         var subject_name = '';
-        console.log(location.pathname);
 
         // Current enrollment page
         if (location.pathname == "/qv/ttab_student_p.show")
             subject_name = $.trim($(table).prev().prev().find('strong').html());
-        // Search page
-        else
+        else // Search page
             subject_name = $.trim($(table).prev().prev().prev().prev().html());
 
         var unit = subject_name.split(' ')[0];
@@ -58,42 +91,78 @@ $(function() {
 
         });
 
-        fireCompletionMessage(unit);
+		fireCompletionMessage(unit);
     }
 
     function fireCompletionMessage(unit) {
-
         // Trigger import complete method in timetable_launcher.js
         chrome.runtime.sendMessage({type: "importComplete", unit: unit, class_info: JSON.stringify(subject)}, function(response) {
-          console.log(response)
+			console.log(response)
         });
-
     }
-
-
+	
     // Add the import button to the table
     showImportButton();
+	
+	function sleep(milliseconds) {
+	  var start = new Date().getTime();
+	  for (var i = 0; i < 1e7; i++) {
+		if ((new Date().getTime() - start) > milliseconds){
+		  break;
+		}
+	  }
+	}
 
     // Add an event listener for the import button
     $('button.importButton').bind('click', function() {
-        importClasses($(this).parent());
+		// Check the timetabler is running
+		var sender = $(this);
+			
+		chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
+			if (response == "Done!") {
+				
+				// Send the script to sleep before importing classes
+				// This ensures the timetabler is ready to receive the classes
+				sleep(500);
+				
+				// Set the button to show the class has been imported
+				sender.css("background-color", "#4CAF50");
+				sender.text("Imported!");
+				
+				// Import the classes into the timetabler
+				importClasses(sender.parent());
+			}
+		});
+		
     });
-
-    // Add an event listener for the launch timetabler button
-    $('button.launchButton').bind('click', function() {
-
-        // Initialize the timetabler
-        chrome.runtime.sendMessage({type: "init"}, function(response) {
-          console.log(response)
-        });
-
-
-        // No need for the launch button anymore
-        $('.launchButton').hide();
-
-        // They're ready to start importing class times
-        $('.importButton').show();
-
+	
+	
+    // Add an event listener for the import all button
+    $('button.importAllButton').bind('click', function() {
+		
+		// Check the timetabler is running	
+		chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
+			
+			// Wait for the timetabler to say it has finished loading
+			if (response == "Done!") {
+				
+				// Send the script to sleep before importing classes
+				// This ensures the timetabler is ready to receive the classes
+				sleep(500);
+				
+				// Set the butten to show the class has been imported
+				$('.btn').each(function() {
+					$(this).css("background-color", "#4CAF50");
+					$(this).text("Imported!");
+				});
+				
+				// Import the classes into the timetabler
+				$('.qv_table').each(function() {
+					importClasses(this);
+				});
+			}
+		});
+		
     });
-
+	
 });
