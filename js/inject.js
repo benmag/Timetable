@@ -11,7 +11,7 @@ $(function() {
 		$('head').append(`<style type='text/css'>
 			.btn {
 				color: #fff;
-				background-color: #1E88E5;
+				background-color: #1E88E5; /* Blue */
 				display: inline-block;
 				padding: 6px 12px;
 				margin-bottom: 0;
@@ -35,16 +35,16 @@ $(function() {
 			}
 			
 			.importAllButton {
-				background-color: #F44336;
+				background-color: #F44336; /* Red */
 			}
 		</style>`);
 		
 		// Add import button to each subject
-        $('.qv_table').prepend('<button class="importButton btn">Subject Found. Import Classes?</button>');
+        $('.qv_table').prepend('<button class="btn importButton">Subject Found. Import Classes?</button>');
 		
 		// Add importAll button if more than one subject exists
 		if ($('.qv_table').length > 1) {
-			$('.divider:nth-of-type(1)').prepend('<button class="importAllButton btn">Multiple Subjects Found. Import ALL Classes?</button>');
+			$('.divider:nth-of-type(1)').prepend('<button class="btn importAllButton">Multiple Subjects Found. Import ALL Classes?</button>');
 		}
     }
 

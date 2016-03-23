@@ -18,11 +18,29 @@ Changelog:
 - Previews are now shown for specific class types, and not for entire units
 - Implemented search via unit code (e.g. IFB101) or description (e.g. "engineering")
 - Added a 'Remove Unit' button for any mistaken imports or timetable changes
+- Moved and renamed files for consistency and readability
+- Updated extension icon
+- Updated HTML5shiv
+- Implemented .min css and js libraries and removed full versions
+- Added WebKit scrollbar styling for better spacing in sidebar class lists
 
 Things to do:
 
-- Colour-code by subject in the calendar view, not by class type.
+- Colour-code by subject in the calendar view, not by class type
 - Export as QUT-formatted timetable HTML or PNG (and/or on print)
 - Aim to improve preview performace (e.g. lag is produced when previewing a specific class type)
 - Optimise the 'remove unit' button. The event removal code is quite laggy.
 - Complete code cleanup. COMMENT ALL THE THINGS!
+- Continue refining the design (e.g. Replace 'x' delete buttons with glyph icons)
+- Find a way to increase hour (row) height when an event has overflow on the y-axis
+- Add highlight when user hovers over a class in the sidebar that is already added to the calendar
+- Implement rotating 'helpful hints' under the calendar
+
+Order of subject colour:
+
+1. Yellow	#F9F48C
+2. Blue		#B2DFEE
+3. Pink		#FFC1C1
+4. Green	#CAE081
+5. Purple	#9999CC
+6+ Default	#CCCCCC

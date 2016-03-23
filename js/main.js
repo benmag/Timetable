@@ -172,7 +172,7 @@ $(document).ready(function() {
 			// Preview what the class times available are
 			cal.fullCalendar( 'renderEvent' , {
 				id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-				title: $(this).attr('title'),
+				title: $(this).attr('text'),
 				start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
 				end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
 				allDay: false,
@@ -199,7 +199,7 @@ $(document).ready(function() {
 			// Preview what the class times available are
 			cal.fullCalendar( 'renderEvent' , {
 				id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-				title: $(this).attr('title'),
+				title: $(this).attr('text'),
 				start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
 				end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
 				allDay: false,
@@ -233,7 +233,7 @@ $(document).ready(function() {
 		// Render the preview
 		cal.fullCalendar( 'renderEvent' , {
 			id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-			title: $(this).attr('title'),
+			title: $(this).attr('text'),
 			start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
 			end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
 			allDay: false,
@@ -273,7 +273,7 @@ $(document).ready(function() {
 		// Add event to the calendar
 		cal.fullCalendar( 'renderEvent' , {
 			id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-			title: $(this).attr('title'),
+			title: $(this).attr('text'),
 			start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
 			end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
 			allDay: false,
@@ -343,6 +343,7 @@ $(document).ready(function() {
 
 		// Get rid of the close "button"
 		unitElement.remove();
+		$(window).trigger('resize');
 
 		// Track this with GA
 		/*var GAlabel = "["+classEl.attr('activity')+"] " + classEl.attr('day') + ' ('+classEl.attr('start')+'-'+classEl.attr('end')+') ' + ' @ ' + classEl.attr('location');
@@ -364,7 +365,7 @@ $(document).ready(function() {
 	$('.class[selected="selected"]').each(function() {
 		cal.fullCalendar( 'renderEvent' , {
 			id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-			title: $(this).attr('title'),
+			title: $(this).attr('text'),
 			start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
 			end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
 			allDay: false,

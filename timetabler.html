@@ -13,125 +13,24 @@
 
     <!-- Bootstrap Core CSS -->
     <link href="css/bootstrap.min.css" rel="stylesheet">
-
-    <!-- Custom CSS -->
-    <link href="css/simple-sidebar.css" rel="stylesheet">
 	
 	<!-- Custom Font -->
 	<link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+	
+	<!-- FullCalendar CSS -->
+	<link href='cal/fullcalendar.min.css' rel='stylesheet' />
+	<link href='cal/fullcalendar.print.css' rel='stylesheet' media='print' />
+	
+	<!-- Custom CSS -->
+    <link href="css/sidebar.css" rel="stylesheet">
+    <link href='css/main.css' rel='stylesheet' />
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
-        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
         <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
     <![endif]-->
-	
-	<!-- Custom CSS -->
-	<link href='lib/printing.css' rel='stylesheet' media='print'/>
-	<link href='lib/cal/fullcalendar.css' rel='stylesheet' />
-	<link href='lib/cal/fullcalendar.print.css' rel='stylesheet' media='print' />
-    
-	<style type="text/css">
-		
-		.close_btn {
-		
-		}
-		
-		.remove_unit {
-			cursor: pointer;
-			color: #fff;
-			float: right;
-			width: 40px;
-		}
-		
-		.classes {
-			background-color: #fff;
-		}
-		
-		.fc-event {
-			margin: 0 -1px -1px -1px;
-			padding: 5px;
-		}
-		
-		/* Yellow */
-		.fc-event.lec { background: #FFEB3B; }
-		/* Blue */
-		.fc-event.tut { background: #2196F3; }
-		/* Green */
-		.fc-event.prc { background: #4CAF50; }
-		/* Pink */
-		.fc-event.wor { background: #E91E63; }
-		/* Purple */
-		.fc-event.clb { background: #AB47BC; }
-		
-		.preview { opacity:0.4; }
-		.focus { border: 10px solid red !important; background: green;}
-		
-		#calendar {
-			margin-bottom: 20px;
-			color: #000;
-		}
-		
-		.classes b, .class {
-			cursor: default;
-		}
-		
-		.classes b {
-			-webkit-touch-callout: none; /* iOS Safari */
-			-webkit-user-select: none;   /* Chrome/Safari/Opera */
-			-moz-user-select: none;      /* Firefox */
-			-ms-user-select: none;       /* IE/Edge */
-			user-select: none;           /* non-prefixed version, currently not supported by any browser */
-		}
-		
-		#output {
-			columns: 4;
-			-webkit-columns: 4;
-			-moz-columns: 4;
-		}
-		
-		@media screen and (max-width: 1420px) {
-			#output {
-				columns: 3;
-				-webkit-columns: 3;
-				-moz-columns: 3;
-			}
-		}
-		
-		@media screen and (max-width: 1150px) {
-			#output {
-				columns: 2;
-				-webkit-columns: 2;
-				-moz-columns: 2;
-			}
-		}
-		
-		@media screen and (max-width: 650px) {
-			#output {
-				columns: 1;
-				-webkit-columns: 1;
-				-moz-columns: 1;
-			}
-		}
-		
-		.h1, .h2, .h3, h1, h2, h3 {
-			margin-top: 0;
-		}
-		
-		#output>div {
-			padding-top: 20px;
-			
-			-moz-column-break-inside:avoid;
-			-webkit-column-break-inside:avoid;
-			column-break-inside:avoid;
-		}
-		
-		.fc-content .fc-time{
-		   display : none;
-		}
-		
-	</style>
 
 </head>
 	
@@ -141,11 +40,11 @@
 
         <!-- Sidebar -->
         <div id="sidebar-wrapper">
-            <ul class="sidebar-nav class_container">
+            <ul class="sidebar-nav">
+			
+				<!-- Branding -->
                 <li class="sidebar-brand">
-                    <a>
-                        Timetabler
-                    </a>
+                    <a>Timetabler</a>
                 </li>
 				
 				<!-- Search bar -->
@@ -156,7 +55,8 @@
 					<input id="unit-search" placeholder="Unit Search" type="text" tabindex="0">
 				</li>
 				
-				<!-- Class content -->
+				<!-- Class Content Placeholder -->
+				<div class="class_container"></div>
 				
             </ul>
         </div>
@@ -165,30 +65,30 @@
         <!-- Page Content -->
         <div id="page-content-wrapper">
             <div class="container-fluid">
-                <div class="row">
-                    <div class="col-lg-12">   
-					
-                        <div id='calendar'></div>
-						
-						<div class="alert alert-info alert-dismissable">
-							<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-							Hover your mouse over a class type to preview all available classes of that type. <a class="alert-link" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">Import a unit</a> and give it a try on <b>Lectures</b>!.
-						</div>
-						
-						<div class="row">
-							<div class="col-xs-6">
-								<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
-							</div>
-							<div class="col-xs-6">
-								<a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></br>
-								<a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_unit_search_p.show" target="_blank">Search for a unit by unit code</a>
-							</div>
-						</div>
-						
-						<div class="col-md-12" id="output"></div>
+				
+				<!-- Calendar Placeholder -->
+				<div id="calendar"></div>
+				
+				<!-- Controls -->
+				<div class="row">
+					<div class="col-xs-6">
+						<a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+					</div>
+					<div class="col-xs-6">
+						<a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></br>
+						<a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_unit_search_p.show_search_adv" target="_blank">Search for a unit with advanced search</a>
+					</div>
+				</div>
+				
+				<!-- Helpful Hint(s) -->
+				<div class="alert alert-info alert-dismissable">
+					<button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+					Hover your mouse over a class type in the sidebar to preview all available classes of that type!
+				</div>
+				
+				<!-- Selected Class Output Placeholder -->
+				<div id="output"></div>
 
-                    </div>
-                </div>
             </div>
         </div>
         <!-- /#page-content-wrapper -->
@@ -198,16 +98,13 @@
 	
     <!-- Javascript -->
     <script src="js/jquery.js"></script>
-	<script src="timetable_launcher.js"></script>
-	<script src='lib/jquery-ui.custom.min.js'></script>
-	<script src="lib/date.js"></script>
-	<script src='lib/cal/lib/moment.min.js'></script>
-	<script src='lib/cal/fullcalendar.min.js'></script>
-	<script src="lib/cal/cal.js"></script>
-
-    <!-- Bootstrap Core JavaScript -->
     <script src="js/bootstrap.min.js"></script>
-
+	<script src='cal/lib/moment.min.js'></script>
+	<script src='cal/fullcalendar.min.js'></script>
+	<script src="js/launch.js"></script>
+	<script src="js/date.js"></script>
+	<script src="js/main.js"></script>
+	
 </body>
 
 </html>

@@ -126,6 +126,7 @@ function updateClassTimesList() {
 		ComputerLab: "CLB"
 	}
 
+	// Placeholder categories for classes
 	var lectures = "";
 	var tutorials = "";
 	var practicals = "";
@@ -139,7 +140,7 @@ function updateClassTimesList() {
 		
 		var classElement = 
 			'<div class="class ' + times[time].activity.toLowerCase() + ' ui-draggable"' + 
-			'title="' + unit + '\n' + times[time].activity + ' ' + times[time].location + '\n\n' + subject + '" ' +
+			'text="' + unit + '\n' + times[time].activity + ' ' + times[time].location + '\n\n' + subject + '" ' +
 			'activity="' + times[time].activity + '" ' +
 			'day="' + times[time].day + '" ' +
 			'start="' + times[time].time.start + '" ' +
@@ -190,7 +191,8 @@ function updateClassTimesList() {
 
     // Add the element to the class list in the sidebar
     $('.class_container').append(classListElement);
-
+	$(window).trigger('resize');
+	
     // Notify the user that their times have been imported
     notify('Class times for ' + unit + ' imported!');
 
