@@ -1,13 +1,13 @@
 /* Page Defaults */
 
 body {
-	background: #f2f2f2;
-	font-family: 'Roboto', sans-serif;
+  background: #f2f2f2;
+  font-family: 'Roboto', sans-serif;
 }
 
 #calendar {
-	background: #fff;
-	margin-bottom: 20px;
+  background: #fff;
+  margin-bottom: 20px;
 }
 
 /* FullCalendar Customisation */
@@ -21,29 +21,29 @@ body {
 }
 
 .fc-event {
-	border-radius: 0; /* 3px */
-	border: 1px solid #ddd; /* #3a87ad default BORDER color */
+  border-radius: 0; /* 3px */
+  border: 1px solid #ddd; /* #3a87ad default BORDER color */
 }
 
 .fc-event,
 .fc-event:hover,
 .ui-widget .fc-event {
-	color: #000; /* default TEXT color */
+  color: #000; /* default TEXT color */
 }
 
 .fc-ltr .fc-time-grid .fc-event-container { /* space on the sides of events for LTR (default) */
-	margin: 0; /* 0 2.5% 0 2px; */
+  margin: 0; /* 0 2.5% 0 2px; */
 }
 
 .fc-rtl .fc-time-grid .fc-event-container { /* space on the sides of events for RTL */
-	margin: 0; /* 0 2px 0 2.5%; */
+  margin: 0; /* 0 2px 0 2.5%; */
 }
 
 .fc-event {
-	margin: 0 -1px -1px -1px;
-	padding: 5px;
+  margin: 0 -1px -1px -1px;
+  padding: 5px;
 }
-		
+
 .fc-event.lec { background: #FFEB3B; } /* Yellow */
 .fc-event.tut { background: #2196F3; } /* Blue */
 .fc-event.prc { background: #4CAF50; } /* Green */
@@ -56,107 +56,107 @@ body {
 /* Sidebar */
 
 .sidebar-search > .search-icon span {
-	color: #fff;
-	display: block;
-	width: 50px;
-    height: 42px;
-	line-height: 42px; /* Vertical Center */
-    font-size: 1.2em;
+  color: #fff;
+  display: block;
+  width: 50px;
+  height: 42px;
+  line-height: 42px; /* Vertical Center */
+  font-size: 1.2em;
 }
 
 .close_btn {
-	cursor: pointer;
-	width: 23px;
-	float: right;
-	text-indent: 0;
+  cursor: pointer;
+  width: 23px;
+  float: right;
+  text-indent: 0;
 }
 
 .remove_unit {
-	color: #fff;
-	cursor: pointer;
-	float: right;
-	width: 40px;
-	text-align: center;
-	text-indent: 0;
+  color: #fff;
+  cursor: pointer;
+  float: right;
+  width: 40px;
+  text-align: center;
+  text-indent: 0;
 }
 
 .classes {
-	background-color: #fff;
+  background-color: #fff;
 }
 
 .classes b, .class { cursor: default; } /* Remove text cursor */
 
 .classes b {
-	display: block;
-	-webkit-touch-callout: none; /* iOS Safari */
-	-webkit-user-select: none;   /* Chrome/Safari/Opera */
-	-moz-user-select: none;      /* Firefox */
-	-ms-user-select: none;       /* IE/Edge */
-	user-select: none;           /* non-prefixed version, currently not supported by any browser */
+  display: block;
+  -webkit-touch-callout: none; /* iOS Safari */
+  -webkit-user-select: none;   /* Chrome/Safari/Opera */
+  -moz-user-select: none;      /* Firefox */
+  -ms-user-select: none;       /* IE/Edge */
+  user-select: none;           /* non-prefixed version, currently not supported by any browser */
 }
 
 
 /* Class Output Footer */
 
 #output {
-	margin-top: 20px;
-	
-	columns: 4;
-	-webkit-columns: 4;
-	-moz-columns: 4;
+  margin-top: 20px;
+
+  columns: 4;
+  -webkit-columns: 4;
+  -moz-columns: 4;
 }
 
 @media screen and (max-width: 1420px) {
-	#output {
-		columns: 3;
-		-webkit-columns: 3;
-		-moz-columns: 3;
-	}
+  #output {
+    columns: 3;
+    -webkit-columns: 3;
+    -moz-columns: 3;
+  }
 }
 
 @media screen and (max-width: 1150px) {
-	#output {
-		columns: 2;
-		-webkit-columns: 2;
-		-moz-columns: 2;
-	}
+  #output {
+    columns: 2;
+    -webkit-columns: 2;
+    -moz-columns: 2;
+  }
 }
 
 @media screen and (max-width: 880px) {
-	#output {
-		columns: 1;
-		-webkit-columns: 1;
-		-moz-columns: 1;
-	}
+  #output {
+    columns: 1;
+    -webkit-columns: 1;
+    -moz-columns: 1;
+  }
 }
 
 .h1, .h2, .h3, h1, h2, h3 {
-	margin-top: 0;
+  margin-top: 0;
 }
 
 .alert {
-	margin-top: 20px;
+  margin-top: 20px;
 }
 
 #output>div {
-	padding-bottom: 20px;
-	
-	-moz-column-break-inside:avoid;
-	-webkit-column-break-inside:avoid;
-	column-break-inside:avoid;
+  padding-bottom: 20px;
+
+  -moz-column-break-inside:avoid;
+  -webkit-column-break-inside:avoid;
+  column-break-inside:avoid;
 }
 
 .classes::-webkit-scrollbar {
-    width: 0.6em;
-    height: 0.6em
+  width: 0.6em;
+  height: 0.6em
 }
 .classes::-webkit-scrollbar-track-piece {
-    background: #fff;
-	box-shadow: inset 0 8px 4px -4px rgba(0,0,0,.28);
+  background: #fff;
+  box-shadow: inset 0 8px 4px -4px rgba(0,0,0,.28);
 }
 .classes::-webkit-scrollbar-thumb {
-	background: #ccc;
-    border-radius: 10px;
-	opacity: 0.4;
-    -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
+  background: #ccc;
+  border-radius: 10px;
+  opacity: 0.4;
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
 }

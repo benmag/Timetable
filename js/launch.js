@@ -7,56 +7,56 @@ var class_info;
  * bring the user to it
  */
 function openOrFocusOptionsPage(selectTab) {
-	var optionsUrl = chrome.extension.getURL('timetabler.html');
-	// Check all tabs for the timetabler
-	chrome.tabs.query({}, function(extensionTabs) {
-		var found = false;
-		for (var i=0; i < extensionTabs.length; i++) {
-			if (optionsUrl == extensionTabs[i].url) {
-				found = true;
-				if (selectTab) {
-					console.log("tab id: " + extensionTabs[i].id);
-					chrome.tabs.update(extensionTabs[i].id, {"selected": true});
-				}
-			}
-		}
-		
-		if (!found) {
-			// Get original tab ID
-			chrome.tabs.query({
-				active: true,
-				lastFocusedWindow: true
-			}, function(tabs) {
-				var oldTab = tabs[0];
+  var optionsUrl = chrome.extension.getURL('timetabler.html');
+  // Check all tabs for the timetabler
+  chrome.tabs.query({}, function(extensionTabs) {
+    var found = false;
+    for (var i=0; i < extensionTabs.length; i++) {
+      if (optionsUrl == extensionTabs[i].url) {
+        found = true;
+        if (selectTab) {
+          console.log("tab id: " + extensionTabs[i].id);
+          chrome.tabs.update(extensionTabs[i].id, {"selected": true});
+        }
+      }
+    }
 
-				// Open the Timetabler next to the current tab
-				chrome.tabs.create({index: oldTab.index + 1, url: "timetabler.html"});
+    if (!found) {
+      // Get original tab ID
+      chrome.tabs.query({
+        active: true,
+        lastFocusedWindow: true
+      }, function(tabs) {
+        var oldTab = tabs[0];
 
-				// Get the new tab ID
-				chrome.tabs.query({
-					active: true,
-					lastFocusedWindow: true
-				}, function(newTabs) {
-					var newTabID = newTabs[0].id;
-					
-					// Wait for the new tab to finish loading...
-					chrome.tabs.onUpdated.addListener(function CheckLoaded(newTabID, info) {
-						if (info.status == "complete") {
-							chrome.tabs.onUpdated.removeListener(CheckLoaded);
-							sendResponse("Done!");
-						}
-					});
+        // Open the Timetabler next to the current tab
+        chrome.tabs.create({index: oldTab.index + 1, url: "timetabler.html"});
 
-				});
-				
-				if (!selectTab) {
-					chrome.tabs.update(oldTab.id, {"selected": true});
-				}
-				
-			});			
-			
-		}
-   });
+        // Get the new tab ID
+        chrome.tabs.query({
+          active: true,
+          lastFocusedWindow: true
+        }, function(newTabs) {
+          var newTabID = newTabs[0].id;
+
+          // Wait for the new tab to finish loading...
+          chrome.tabs.onUpdated.addListener(function CheckLoaded(newTabID, info) {
+            if (info.status == "complete") {
+              chrome.tabs.onUpdated.removeListener(CheckLoaded);
+              sendResponse("Done!");
+            }
+          });
+
+        });
+
+        if (!selectTab) {
+          chrome.tabs.update(oldTab.id, {"selected": true});
+        }
+
+      });
+
+    }
+  });
 }
 
 /**
@@ -64,7 +64,7 @@ function openOrFocusOptionsPage(selectTab) {
  * NOTE: Might get rid of this... Seems kinda pointless
  */
 chrome.browserAction.onClicked.addListener(function(tab) {
-   openOrFocusOptionsPage(true);
+  openOrFocusOptionsPage(true);
 });
 
 
@@ -74,25 +74,24 @@ chrome.browserAction.onClicked.addListener(function(tab) {
  * notification will open up the timetabler
  */
 function notify(title) {
-    // Check their bowser can handle notifications
-	if (!Notification) {
-		openOrFocusOptionsPage();
-	}
+  // Check their bowser can handle notifications
+  if (!Notification) {
+    openOrFocusOptionsPage();
+  }
 
-	if (Notification.permission !== "granted") {
-		Notification.requestPermission();
-	}
-	else {
-		var notification = new Notification(title, {
-		icon: 'https://www.qut.edu.au/qut-logo-og-200.jpg',
-		body: 'Click here to start planning.' 
-		});
-	}
+  if (Notification.permission !== "granted") {
+    Notification.requestPermission();
+  } else {
+    var notification = new Notification(title, {
+      icon: 'https://www.qut.edu.au/qut-logo-og-200.jpg',
+      body: 'Click here to start planning.'
+    });
+  }
 
-	notification.onclick = function () {
-		console.log(class_info);
-		openOrFocusOptionsPage();  
-	};
+  notification.onclick = function () {
+    console.log(class_info);
+    openOrFocusOptionsPage();
+  };
 }
 
 
@@ -100,128 +99,120 @@ function notify(title) {
  * Adds the subject and class elements into the list on the left hand side of the timetabler page.
  */
 function updateClassTimesList() {
+  var unit = class_info.unit;
+  var subject = class_info.subject;
+  var times = class_info.times;
 
-    var unit = class_info.unit;
-    var subject = class_info.subject;
-    var times = class_info.times;
-	
-	// Check if the class is already imported
-	if ($('.class_container').find('a:contains(' + unit + ')').length > 0) {
-		notify(unit + ' has already been imported!');
-		return;
-	}
-	
-	// Check if the max units has been reached
-	if ($('.class_container').find('.class_list').length >= 10) {
-		notify('Max units imported. Take it easy, tiger!');
-		return;
-	}
-	
-	// Enum for readability
-	var classTypes = {
-		Lecture: "LEC",
-		Tutorial: "TUT",
-		Practical: "PRC",
-		Workshops: "WOR",
-		ComputerLab: "CLB"
-	}
+  // Check if the class is already imported
+  if ($('.class_container').find('a:contains(' + unit + ')').length > 0) {
+    notify(unit + ' has already been imported!');
+    return;
+  }
 
-	// Placeholder categories for classes
-	var lectures = "";
-	var tutorials = "";
-	var practicals = "";
-	var workshops = "";
-	var computerLabs = "";
-	var otherTypes = "";
-		
-    // Convert the times into a bunch of elements
-    for (time in times) {
-		var classType = times[time].activity;
-		
-		var classElement = 
-			'<div class="class ' + times[time].activity.toLowerCase() + ' ui-draggable"' + 
-			'text="' + unit + '\n' + times[time].activity + ' ' + times[time].location + '\n\n' + subject + '" ' +
-			'activity="' + times[time].activity + '" ' +
-			'day="' + times[time].day + '" ' +
-			'start="' + times[time].time.start + '" ' +
-			'end="' + times[time].time.end + '" ' +
-			'location="' + times[time].location + '" ' +
-			'subject="' + subject + '" ' +
-			'style="position: relative;">' +
-				times[time].day + ': ' + /*' @ ' + times[time].location + '<br>' + */
-				times[time].time.raw +
-			'</div>';
-		
-		// Add each class type to their respective variable
-		if (classType == classTypes.Lecture) {
-			lectures += classElement;
-		}
-		else if (classType == classTypes.Tutorial) {
-			tutorials += classElement;
-		}
-		else if (classType == classTypes.Practical) {
-			practicals += classElement;
-		}
-		else if (classType == classTypes.Workshops) {
-			workshops += classElement;
-		}
-		else if (classType == classTypes.ComputerLab) {
-			computerLabs += classElement;
-		}
-		else {
-			otherTypes += classElement;
-		}
+  // Check if the max units has been reached
+  if ($('.class_container').find('.class_list').length >= 10) {
+    notify('Max units imported. Take it easy, tiger!');
+    return;
+  }
+
+  // Enum for readability
+  var classTypes = {
+    Lecture: "LEC",
+    Tutorial: "TUT",
+    Practical: "PRC",
+    Workshops: "WOR",
+    ComputerLab: "CLB"
+  }
+
+  // Placeholder categories for classes
+  var lectures = "";
+  var tutorials = "";
+  var practicals = "";
+  var workshops = "";
+  var computerLabs = "";
+  var otherTypes = "";
+
+  // Convert the times into a bunch of elements
+  for (time in times) {
+    var classType = times[time].activity;
+
+    var classElement =
+      '<div class="class ' + times[time].activity.toLowerCase() + ' ui-draggable"' +
+      'text="' + unit + '\n' + times[time].activity + ' ' + times[time].location + '\n\n' + subject + '" ' +
+      'activity="' + times[time].activity + '" ' +
+      'day="' + times[time].day + '" ' +
+      'start="' + times[time].time.start + '" ' +
+      'end="' + times[time].time.end + '" ' +
+      'location="' + times[time].location + '" ' +
+      'subject="' + subject + '" ' +
+      'style="position: relative;">' +
+        times[time].day + ': ' + /*' @ ' + times[time].location + '<br>' + */
+        times[time].time.raw +
+      '</div>';
+
+    // Add each class type to their respective variable
+    if (classType == classTypes.Lecture) {
+      lectures += classElement;
     }
+    else if (classType == classTypes.Tutorial) {
+      tutorials += classElement;
+    }
+    else if (classType == classTypes.Practical) {
+      practicals += classElement;
+    }
+    else if (classType == classTypes.Workshops) {
+      workshops += classElement;
+    }
+    else if (classType == classTypes.ComputerLab) {
+      computerLabs += classElement;
+    }
+    else {
+      otherTypes += classElement;
+    }
+  }
 
-    // Create a new subject element
-    classListElement = 
-		'<li class="class_list">' + 
-			'<div class="remove_unit">x</div>' +
-			'<a>' + unit + '</a>' +
-			'<div class="classes" style="display: none;">' +
-				// Add each class type to their own subheading iff classes of that type exist
-				((lectures == "") ? "" : '<div class="lectures"><b class="lec">Lectures</b>' + lectures + '</div>') +
-				((tutorials == "") ? "" : '<div class="tutorials"><b class="tut">Tutorials</b>' + tutorials + '</div>') +
-				((practicals == "") ? "" : '<div class="practicals"><b class="prc">Practicals</b>' + practicals + '</div>') +
-				((workshops == "") ? "" : '<div class="workshops"><b class="wor">Workshops</b>' + workshops + '</div>') +
-				((computerLabs == "") ? "" : '<div class="computerLabs"><b class="clb">Computer Labs</b>' + computerLabs + '</div>') +
-				((otherTypes == "") ? "" : '<div class="otherTypes"><b class="other">Other</b>' + otherTypes + '</div>') +
-			'</div>' + 
-		'</li>';
+  // Create a new subject element
+  classListElement =
+  '<li class="class_list">' +
+    '<div class="remove_unit">x</div>' +
+    '<a>' + unit + '</a>' +
+    '<div class="classes" style="display: none;">' +
+      // Add each class type to their own subheading iff classes of that type exist
+      ((lectures == "") ? "" : '<div class="lectures"><b class="lec">Lectures</b>' + lectures + '</div>') +
+      ((tutorials == "") ? "" : '<div class="tutorials"><b class="tut">Tutorials</b>' + tutorials + '</div>') +
+      ((practicals == "") ? "" : '<div class="practicals"><b class="prc">Practicals</b>' + practicals + '</div>') +
+      ((workshops == "") ? "" : '<div class="workshops"><b class="wor">Workshops</b>' + workshops + '</div>') +
+      ((computerLabs == "") ? "" : '<div class="computerLabs"><b class="clb">Computer Labs</b>' + computerLabs + '</div>') +
+      ((otherTypes == "") ? "" : '<div class="otherTypes"><b class="other">Other</b>' + otherTypes + '</div>') +
+    '</div>' +
+  '</li>';
 
-    // Add the element to the class list in the sidebar
-    $('.class_container').append(classListElement);
-	$(window).trigger('resize');
-	
-    // Notify the user that their times have been imported
-    notify('Class times for ' + unit + ' imported!');
+  // Add the element to the class list in the sidebar
+  $('.class_container').append(classListElement);
+  $(window).trigger('resize');
 
-    // Track this with GA
-    /*_gaq.push(['_trackEvent', subject, 'imported'])*/
+  // Notify the user that their times have been imported
+  notify('Class times for ' + unit + ' imported!');
 
+  // Track this with GA
+  _gaq.push(['_trackEvent', subject, 'imported'])
 }
 
 // Listen for 'importComplete' message (triggered when classes are imported)
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if(request.type == "init") {
-
-        // Open up the timetabler page
-        openOrFocusOptionsPage(true);
-		
-	} else if (request.type == "checkTab"){
-		
-        // Check the timetabler is open, but do not focus the tab
-        openOrFocusOptionsPage(false);
-		sendResponse("Done!");
-		
-	} else if (request.type == "importComplete"){
-
-        // Update the global class_info var to hold this subject now
-        class_info = JSON.parse(request.class_info);
-
-        // Update timetable options
-        updateClassTimesList();
-    }
+  if(request.type == "init") {
+    // Open up the timetabler page
+    openOrFocusOptionsPage(true);
+  } else if (request.type == "checkTab"){
+    // Check the timetabler is open, but do not focus the tab
+    openOrFocusOptionsPage(false);
+    sendResponse("Done!");
+  } else if (request.type == "importComplete"){
+    // Update the global class_info var to hold this subject now
+    class_info = JSON.parse(request.class_info);
+    // Update timetable options
+    updateClassTimesList();
+  }
 });
 
 var _gaq = _gaq || [];
@@ -229,7 +220,7 @@ _gaq.push(['_setAccount', 'UA-51599319-1']);
 _gaq.push(['_trackPageview']);
 
 (function() {
-    var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
-    ga.src = 'https://ssl.google-analytics.com/ga.js';
-    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
+  var ga = document.createElement('script'); ga.type = 'text/javascript'; ga.async = true;
+  ga.src = 'https://ssl.google-analytics.com/ga.js';
+  var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(ga, s);
 })();
