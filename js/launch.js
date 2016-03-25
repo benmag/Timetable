@@ -166,7 +166,7 @@ function updateClassTimesList() {
     );
 
     // Add each class type to their respective variable
-    if ($.inArray(classType, validClassTypes)) {
+    if ($.inArray(classType, validClassTypes) >= 0) {
       categorisedClasses[classType].push(classElement);
     } else {
       categorisedClasses.other.push(classElement);
