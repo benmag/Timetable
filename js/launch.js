@@ -115,77 +115,82 @@ function updateClassTimesList() {
     return;
   }
 
-  // Enum for readability
-  var classTypes = {
-    Lecture: "LEC",
-    Tutorial: "TUT",
-    Practical: "PRC",
-    Workshops: "WOR",
-    ComputerLab: "CLB"
-  }
-
   // Placeholder categories for classes
-  var lectures = "";
-  var tutorials = "";
-  var practicals = "";
-  var workshops = "";
-  var computerLabs = "";
-  var otherTypes = "";
+  var categorisedClasses = {
+    "LEC": [],
+    "TUT": [],
+    "PRC": [],
+    "WOR": [],
+    "CLB": [],
+    "other": []
+  };
+
+  var divClasss = {
+    "LEC": "lectures",
+    "TUT": "tutorials",
+    "PRC": "practicals",
+    "WOR": "workshops",
+    "CLB": "computerLabs",
+    "other": "otherTypes",
+  };
+
+  var humanReadableClassNames = {
+    "LEC": "Lectures",
+    "TUT": "Tutorials",
+    "PRC": "Practicals",
+    "WOR": "Workshops",
+    "CLB": "Computer Labs",
+    "other": "Other",
+  };
+
+  var validClassTypes = [];
+  $.each(categorisedClasses, function(key) { validClassTypes.push(key) });
 
   // Convert the times into a bunch of elements
   for (time in times) {
     var classType = times[time].activity;
 
-    var classElement =
-      '<div class="class ' + times[time].activity.toLowerCase() + ' ui-draggable"' +
-      'text="' + unit + '\n' + times[time].activity + ' ' + times[time].location + '\n\n' + subject + '" ' +
-      'activity="' + times[time].activity + '" ' +
-      'day="' + times[time].day + '" ' +
-      'start="' + times[time].time.start + '" ' +
-      'end="' + times[time].time.end + '" ' +
-      'location="' + times[time].location + '" ' +
-      'subject="' + subject + '" ' +
-      'style="position: relative;">' +
-        times[time].day + ': ' + /*' @ ' + times[time].location + '<br>' + */
-        times[time].time.raw +
-      '</div>';
+    var classElement = crel("div", {
+        "class": "class " + times[time].activity.toLowerCase() + " ui-draggable",
+        "text": unit + "\n" + times[time].activity + " " + times[time].location + "\n\n" + subject,
+        "activity": times[time].activity,
+        "day": times[time].day,
+        "start": times[time].time.start,
+        "end": times[time].time.end,
+        "location": times[time].location,
+        "subject": subject,
+        "style": "position: relative;"
+      },
+      times[time].day + ': ' + /*' @ ' + times[time].location + '<br>' + */
+      times[time].time.raw
+    );
 
     // Add each class type to their respective variable
-    if (classType == classTypes.Lecture) {
-      lectures += classElement;
-    }
-    else if (classType == classTypes.Tutorial) {
-      tutorials += classElement;
-    }
-    else if (classType == classTypes.Practical) {
-      practicals += classElement;
-    }
-    else if (classType == classTypes.Workshops) {
-      workshops += classElement;
-    }
-    else if (classType == classTypes.ComputerLab) {
-      computerLabs += classElement;
-    }
-    else {
-      otherTypes += classElement;
+    if ($.inArray(classType, validClassTypes)) {
+      categorisedClasses[classType].push(classElement);
+    } else {
+      categorisedClasses.other.push(classElement);
     }
   }
 
-  // Create a new subject element
-  classListElement =
-  '<li class="class_list">' +
-    '<div class="remove_unit">x</div>' +
-    '<a>' + unit + '</a>' +
-    '<div class="classes" style="display: none;">' +
-      // Add each class type to their own subheading iff classes of that type exist
-      ((lectures == "") ? "" : '<div class="lectures"><b class="lec">Lectures</b>' + lectures + '</div>') +
-      ((tutorials == "") ? "" : '<div class="tutorials"><b class="tut">Tutorials</b>' + tutorials + '</div>') +
-      ((practicals == "") ? "" : '<div class="practicals"><b class="prc">Practicals</b>' + practicals + '</div>') +
-      ((workshops == "") ? "" : '<div class="workshops"><b class="wor">Workshops</b>' + workshops + '</div>') +
-      ((computerLabs == "") ? "" : '<div class="computerLabs"><b class="clb">Computer Labs</b>' + computerLabs + '</div>') +
-      ((otherTypes == "") ? "" : '<div class="otherTypes"><b class="other">Other</b>' + otherTypes + '</div>') +
-    '</div>' +
-  '</li>';
+  var classCategoryElements = [];
+  var crelOptions;
+  $.each(categorisedClasses, function(key, classes) {
+    if (classes.length > 0) {
+      crelOptions = ["div", {"class": divClasses[key]}, crel('b', {"class": key.toLowerCase()}, humanReadableClassNames[key])];
+      crelOptions = crelOptions.concat(classes);
+      classCategoryElements.push(crel.apply(crel, crelOptions));
+    }
+  });
+
+  var crelOptions = ["div", {"class": "classes", "style": "display: none;"}].concat(classCategoryElements)
+    , classesElement = crel.apply(crel, crelOptions);
+
+  var classListElement = crel("li", {"class": "class_list"},
+    crel("div", {"class": "remove_unit"}, "x"),
+    crel("a", unit),
+    classesElement
+  );
 
   // Add the element to the class list in the sidebar
   $('.class_container').append(classListElement);
