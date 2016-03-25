@@ -344,6 +344,7 @@ $(document).ready(function() {
   var classLists = localStorage.getItem('classLists');
     if (classLists !== null) {
     $('.class_container').append(classLists);
+    $(".classes").scrollLock();
   }
 
   // Add the selected units to the calendar

@@ -195,6 +195,7 @@ function updateClassTimesList() {
   // Add the element to the class list in the sidebar
   $('.class_container').append(classListElement);
   $(window).trigger('resize');
+  $(classesElement).scrollLock();
 
   // Notify the user that their times have been imported
   notify('Class times for ' + unit + ' imported!');
