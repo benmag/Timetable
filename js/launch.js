@@ -125,7 +125,7 @@ function updateClassTimesList() {
     "other": []
   };
 
-  var divClasss = {
+  var divClasses = {
     "LEC": "lectures",
     "TUT": "tutorials",
     "PRC": "practicals",
