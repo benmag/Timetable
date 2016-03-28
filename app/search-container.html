@@ -1,0 +1,42 @@
+<style type="text/css">
+  webview, body, html {
+      height: 100%;
+      width: 100%
+  }
+  body, html {
+      margin: 0;
+      padding: 0
+  }
+  webview {
+      overflow: hidden
+  }
+</style>
+
+<webview id="webview" preload="./js/inject.js"></webview>
+
+<script>
+  var webview = document.getElementById('webview');
+  var ipcRenderer = require('electron').ipcRenderer;
+
+  /*webview.addEventListener("dom-ready", function() {
+    webview.openDevTools();
+  });*/
+
+  //Listen for the URL from the main process
+  ipcRenderer.on('url', function(event, url) {
+    webview.src = (url);
+  });
+
+  //Listen for an IPC message from the webview
+  webview.addEventListener('ipc-message', function(event) {
+    //Send the unit information to the main process
+    ipcRenderer.send('unit', event.channel);
+  });
+
+  /*webview.addEventListener('did-navigate', function(event) {
+    if (webview.getURL().indexOf(".qut.edu.au/qv") > -1) {
+      alert(webview.getURL());
+    }
+  });*/
+  
+</script>
