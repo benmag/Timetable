@@ -1,5 +1,5 @@
 const BrowserWindow = require('electron').remote.BrowserWindow;
-      
+
 $("#menu-toggle").click(function(e) {
   e.preventDefault();
   $("#wrapper").toggleClass("toggled");
@@ -123,7 +123,7 @@ $(document).ready(function() {
       } else {
         params['p_unit_description'] = $(this).val();
       }
-      
+
       var win = new BrowserWindow({ width: 800, height: 600, show: false });
       win.webContents.on('did-finish-load', function() {
         //Send IPC with URL parameters
@@ -145,6 +145,13 @@ $(document).ready(function() {
       win.loadURL('file://' + __dirname + '/search-container.html');
       win.show();
     }
+  });
+
+  require('electron').ipcRenderer.on('unit', function(event, arg) {
+      // Update the global class_info var to hold this subject now
+      class_info = JSON.parse(arg);
+      // Update timetable options
+      updateClassTimesList();
   });
 
   /**
@@ -460,4 +467,3 @@ function updateClassTimesList() {
   $(window).trigger('resize');
   $(classesElement).scrollLock();
 }
-

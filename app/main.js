@@ -36,20 +36,18 @@ app.on('ready', function() {
     });
     win.webContents.on('ipc-message', function(event, args) {
       if(args[0] == 'unit') {
-        // Update the global class_info var to hold this subject now
-        class_info = JSON.parse(args[1]);
-        // Update timetable options
-        updateClassTimesList();
+        //Send to main process
+        mainWindow.webContents.send('unit', args[1]);
       }
     });
     win.on('closed', function() {
       win = null;
     });
-    
+
     win.loadURL('file://' + __dirname + '/search-container.html');
     win.show();
   });
-  
+
   // Emitted when the window is closed.
   mainWindow.on('closed', function() {
     // Dereference the window object, usually you would store windows

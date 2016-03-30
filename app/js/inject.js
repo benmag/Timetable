@@ -3,7 +3,7 @@ delete window.require;
 delete window.exports;
 delete window.module;
 
-window.onload = function() {    
+window.onload = function() {
   if(window.location.href.indexOf(".qut.edu.au/qv") > -1) {
       $(function() {
 

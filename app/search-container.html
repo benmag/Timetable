@@ -1,30 +1,69 @@
-<style type="text/css">
-  webview, body, html {
+<head>
+  <style type="text/css">
+    webview,
+    body,
+    html {
       height: 100%;
       width: 100%
-  }
-  body, html {
+    }
+
+    body,
+    html {
       margin: 0;
       padding: 0
-  }
-  webview {
-      overflow: hidden
-  }
-</style>
+    }
 
-<webview id="webview" preload="./js/inject.js"></webview>
+    webview {
+      overflow: hidden
+    }
+  </style>
+</head>
+
+<body>
+  <webview id="webview"></webview>
+</body>
 
 <script>
   var webview = document.getElementById('webview');
   var ipcRenderer = require('electron').ipcRenderer;
 
-  /*webview.addEventListener("dom-ready", function() {
-    webview.openDevTools();
-  });*/
+  webview.addEventListener("dom-ready", function() {
+    //webview.openDevTools();
+    var url = webview.getURL();
+
+    //Check if we are on an authenticated page
+    if (url.indexOf(".qut.edu.au/qv/") > -1) {
+      //Check if the webview is missing the preload script
+      if (!webview.hasAttribute("preload")) {
+        //Remove the current webview
+        document.body.removeChild(webview);
+
+        //Create a new webview with the preload script
+        webview = document.createElement('webview');
+        webview.setAttribute("id", "webview");
+        webview.setAttribute("preload", "./js/inject.js");
+        document.body.appendChild(webview);
+
+        //Navigate to the original page
+        webview.src = url;
+
+        //Listen for an IPC message from the webview
+        webview.addEventListener('ipc-message', function(event) {
+          //Send the unit information to the main process
+          ipcRenderer.send('unit', event.channel);
+        });
+      }
+    }
+  });
 
   //Listen for the URL from the main process
   ipcRenderer.on('url', function(event, url) {
-    webview.src = (url);
+    //Check if we are on a public page
+    if (url.indexOf(".qut.edu.au/qvpublic/") > -1) {
+      //Add the injection script to the webivew
+      webview.setAttribute("preload", "./js/inject.js");
+    }
+    webview.src = url;
   });
 
   //Listen for an IPC message from the webview
@@ -32,11 +71,4 @@
     //Send the unit information to the main process
     ipcRenderer.send('unit', event.channel);
   });
-
-  /*webview.addEventListener('did-navigate', function(event) {
-    if (webview.getURL().indexOf(".qut.edu.au/qv") > -1) {
-      alert(webview.getURL());
-    }
-  });*/
-  
 </script>
