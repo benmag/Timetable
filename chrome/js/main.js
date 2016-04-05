@@ -109,7 +109,7 @@ $(document).ready(function() {
   cal.fullCalendar( 'changeView', 'agendaWeek');
 
   $('#unit-search').keyup(function(event) {
-    var baseURL = "https://qutvirtual3.qut.edu.au/qv/ttab_unit_search_p.process_search?"
+    var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?"
     var params = {
       p_time_period_id: 2655,
     };

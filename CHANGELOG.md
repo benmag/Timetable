@@ -5,10 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 ### Changed
 - Scrolling in a class section in the sidebar will no longer scroll the whole page
+- Searches are now directed to QUT's public search page to remove login requirements
+- Added desktop app for Windows, OS X and Linux based on [Electron](http://electron.atom.io/)
+- Added Firefox extension
 
 ## [2.0.1] - 2016-03-25
 ### Fixed
-- Google Analytics reenabled
+- Google Analytics re-enabled
 
 ## [2.0.0] - 2016-03-24
 ### Added
