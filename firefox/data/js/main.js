@@ -109,22 +109,29 @@ $(document).ready(function() {
   cal.fullCalendar( 'changeView', 'agendaWeek');
 
   $('#unit-search').keyup(function(event) {
-    var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?"
-    var params = {
-      p_time_period_id: 2655,
-    };
-
-    var regex = /\b[a-zA-Z]{3}\d{3}\b/;
-    if (regex.test($(this).val())){
-      params['p_unit_cd'] = $(this).val();
-    } else {
-      params['p_unit_description'] = $(this).val();
-    }
-
     if (event.keyCode == 13) {
-        window.open(baseURL + $.param(params), '_blank');
-     }
+      var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?"
+      var params = {
+        p_time_period_id: 2655, //Semester 1, 2016
+      };
+
+      var regex = /\b[a-zA-Z]{3}\d{3}\b/;
+      if (regex.test($(this).val())){
+        params['p_unit_cd'] = $(this).val();
+      } else {
+        params['p_unit_description'] = $(this).val();
+      }
+      
+      window.open(baseURL + $.param(params), '_blank');
+    }
   });
+
+  /* self.port.on("unit", function(payload) {
+      // Update the global class_info var to hold this subject now
+      class_info = JSON.parse(payload);
+      // Update timetable options
+      updateClassTimesList();
+  }); */
 
   /**
    * Show/hide the classes for an imported subject
@@ -148,33 +155,6 @@ $(document).ready(function() {
       currentList.slideUp();
     }
   });
-
-  /***
-   * When the user hovers over the unit code, preview all the times
-   */
-  /*$(document).on('mouseover','.class_list a', function(){
-
-    // Get the div that contains each of the classes
-    $($(this).parent().find('.class')).each(function( index ) {
-
-      // if the selected attribute is set, then the class is already on the timetable. So do nothing
-      if (typeof $(this).attr('selected') != typeof undefined) {
-        return;
-      }
-
-      // Preview what the class times available are
-      cal.fullCalendar( 'renderEvent' , {
-        id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-        title: $(this).attr('text'),
-        start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
-        end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
-        allDay: false,
-        className: 'preview '+$(this).attr('activity').toLowerCase()
-      });
-
-    });
-
-  });*/
 
   /***
    * When the user hovers over the class type, preview all the times for that subject's class type
@@ -361,3 +341,108 @@ $(document).ready(function() {
   generateClassOutput();
 
 });
+
+//From launch.js
+
+var class_info;
+
+/**
+ * Adds the subject and class elements into the list on the left hand side of the timetabler page.
+ */
+function updateClassTimesList() {
+  var unit = class_info.unit;
+  var subject = class_info.subject;
+  var times = class_info.times;
+
+  // Check if the class is already imported
+  if ($('.class_container').find('a:contains(' + unit + ')').length > 0) {
+    return;
+  }
+
+  // Check if the max units has been reached
+  if ($('.class_container').find('.class_list').length >= 10) {
+    return;
+  }
+
+  // Placeholder categories for classes
+  var categorisedClasses = {
+    "LEC": [],
+    "TUT": [],
+    "PRC": [],
+    "WOR": [],
+    "CLB": [],
+    "other": []
+  };
+
+  var divClasses = {
+    "LEC": "lectures",
+    "TUT": "tutorials",
+    "PRC": "practicals",
+    "WOR": "workshops",
+    "CLB": "computerLabs",
+    "other": "otherTypes",
+  };
+
+  var humanReadableClassNames = {
+    "LEC": "Lectures",
+    "TUT": "Tutorials",
+    "PRC": "Practicals",
+    "WOR": "Workshops",
+    "CLB": "Computer Labs",
+    "other": "Other",
+  };
+
+  var validClassTypes = [];
+  $.each(categorisedClasses, function(key) { validClassTypes.push(key) });
+
+  // Convert the times into a bunch of elements
+  for (time in times) {
+    var classType = times[time].activity;
+
+    var classElement = crel("div", {
+        "class": "class " + times[time].activity.toLowerCase() + " ui-draggable",
+        "text": unit + "\n" + times[time].activity + " " + times[time].location + "\n\n" + subject,
+        "activity": times[time].activity,
+        "day": times[time].day,
+        "start": times[time].time.start,
+        "end": times[time].time.end,
+        "location": times[time].location,
+        "subject": subject,
+        "style": "position: relative;"
+      },
+      times[time].day + ': ' +
+      times[time].time.raw
+    );
+
+    // Add each class type to their respective variable
+    if ($.inArray(classType, validClassTypes) >= 0) {
+      categorisedClasses[classType].push(classElement);
+    } else {
+      categorisedClasses.other.push(classElement);
+    }
+  }
+
+  var classCategoryElements = [];
+  var crelOptions;
+  $.each(categorisedClasses, function(key, classes) {
+    if (classes.length > 0) {
+      crelOptions = ["div", {"class": divClasses[key]}, crel('b', {"class": key.toLowerCase()}, humanReadableClassNames[key])];
+      crelOptions = crelOptions.concat(classes);
+      classCategoryElements.push(crel.apply(crel, crelOptions));
+    }
+  });
+
+  var crelOptions = ["div", {"class": "classes", "style": "display: none;"}].concat(classCategoryElements)
+    , classesElement = crel.apply(crel, crelOptions);
+
+  var classListElement = crel("li", {"class": "class_list"},
+    crel("div", {"class": "remove_unit"}, "x"),
+    crel("a", unit),
+    classesElement
+  );
+
+  // Add the element to the class list in the sidebar
+  $('.class_container').append(classListElement);
+  $(window).trigger('resize');
+  $(classesElement).scrollLock();
+}

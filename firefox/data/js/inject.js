@@ -67,8 +67,7 @@ window.onload = function() {
         function fireCompletionMessage(unit) {
           // Trigger import complete method in timetable_launcher.js
           //ipcRenderer.sendToHost('classInfo-sent', JSON.stringify(subject));
-          var ipcRenderer = require('electron').ipcRenderer;
-          ipcRenderer.sendToHost(JSON.stringify(subject));
+          self.port.emit("unit", JSON.stringify(subject));
         }
 
         // Add the import button to the table
