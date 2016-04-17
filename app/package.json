@@ -15,5 +15,10 @@
   "bugs": {
     "url": "https://github.com/benmag/Timetable/issues"
   },
-  "homepage": "https://github.com/benmag/Timetable#readme"
+  "homepage": "https://github.com/benmag/Timetable#readme",
+  "build": {
+    "app-bundle-id": "timetable-app",
+    "app-category-type": "Productivity",
+    "iconUrl": "https://raw.githubusercontent.com/benmag/Timetable/master/app/icon.ico"
+  }
 }

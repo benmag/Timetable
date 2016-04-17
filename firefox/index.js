@@ -1,20 +1,22 @@
-// Import the page-mod API
 var pageMod = require("sdk/page-mod");
-
-var buttons = require('sdk/ui/button/action');
+var {ActionButton} = require('sdk/ui/button/action');
 var tabs = require("sdk/tabs");
-
-// Import the self API
 var self = require("sdk/self");
  
-// Create a page-mod
+// Inject buttons into QUT pages with class info
 pageMod.PageMod({
   include: "https://qutvirtual3.qut.edu.au/qv*",
-  contentScriptFile: [self.data.url("js/jquery.js"), self.data.url("js/inject.js")]
+  contentScriptFile: ["./js/jquery.js", "./js/inject.js"],
+  onAttach: startListening
+});
+pageMod.PageMod({
+  include: "resource://firefox/data/index.html",
+  contentScriptFile: ["./js/main.js"],
+  onAttach: "window.alert('injected');"
 });
 
-var button = buttons.ActionButton({
-  id: "timetabler-link",
+const pageAction = ActionButton({
+  id: "timetabler-open",
   label: "Open QUT Timetabler",
   icon: {
     "16": "./icon16.png",
@@ -25,18 +27,33 @@ var button = buttons.ActionButton({
 });
 
 function handleClick(state) {
-  var alertContentScript = "self.port.on('unit', function(message) {" +
-                           "  alert('hello');" +
-                           "  class_info = JSON.parse(message);" +
-                           "  updateClassTimesList();" +
-                           "})";
-
-  tabs.on("ready", function(tab) {
-    worker = tab.attach({
-      contentScript: alertContentScript
-    });
-  });
-
   tabs.open("index.html");
 }
+
+function startListening(worker) {
+  worker.port.on('unit', function(payload) {
+    //Check if timetabler is open
+    for (let tab of tabs) {
+      if (tab.url == "resource://firefox/data/index.html") {
+        
+        //Send payload to timetabler
+        tab.activate();
+        worker = tab.attach({
+          contentScript: "alert('hello');"
+        });
+        worker.port.emit("unit", payload);
+        return;
+        
+      }
+    }
+    
+    tabs.open({
+      url: "index.html",
+      onOpen: function onOpen(tab) {
+        tab.window.port.emit("unit", payload);
+      }
+    });
+    
+  });
+} 
 

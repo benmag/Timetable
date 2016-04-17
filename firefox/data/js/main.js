@@ -126,12 +126,13 @@ $(document).ready(function() {
     }
   });
 
-  /* self.port.on("unit", function(payload) {
+  self.port.on("unit", function(payload) {
       // Update the global class_info var to hold this subject now
+      alert("received");
       class_info = JSON.parse(payload);
       // Update timetable options
       updateClassTimesList();
-  }); */
+  });
 
   /**
    * Show/hide the classes for an imported subject
