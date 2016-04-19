@@ -2,6 +2,8 @@
 
 A Chrome web extension to help plan your QUT timetable.
 
+![alt text](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot.png "Timetable Screenshot")
+
 ## Installation
 
 Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgabpdhboja) to open the Chrome extension and 'ADD TO CHROME' to install it.
@@ -20,11 +22,11 @@ Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgab
 
 ### Order of subject colour
 
-| | Colour | Hex Code |
-| ---- | ---- | ---- |
-| 1 | Yellow | #F9F48C |
-| 2 | Blue | #B2DFEE |
-| 3 | Pink | #FFC1C1 |
-| 4 | Green | #CAE081 |
-| 5 | Purple | #9999CC |
-| 6+ | Default | #CCCCCC |
+|    |  Colour | Hex Code |
+|----|:-------:|:--------:|
+| 1  |  Yellow |  #F9F48C |
+| 2  |   Blue  |  #B2DFEE |
+| 3  |   Pink  |  #FFC1C1 |
+| 4  |  Green  |  #CAE081 |
+| 5  |  Purple |  #9999CC |
+| 6+ | Default |  #CCCCCC |
