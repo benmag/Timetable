@@ -12,8 +12,7 @@ Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgab
 
 - Colour-code by subject in the calendar view, not by class type
 - Export as QUT-formatted timetable HTML or PNG (and/or on print)
-- Aim to improve preview performace (e.g. lag is produced when previewing a specific class type)
-- Optimise the 'remove unit' button. The event removal code is quite laggy.
+- Aim to improve preview performance (e.g. lag is produced when previewing a specific class type)
 - Complete code cleanup. COMMENT ALL THE THINGS!
 - Continue refining the design (e.g. Replace 'x' delete buttons with glyph icons)
 - Find a way to increase hour (row) height when an event has overflow on the y-axis
