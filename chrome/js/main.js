@@ -109,21 +109,21 @@ $(document).ready(function() {
   cal.fullCalendar( 'changeView', 'agendaWeek');
 
   $('#unit-search').keyup(function(event) {
-    var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?"
-    var params = {
-      p_time_period_id: 2655,
-    };
-
-    var regex = /\b[a-zA-Z]{3}\d{3}\b/;
-    if (regex.test($(this).val())){
-      params['p_unit_cd'] = $(this).val();
-    } else {
-      params['p_unit_description'] = $(this).val();
-    }
-
     if (event.keyCode == 13) {
-        window.open(baseURL + $.param(params), '_blank');
-     }
+      var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?"
+      var params = {
+        p_time_period_id: 2655,
+      };
+
+      var regex = /\b[a-zA-Z]{3}\d{3}\b/;
+      if (regex.test($(this).val())){
+        params['p_unit_cd'] = $(this).val();
+      } else {
+        params['p_unit_description'] = $(this).val();
+      }
+
+      window.open(baseURL + $.param(params), '_blank');
+    }
   });
 
   /**
@@ -290,7 +290,7 @@ $(document).ready(function() {
 
     // Only remove that class, nothing else.
     cal.fullCalendar('removeEvents', function(event) {
-      if(event.id == classEl.attr('day') + '_' + classEl.attr('location').replace(" ", "_")) {
+      if(event.title == classEl.attr('text')) {
         return true;
       }
     });
@@ -315,19 +315,20 @@ $(document).ready(function() {
    * Allows the user to deselect a class time they no longer like
    */
   $(document).on('click', '.remove_unit', function() {
-    var unitElement = $(this).parent();
+    var unitHeader = $(this).parent();
+    var subjectCode = unitHeader.find('a').text();
 
     // Remove all classes from this subject
-    $(this).parent().find('.class').each(function() {
-      cal.fullCalendar('removeEvents', function(event) {
-        if(event.id == $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_")) {
-          return true;
-        }
-      });
+    cal.fullCalendar('removeEvents', function(event) {
+      if (event.title.indexOf(subjectCode) > -1) {
+        return true;
+      }
     });
 
     // Get rid of the close "button"
-    unitElement.remove();
+    unitHeader.remove();
+
+    //Trigger a resize event to resize the sidebar
     $(window).trigger('resize');
 
     // Track this with GA

@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Searches are now directed to QUT's public search page to remove login requirements
 - Added desktop app for Windows, OS X and Linux based on [Electron](http://electron.atom.io/)
 - Added Firefox extension
+- Improved unit and class removal.
 
 ## [2.0.1] - 2016-03-25
 ### Fixed

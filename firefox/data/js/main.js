@@ -121,7 +121,7 @@ $(document).ready(function() {
       } else {
         params['p_unit_description'] = $(this).val();
       }
-      
+
       window.open(baseURL + $.param(params), '_blank');
     }
   });
@@ -271,7 +271,7 @@ $(document).ready(function() {
 
     // Only remove that class, nothing else.
     cal.fullCalendar('removeEvents', function(event) {
-      if(event.id == classEl.attr('day') + '_' + classEl.attr('location').replace(" ", "_")) {
+      if(event.title == classEl.attr('text')) {
         return true;
       }
     });
@@ -297,18 +297,19 @@ $(document).ready(function() {
    */
   $(document).on('click', '.remove_unit', function() {
     var unitElement = $(this).parent();
+    var subjectCode = unitHeader.find('a').text();
 
     // Remove all classes from this subject
-    $(this).parent().find('.class').each(function() {
-      cal.fullCalendar('removeEvents', function(event) {
-        if(event.id == $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_")) {
-          return true;
-        }
-      });
+    cal.fullCalendar('removeEvents', function(event) {
+      if (event.title.indexOf(subjectCode) > -1) {
+        return true;
+      }
     });
 
     // Get rid of the close "button"
-    unitElement.remove();
+    unitHeader.remove();
+
+    //Trigger a resize event to resize the sidebar
     $(window).trigger('resize');
 
     // Track this with GA
