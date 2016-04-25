@@ -14,23 +14,23 @@ function generateClassOutput() {
 
   // Loop through all the units add their title and a section for selected classes
   $('.class_list a').each(function(index) {
-    var output = '<div id="' + $(this).text() + '"> \
-        <h3>' + $(this).text() + '</h3> \
-        <div class="selected_classes"></div> \
-      </div>';
+    var output = crel("div", {"id": $(this).text()},
+      crel("h3", $(this).text()),
+      crel("div", {"class": "selected_classes"})
+    );
 
     $("#output").append(output);
   });
 
   // Add the classes into the selected classes section we created before
   $('div[selected]').each(function(index) {
-    var selected_classes_html = $(this).attr('activity') + " " +
-                                $(this).attr('day') + " " +
-                                $(this).attr('start') + " - " + $(this).attr('end') + " " +
-                                $(this).attr('location') + "<br />";
+    var class_html = $(this).attr('activity') + " " +
+                     $(this).attr('day') + " " +
+                     $(this).attr('start') + " - " + $(this).attr('end') + " " +
+                     $(this).attr('location') + "<br />";
 
     // The div is given the ID of the unit code. Select that and append the updates
-    $("#" + $(this).parent().parent().parent().find('a').text() + ">.selected_classes").append(selected_classes_html);
+    $("#" + $(this).parent().parent().parent().find('a').text() + ">.selected_classes").append(class_html);
   });
 }
 
@@ -68,47 +68,40 @@ $( window ).unload(function() {
 });
 
 $(document).ready(function() {
-  /* initialize the calendar
-  -----------------------------------------------------------------*/
-
+  // Initialize the calendar
   var cal = $('#calendar').fullCalendar({
     header: false,
     allDaySlot: false,
-        minTime: '07:00:00',
-        maxTime: '22:00:00',
+    defaultView: 'agendaWeek',
+    minTime: '07:00:00',
+    maxTime: '22:00:00',
     height: 'auto',
     columnFormat: { week: 'ddd' },
     slotEventOverlap: false,
     weekends: false,
     editable: false,
-    droppable: false, // this allows things to be dropped onto the calendar !!!
-    /*drop: function(date, allDay) { // this function is called when something is dropped
-
-      // retrieve the dropped element's stored Event Object
-      var originalEventObject = $(this).data('eventObject');
-
-      // we need to copy it, so that multiple events don't have a reference to the same object
-      var copiedEventObject = $.extend({}, originalEventObject);
-
-      // assign it the date that was reported
-      copiedEventObject.start = date;
-      copiedEventObject.allDay = allDay;
-
-      // render the event on the calendar
-      // the last `true` argument determines if the event "sticks" (http://arshaw.com/fullcalendar/docs/event_rendering/renderEvent/)
-      $('#calendar').fullCalendar('renderEvent', copiedEventObject, true);
-
-      // is the "remove after drop" checkbox checked?
-      if ($('#drop-remove').is(':checked')) {
-        // if so, remove the element from the "Draggable Events" list
-        $(this).remove();
-      }
-
-    }*/
+    droppable: false
   });
 
-  // Just want to see the week view for our timetable planner
-  cal.fullCalendar( 'changeView', 'agendaWeek');
+  // Reload the imported subjects from previous instance
+  var classLists = localStorage.getItem('classLists');
+    if (classLists !== null) {
+    $('.class_container').append(classLists);
+    $(".classes").scrollLock();
+  }
+
+  // Add the selected units to the calendar
+  $('.class[selected="selected"]').each(function() {
+    cal.fullCalendar( 'renderEvent' , {
+      id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
+      title: $(this).attr('text'),
+      start: Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
+      end: Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
+      allDay: false,
+      className: $(this).attr('activity').toLowerCase()
+    });
+  });
+  generateClassOutput();
 
   $('#unit-search').keyup(function(event) {
     if (event.keyCode == 13) {
@@ -177,7 +170,7 @@ $(document).ready(function() {
     }
   });
 
-  /***
+  /**
    * When the user hovers over the class type, preview all the times for that subject's class type
    */
   $(document).on('mouseover','.class_list b', function(){
@@ -192,10 +185,10 @@ $(document).ready(function() {
       cal.fullCalendar( 'renderEvent' , {
         id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
         title: $(this).attr('text'),
-        start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
-        end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
+        start: Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
+        end: Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
         allDay: false,
-        className: 'preview '+$(this).attr('activity').toLowerCase()
+        className: 'preview ' + $(this).attr('activity').toLowerCase()
       });
     });
   });
@@ -224,10 +217,10 @@ $(document).ready(function() {
     cal.fullCalendar( 'renderEvent' , {
       id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
       title: $(this).attr('text'),
-      start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
-      end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
+      start: Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
+      end: Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
       allDay: false,
-      className: 'preview '+$(this).attr('activity').toLowerCase()
+      className: 'preview ' + $(this).attr('activity').toLowerCase()
     });
   });
 
@@ -241,7 +234,6 @@ $(document).ready(function() {
       }
     });
   });
-
 
   /**
    * When a user clicks on a class element, they've selected that class add it to the timetable
@@ -263,8 +255,8 @@ $(document).ready(function() {
     cal.fullCalendar( 'renderEvent' , {
       id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
       title: $(this).attr('text'),
-      start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
-      end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
+      start: Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
+      end: Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
       allDay: false,
       className: $(this).attr('activity').toLowerCase()
     });
@@ -340,26 +332,6 @@ $(document).ready(function() {
 
     return false;
   });
-
-  // Reload the imported subjects from previous instance
-  var classLists = localStorage.getItem('classLists');
-    if (classLists !== null) {
-    $('.class_container').append(classLists);
-    $(".classes").scrollLock();
-  }
-
-  // Add the selected units to the calendar
-  $('.class[selected="selected"]').each(function() {
-    cal.fullCalendar( 'renderEvent' , {
-      id: $(this).attr('day') + '_' + $(this).attr('location').replace(" ", "_"),
-      title: $(this).attr('text'),
-      start:  Date.parse($(this).attr('day') + ' ' + $(this).attr('start')),
-      end:  Date.parse($(this).attr('day') + ' ' + $(this).attr('end')),
-      allDay: false,
-      className: $(this).attr('activity').toLowerCase()
-    });
-  });
-  generateClassOutput();
 
 });
 
