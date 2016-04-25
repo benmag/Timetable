@@ -333,8 +333,7 @@ $(document).ready(function() {
     $(window).trigger('resize');
 
     // Track this with GA
-    var GAlabel = "["+classEl.attr('activity')+"] " + classEl.attr('day') + ' ('+classEl.attr('start')+'-'+classEl.attr('end')+') ' + ' @ ' + classEl.attr('location');
-    _gaq.push(['_trackEvent', classEl.attr('subject'), 'unenrol', GAlabel]);
+    _gaq.push(['_trackEvent', subjectCode, 'unenrol', subjectCode]);
 
     // Update the text output
     generateClassOutput();
