@@ -34,32 +34,28 @@ function generateClassOutput() {
   });
 }
 
+/**
+* Set an appropriate max-height for the current class list and show it
+*/
 function slideDownCurrentList(currentList, allLists) {
   currentList.slideDown();
   distFromTop = currentList.offset().top - $(window).scrollTop();
   listsUnderCurrent = allLists.length - currentList.index('.classes') - 1;
-  underOffset = listsUnderCurrent * (currentList.parent().height() - 1);
-
-  // Set max height
+  underOffset = listsUnderCurrent * (currentList.parent().next().height());
   currentList.css('max-height', Math.max($(window).height() - distFromTop - underOffset, 250));
 }
 
 $(window).on('resize', function(){
-  var allLists = $('.classes');
-  var allVisible = $('.classes:visible');
-  if (allVisible.length != 0) {
-    distFromTop = allVisible.offset().top - $(window).scrollTop();
-    listsUnderCurrent = allLists.length - allVisible.index('.classes') - 1;
-    underOffset = listsUnderCurrent * ($(allVisible).parent().next().height());
-
-    // Set max height
-    allVisible.css('max-height', Math.max($(window).height() - distFromTop - underOffset, 250));
+  var currentList = $('.classes:visible');
+  if (currentList.length == 1) {
+    var allLists = $('.classes');
+    slideDownCurrentList(currentList, allLists);
   }
 }).resize()
 
 // Save the current units so we don't have to reload them every time we refresh the page
 $( window ).unload(function() {
-  var data = ""
+  var data = "";
   $('.class_list').each(function() {
     data += $(this).get(0).outerHTML;
   });
