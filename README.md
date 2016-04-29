@@ -17,7 +17,10 @@ Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgab
 - Continue refining the design (e.g. Replace 'x' delete buttons with glyph icons)
 - Find a way to increase hour (row) height when an event has overflow on the y-axis
 - Add highlight when user hovers over a class in the sidebar that is already added to the calendar
-- Implement rotating 'helpful hints' under the calendar
+- Combine notifications when importing units
+- Make the subject overview interactive, allowing the user to see more info (e.g. teaching staff)
+- Fix Firefox extension opening multiple instances of timetabler.html
+- Fix search bar formatting in Firefox; 'input' extends past container width and 'select' becomes lost
 
 ### Order of subject colour
 

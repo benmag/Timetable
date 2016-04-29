@@ -4,11 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
-- Scrolling in a class section in the sidebar will no longer scroll the whole page
+- Scrolling a class list in the sidebar will no longer scroll the whole page
 - Searches are now directed to QUT's public search page to remove login requirements
 - Added desktop app for Windows, OS X and Linux based on [Electron](http://electron.atom.io/)
 - Added Firefox extension
-- Improved unit and class removal.
+- Improved unit and class removal performance
+- Units added to the sidebar will now be sorted alphabetically
+- Added campus selector to the search bar (still only searches for Semester 1, 2016)
+- Implemented rotating helpful hints underneath the calendar
+- Fixed inconsistency with class time formatting
+- Reduced the minimum height for class lists to improve readability in small frames
 
 ## [2.0.1] - 2016-03-25
 ### Fixed

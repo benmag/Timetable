@@ -1,8 +1,8 @@
 {
   "name": "timetable-app",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
-  "main": "main.js",
+  "main": "start.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

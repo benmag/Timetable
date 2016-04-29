@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="">
-  <meta name="author" content="">
+  <meta name="description" content="Plan your perfect timetable with this free open-source utility for QUT students">
+  <meta name="author" content="Ben M, Dave A and Andrew C">
 
   <title>Timetabler</title>
 
@@ -14,15 +14,15 @@
   <link href="./css/bootstrap.min.css" rel="stylesheet">
 
   <!-- Custom Font -->
-  <link href='https://fonts.googleapis.com/css?family=Roboto' rel='stylesheet' type='text/css'>
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css">
 
   <!-- FullCalendar CSS -->
-  <link href='./cal/fullcalendar.min.css' rel='stylesheet' />
-  <link href='./cal/fullcalendar.print.css' rel='stylesheet' media='print' />
+  <link href="./cal/fullcalendar.min.css" rel="stylesheet">
+  <link href="./cal/fullcalendar.print.css" rel="stylesheet" media="print">
 
    <!-- Custom CSS -->
-  <link href='./css/sidebar.css' rel='stylesheet'>
-  <link href='./css/main.css' rel='stylesheet' />
+  <link href="./css/sidebar.css" rel="stylesheet">
+  <link href="./css/main.css" rel="stylesheet">
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -33,9 +33,9 @@
 </head>
 
 <body>
-  <div id="wrapper">
+  <div class="wrapper">
     <!-- Sidebar -->
-    <div id="sidebar-wrapper">
+    <div class="sidebar-wrapper">
       <ul class="sidebar-nav">
 
         <!-- Branding -->
@@ -49,6 +49,12 @@
             <img src="img/search.png"></img>
           </div>
           <input id="unit-search" placeholder="Unit Search" type="text" tabindex="0">
+          <select id="campus-selector">
+            <!-- Codes for Sem 1 2016 -->
+            <option value="2655">GP</option>
+            <option value="2997">KG</option>
+            <option value="404958">CB</option>
+          </select>
         </li>
 
         <!-- Class Content Placeholder -->
@@ -59,11 +65,11 @@
     <!-- /#sidebar-wrapper -->
 
     <!-- Page Content -->
-    <div id="page-content-wrapper">
+    <div class="page-content-wrapper">
       <div class="container-fluid">
 
         <!-- Calendar Placeholder -->
-        <div id="calendar"></div>
+        <div class="calendar"></div>
 
         <!-- Controls -->
         <div class="row">
@@ -79,11 +85,11 @@
         <!-- Helpful Hint(s) -->
         <div class="alert alert-info alert-dismissable">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-          Hover your mouse over a class type in the sidebar to preview all available classes of that type!
+          <!-- Placeholder for helpful hints text -->
         </div>
 
         <!-- Selected Class Output Placeholder -->
-        <div id="output"></div>
+        <div class="unitOverview"></div>
 
       </div>
     </div>
@@ -93,12 +99,13 @@
   <!-- /#wrapper -->
 
   <!-- Javascript -->
-  <script src="./js/jquery.js"></script>
+  <script>window.$ = window.jQuery = require('./js/jquery.js');</script>
   <script src="./js/bootstrap.min.js"></script>
   <script src="./js/jquery-scrollLock.min.js"></script>
   <script src="./js/crel.min.js"></script>
-  <script src='./cal/lib/moment.min.js'></script>
-  <script src='./cal/fullcalendar.min.js'></script>
+  <script src="./cal/lib/moment.min.js"></script>
+  <script src="./cal/fullcalendar.min.js"></script>
+  <script src="./js/launch.js"></script>
   <script src="./js/date.js"></script>
   <script src="./js/main.js"></script>
 

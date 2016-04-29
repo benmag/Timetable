@@ -24,8 +24,8 @@
 </body>
 
 <script>
-  var webview = document.getElementById('webview');
-  var ipcRenderer = require('electron').ipcRenderer;
+  var webview = document.getElementById("webview");
+  var ipcRenderer = require("electron").ipcRenderer;
 
   webview.addEventListener("dom-ready", function() {
     //webview.openDevTools();
@@ -39,7 +39,7 @@
         document.body.removeChild(webview);
 
         //Create a new webview with the preload script
-        webview = document.createElement('webview');
+        webview = document.createElement("webview");
         webview.setAttribute("id", "webview");
         webview.setAttribute("preload", "./js/inject.js");
         document.body.appendChild(webview);
@@ -48,16 +48,16 @@
         webview.src = url;
 
         //Listen for an IPC message from the webview
-        webview.addEventListener('ipc-message', function(event) {
+        webview.addEventListener("ipc-message", function(event) {
           //Send the unit information to the main process
-          ipcRenderer.send('unit', event.channel);
+          ipcRenderer.send("unit_import", event.channel);
         });
       }
     }
   });
 
   //Listen for the URL from the main process
-  ipcRenderer.on('url', function(event, url) {
+  ipcRenderer.on("url", function(event, url) {
     //Check if we are on a public page
     if (url.indexOf(".qut.edu.au/qvpublic/") > -1) {
       //Add the injection script to the webivew
@@ -67,8 +67,9 @@
   });
 
   //Listen for an IPC message from the webview
-  webview.addEventListener('ipc-message', function(event) {
+  webview.addEventListener("ipc-message", function(event) {
     //Send the unit information to the main process
-    ipcRenderer.send('unit', event.channel);
+    ipcRenderer.send("unit_import", event.channel);
   });
+
 </script>

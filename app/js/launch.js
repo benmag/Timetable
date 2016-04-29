@@ -1,41 +1,11 @@
 /**
- * Open or focus the main timetabler page
- */
-function launchTimetabler(focus) {
-  var optionsUrl = chrome.extension.getURL("timetabler.html");
-  chrome.tabs.query({ url: optionsUrl }, function(tabs) {
-    if (tabs.length === 0) {
-      // If tab doesn't exist, create it
-      chrome.tabs.create({ url: "timetabler.html" });
-    } else {
-      // If there's more than one, close all but the first
-      for (var i = 1; i < tabs.length; i++) {
-          chrome.tabs.remove(tabs[i].id);
-      }
-
-      if (focus) {
-        chrome.tabs.update(tabs[0].id, {active: true});
-        chrome.windows.update(tabs[0].windowId, {focused:true});
-      }
-    }
-  });
-}
-
-/**
- * Called when the user clicks on the extension icon in the address bar
- */
-chrome.browserAction.onClicked.addListener(function(tab) {
-  launchTimetabler(true);
-});
-
-/**
  * Show a notification indicating the class has been imported.
  * Clicking the notification will open up the timetabler
  */
 function notify(text) {
   // Check their bowser can handle notifications
   if (!Notification) {
-    launchTimetabler(true);
+    //launchTimetabler(true);
   } else {
     if (Notification.permission != "granted") {
       Notification.requestPermission();
@@ -46,7 +16,7 @@ function notify(text) {
       });
 
       notification.onclick = function () {
-        launchTimetabler(true);
+        //launchTimetabler(true);
       };
     }
   }
@@ -92,13 +62,13 @@ function updateUnitList(unitData) {
 
   // Check if the class has already been imported
   if ($(".class_container").find("a:contains(" + unitID + ")").length > 0) {
-    notify(unitID + " has already been imported!");
+    //notify(unitID + " has already been imported!");
     return;
   }
 
   // Check if the max units has been reached
   if ($(".class_container").find(".class_list").length >= 10) {
-    notify("Max units imported. Take it easy, tiger!");
+    //notify("Max units imported. Take it easy, tiger!");
     return;
   }
 
@@ -178,7 +148,7 @@ function updateUnitList(unitData) {
   $(classesElement).scrollLock();
 
   // Notify the user that their times have been imported
-  notify("Class times for " + unitID + " imported!");
+  //notify("Class times for " + unitID + " imported!");
 
   // Sort the units in the sidebar alphabetically
   sortUnitsAlphabetically();
@@ -190,17 +160,11 @@ function updateUnitList(unitData) {
 /**
  * Listen for various Chrome messages from the injected script
  */
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.type == "checkTab"){
-    // Check the timetabler is open, but do not focus the tab
-    launchTimetabler(false);
-    sendResponse("Done!");
-  } else if (request.type == "unit_import"){
-    // Update timetable options
-    classInfo = JSON.parse(request.class_info);
-    updateUnitList(classInfo);
-  }
-});
+ require("electron").ipcRenderer.on("unit_import", function(event, arg) {
+   // Update timetable options
+   classInfo = JSON.parse(arg);
+   updateUnitList(classInfo);
+ });
 
 /**
  * Initialise Google Analytics
