@@ -149,7 +149,11 @@ function updateUnitList(unitData) {
     if ($.inArray(classType, validClassTypes) >= 0) {
       categorisedClasses[classType].push(classElement);
     } else {
-      categorisedClasses.other.push(classElement);
+      //categorisedClasses.other.push(classElement);
+      // Add the class type as a new category
+      validClassTypes.push(classType);
+      classNames[classType] = classType + "s";
+      categorisedClasses[classType] = [classElement];
     }
   }
 
@@ -157,7 +161,8 @@ function updateUnitList(unitData) {
   var crelOptions;
   $.each(categorisedClasses, function(key, classes) {
     if (classes.length > 0) {
-      crelOptions = ["div", {"class": camelise(classNames[key])}, crel("b", classNames[key])];
+      crelOptions = ["div", {"class": camelise(classNames[key].toLowerCase())},
+        crel("b", classNames[key])];
       crelOptions = crelOptions.concat(classes);
       classCategoryElements.push(crel.apply(crel, crelOptions));
     }

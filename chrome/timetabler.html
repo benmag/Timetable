@@ -74,7 +74,7 @@
         <!-- Controls -->
         <div class="row">
           <div class="col-xs-6">
-            <a href="#menu-toggle" class="btn btn-default" id="menu-toggle">Toggle Menu</a>
+            <a class="btn btn-default" id="menu-toggle">Toggle Menu</a>
           </div>
           <div class="col-xs-6">
             <a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></br>
@@ -90,6 +90,23 @@
 
         <!-- Selected Class Output Placeholder -->
         <div class="unitOverview"></div>
+
+        <!-- Error Message Modal -->
+        <div class="modal fade" id="errorModal" tabindex="-1" role="dialog" aria-labelledby="errorModalLabel">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                <h4 class="modal-title" id="errorModalLabel">Oh no! An error has occurred!</h4>
+              </div>
+              <div class="modal-body"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Fix Manually</button>
+                <button type="button" class="btn btn-danger remove_all" data-dismiss="modal">Remove Data</button>
+              </div>
+            </div>
+          </div>
+        </div>
 
       </div>
     </div>

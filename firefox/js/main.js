@@ -1,3 +1,5 @@
+var hasError = false;
+
 /**
  * Toggle the visibility of the sidebar
  */
@@ -5,6 +7,17 @@ $("#menu-toggle").click(function(e) {
   e.preventDefault();
   $(".wrapper").toggleClass("toggled");
 });
+
+/**
+ * Show an error message with available solutions
+ */
+function showError(text) {
+  if (!hasError) {
+    hasError = true;
+    $(".modal-body").html(text + "</br></br>How would you like to handle the issue?");
+    $("#errorModal").modal("show");
+  }
+}
 
 /**
  * Generate a nice little output of the classes the user has selected
@@ -29,6 +42,13 @@ function generateClassOutput() {
                     $(this).attr("start") + " - " +
                     $(this).attr("end") + " " +
                     $(this).attr("location") + "<br />";
+
+    // Check for missing data
+    if (classData.indexOf("undefined") > -1) {
+      showError("Old or broken class data has been detected! " +
+      "This may be caused by an update, or by invalid HTML editing. " +
+      "Note that you should refresh the page if you fix manually.");
+    }
 
     // Append selected class data to the container with the same unit ID
     var unitID = $(this).parents().eq(2).find("a").text();
@@ -74,6 +94,7 @@ $(document).ready(function() {
   // Load a hint underneath the calendar
   var tips = [
     "Hover your mouse over a class type in the sidebar to preview all available classes of that type!",
+    "Search for a unit code or description using the search bar at the top-left and pressing 'Enter'!",
     "Use the dropdown in the search bar to select your campus when searching for classes!",
     "New to QUT? We have 3 campuses: Gardens Point (GP), Kelvin Grove (KG) and Caboolture (CB)!",
     "These tips will show every time you refresh the page. Want to see a new one? Ctrl+R!"
@@ -102,13 +123,15 @@ $(document).ready(function() {
   if (classLists !== null) {
     $(".class_container").append(classLists);
     $(".classes").scrollLock();
-  }
+    generateClassOutput();
 
-  // Add the selected units to the calendar
-  $(".class[selected='selected']").each(function() {
-    addClass($(this));
-  });
-  generateClassOutput();
+    // Add the selected units to the calendar
+    if (!hasError) {
+      $(".class[selected='selected']").each(function() {
+        addClass($(this));
+      });
+    }
+  }
 
   /**
    * Trigger a search when the user presses the Enter key in the search bar
@@ -164,6 +187,7 @@ $(document).ready(function() {
   function getClassID(classData) {
     var idData = [
       classData.attr("unitID"),
+      classData.attr("className").replace(" ", "_"),
       classData.attr("classType"),
       classData.attr("location").replace(" ", "_"),
       classData.attr("day"),
@@ -187,7 +211,7 @@ $(document).ready(function() {
    * Add a new class to the calendar
    */
   function addClass(classData) {
-    cal.fullCalendar( "renderEvent" , {
+    cal.fullCalendar("renderEvent" , {
       id: getClassID(classData),
       title: getClassText(classData),
       start: Date.parse(classData.attr("day") + " " + classData.attr("start")),
@@ -217,16 +241,20 @@ $(document).ready(function() {
    * Preview all same-type classes when the user hovers over a class-type heading
    */
   $(document).on("mouseover", ".classes b", function() {
-    $(this).nextAll(".class").each(function() {
-      previewClass($(this));
-    });
+    if (!hasError) {
+      $(this).nextAll(".class").each(function() {
+        previewClass($(this));
+      });
+    }
   });
 
   /**
    * Preview a class on the calendar when the user hovers over it in the sidebar
    */
   $(document).on("mouseover", ".class", function(){
-    previewClass($(this));
+    if (!hasError) {
+      previewClass($(this));
+    }
   });
 
   /**
@@ -241,7 +269,7 @@ $(document).ready(function() {
    */
   $(document).on("click", ".class", function() {
     // If the class is selected, it is already on the calendar
-    if ($(this).attr("selected") != "selected") {
+    if (!hasError && $(this).attr("selected") != "selected") {
       // Add the class to the calendar
       cal.fullCalendar("removeEvents", "preview");
       addClass($(this));
@@ -252,7 +280,9 @@ $(document).ready(function() {
       generateClassOutput();
 
       // Track this with GA
-       var GAlabel = "["+$(this).attr("classType")+"] " + $(this).attr("day") + " ("+$(this).attr("start")+"-"+$(this).attr("end")+") " + " @ " + $(this).attr("location");
+      var GAlabel = "[" + $(this).attr("classType") + "] " +
+        $(this).attr("day") + "(" + $(this).attr("start") + "-" +
+        $(this).attr("end") + ") " + "@ " + $(this).attr("location");
       _gaq.push(["_trackEvent", $(this).attr("unitName"), "enrol", GAlabel]);
     }
   });
@@ -272,7 +302,9 @@ $(document).ready(function() {
     generateClassOutput();
 
     // Track this with GA
-    var GAlabel = "["+classElement.attr("classType")+"] " + classElement.attr("day") + " ("+classElement.attr("start")+"-"+classElement.attr("end")+") " + " @ " + classElement.attr("location");
+    var GAlabel = "[" + classElement.attr("classType") + "] " +
+      classElement.attr("day") + "(" + classElement.attr("start") + "-" +
+      classElement.attr("end") + ") " + "@ " + classElement.attr("location");
     _gaq.push(["_trackEvent", classElement.attr("unitName"), "unenrol", GAlabel]);
 
     // Since the button is a child of the class div,
@@ -301,6 +333,15 @@ $(document).ready(function() {
 
     // Track this with GA
     _gaq.push(["_trackEvent", subjectCode, "unenrol", subjectCode]);
+  });
+
+  /**
+   * Remove all children from the class data container
+   */
+  $(document).on("click", ".remove_all", function() {
+    hasError = false;
+    $(".class_container").empty();
+    generateClassOutput();
   });
 
 });

@@ -48,16 +48,16 @@ function exportUnitData(table) {
   // Extract all of the row data from the table
   $(table).find("tr:not(:first-child)").each(function (index, element) {
     var classData = {
-      "className": $(this).children("td").eq(0).html(),
-      "classType": $(this).children("td").eq(1).html(),
-      "day": $(this).children("td").eq(2).html(),
+      "className": $(this).children("td").eq(0).text().trim(),
+      "classType": $(this).children("td").eq(1).text(),
+      "day": $(this).children("td").eq(2).text(),
       "time":  { // raw = "11:00AM-01:00PM" or "11:00am - 01:00pm"
-        "raw" : $(this).children("td").eq(3).html().toLowerCase().replace("m-", "m - "),
-        "start" : $(this).children("td").eq(3).html().split("-")[0].trim(),
-        "end" : $(this).children("td").eq(3).html().split("-")[1].trim(),
+        "raw" : $(this).children("td").eq(3).text().toLowerCase().replace("m-", "m - "),
+        "start" : $(this).children("td").eq(3).text().split("-")[0].trim(),
+        "end" : $(this).children("td").eq(3).text().split("-")[1].trim(),
       },
-      "location": $.trim($(this).children("td").eq(4).text()),
-      "staff": $(this).children("td").eq(5).html().replace(/(\r\n|\n|\r)/gm,"")
+      "location": $(this).children("td").eq(4).text().trim(),
+      "staff": $(this).children("td").eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
     };
 
     // Push the row data into our classInfo object
