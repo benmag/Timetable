@@ -4,7 +4,8 @@
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
   "main": "start.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "electron .",
+    "build": "electron-packager . Timetable"
   },
   "repository": {
     "type": "git",
@@ -20,5 +21,9 @@
     "app-bundle-id": "timetable-app",
     "app-category-type": "Productivity",
     "iconUrl": "https://raw.githubusercontent.com/benmag/Timetable/master/app/icon.ico"
+  },
+  "devDependencies": {
+    "electron-packager": "^7.0.1",
+    "electron-prebuilt": "^0.37.8"
   }
 }
