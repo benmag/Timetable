@@ -1,8 +1,10 @@
-# QUT Timetable planner
+# QUT Timetable Planner
 
 A Chrome web extension to help plan your QUT timetable.
 
 ![alt text](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot.png "Timetable Screenshot")
+
+![alt text](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot2.png "Timetable Screenshot")
 
 ## Installation
 
