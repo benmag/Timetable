@@ -105,21 +105,17 @@
   cursor: pointer; /* Remove text cursor */
 }
 
-/*.class_container b {
-  cursor: default;
-}*/
-
 .classes {
   overflow-y: auto;
   background-color: #fff;
   box-shadow: inset 0 8px 4px -4px rgba(0,0,0,.28)
 }
 
-.classes > b {
+.classes b {
   display: block;
 }
 
-.class:hover {
+.class:hover, .classes b:hover{
   text-decoration: none;
   background: #e6e6e6;
   background: rgba(0,0,0,0.1);
