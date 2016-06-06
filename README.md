@@ -10,7 +10,7 @@ A Chrome web extension to help plan your QUT timetable.
 
 Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgabpdhboja) to open the Chrome extension and 'ADD TO CHROME' to install it.
 
-### Planned Changes
+## Planned Changes
 
 - Colour-code by subject in the calendar view, not by class type
 - Export as QUT-formatted timetable HTML or PNG (and/or on print)
