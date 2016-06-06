@@ -31,7 +31,7 @@ function exportUnitData(table) {
   if (location.pathname == "/qv/ttab_student_p.show") { // Enrollment page
     unitString = $(table).prev().prev().find("strong").html().trim();
   } else { // Search page
-    unitString = $(table).prevAll().eq(3).html();
+    unitString = $(table).prevAll("h2:first").html();
   }
 
   // Extract the unit ID (e.g. MAB126) and name (e.g. Mathematics)
@@ -47,17 +47,18 @@ function exportUnitData(table) {
 
   // Extract all of the row data from the table
   $(table).find("tr:not(:first-child)").each(function (index, element) {
+    var td = $(this).children("td");
     var classData = {
-      "className": $(this).children("td").eq(0).text().trim(),
-      "classType": $(this).children("td").eq(1).text(),
-      "day": $(this).children("td").eq(2).text(),
+      "className": td.eq(0).text().trim(),
+      "classType": td.eq(1).text(),
+      "day": td.eq(2).text(),
       "time":  { // raw = "11:00AM-01:00PM" or "11:00am - 01:00pm"
-        "raw" : $(this).children("td").eq(3).text().toLowerCase().replace("m-", "m - "),
-        "start" : $(this).children("td").eq(3).text().split("-")[0].trim(),
-        "end" : $(this).children("td").eq(3).text().split("-")[1].trim(),
+        "raw" : td.eq(3).text().toLowerCase().replace("m-", "m - "),
+        "start" : td.eq(3).text().split("-")[0].trim(),
+        "end" : td.eq(3).text().split("-")[1].trim(),
       },
-      "location": $(this).children("td").eq(4).text().trim(),
-      "staff": $(this).children("td").eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
+      "location": td.eq(4).text().trim(),
+      "staff": td.eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
     };
 
     // Push the row data into our classInfo object
@@ -78,18 +79,6 @@ function sendUnit(unitData) {
 }
 
 /**
- * Forces the code to wait for a given number of milliseconds
- */
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds) {
-      break;
-    }
-  }
-}
-
-/**
  * Add an event listener for the import button
  */
 $("button.importButton").bind("click", function() {
@@ -98,10 +87,6 @@ $("button.importButton").bind("click", function() {
 
   chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
     if (response == "Done!") {
-      // Send the script to sleep before importing classes
-      // This ensures the timetabler is ready to receive the classes
-      sleep(500);
-
       // Set the button to show the class has been imported
       sender.css("background-color", "#4CAF50");
       sender.text("Imported!");
@@ -120,10 +105,6 @@ $("button.importAllButton").bind("click", function() {
   chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
     // Wait for the timetabler to say it has finished loading
     if (response == "Done!") {
-      // Send the script to sleep before importing classes
-      // This ensures the timetabler is ready to receive the classes
-      sleep(500);
-
       // Set the butten to show the class has been imported
       $(".btn").each(function() {
         $(this).css("background-color", "#4CAF50");

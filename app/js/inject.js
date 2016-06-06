@@ -30,7 +30,7 @@ window.onload = function() {
           if (location.pathname == "/qv/ttab_student_p.show") { // Enrollment page
             unitString = $(table).prev().prev().find("strong").html().trim();
           } else { // Search page
-            unitString = $(table).prevAll().eq(3).html();
+            unitString = $(table).prevAll("h2:first").html();
           }
 
           // Extract the unit ID (e.g. MAB126) and name (e.g. Mathematics)
@@ -46,17 +46,18 @@ window.onload = function() {
 
           // Extract all of the row data from the table
           $(table).find("tr:not(:first-child)").each(function (index, element) {
+            var td = $(this).children("td");
             var classData = {
-              "className": $(this).children("td").eq(0).text().trim(),
-              "classType": $(this).children("td").eq(1).text(),
-              "day": $(this).children("td").eq(2).text(),
+              "className": td.eq(0).text().trim(),
+              "classType": td.eq(1).text(),
+              "day": td.eq(2).text(),
               "time":  { // raw = "11:00AM-01:00PM" or "11:00am - 01:00pm"
-                "raw" : $(this).children("td").eq(3).text().toLowerCase().replace("m-", "m - "),
-                "start" : $(this).children("td").eq(3).text().split("-")[0].trim(),
-                "end" : $(this).children("td").eq(3).text().split("-")[1].trim(),
+                "raw" : td.eq(3).text().toLowerCase().replace("m-", "m - "),
+                "start" : td.eq(3).text().split("-")[0].trim(),
+                "end" : td.eq(3).text().split("-")[1].trim(),
               },
-              "location": $(this).children("td").eq(4).text().trim(),
-              "staff": $(this).children("td").eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
+              "location": td.eq(4).text().trim(),
+              "staff": td.eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
             };
 
             // Push the row data into our classInfo object

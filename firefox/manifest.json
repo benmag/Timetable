@@ -11,7 +11,7 @@
       "https://qutvirtual3.qut.edu.au/*"
   ],
   "background": {
-      "scripts": ["js/launch.js"]
+    "scripts": ["js/launch.js"]
   },
   "browser_action": {
       "name": ""
@@ -24,9 +24,9 @@
     }
   ],
   "icons": {
-    "16": "icon16.png",
-    "48": "icon48.png",
-    "128": "icon128.png"
+    "16": "img/icon16.png",
+    "48": "img/icon48.png",
+    "128": "img/icon128.png"
   },
   "applications": {
     "gecko": {

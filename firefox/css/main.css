@@ -51,11 +51,11 @@ body {
 
 /* Custom event colours */
 
-.lec { background: #FFEB3B; } /* Yellow */
-.tut { background: #2196F3; } /* Blue */
-.prc { background: #4CAF50;} /* Green */
-.wor { background: #E91E63; } /* Pink */
-.clb { background: #AB47BC; } /* Purple */
+.lec { background: #FFEE58; } /* Yellow 400 */
+.tut { background: #42A5F5; } /* Blue 400 */
+.prc { background: #66BB6A;} /* Green 400 */
+.wor { background: #EC407A; } /* Pink 400 */
+.clb { background: #BA68C8; } /* Purple 300 */
 .preview { opacity:0.4; }
 
 /* Class Output Footer */

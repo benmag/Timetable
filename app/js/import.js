@@ -24,6 +24,7 @@ function notify(text) {
 
 /**
  * Convert the given string into Camel Case (e.g. "Class Name" -> "className")
+ * http://stackoverflow.com/a/2970667
  */
 function camelise(str) {
   return str.replace(/(?:^\w|[A-Z]|\b\w|\s+)/g, function(match, index) {
@@ -34,6 +35,7 @@ function camelise(str) {
 
 /**
  * Sort the list of units in the sidebar alphabetically
+ * http://stackoverflow.com/a/304428
  */
 function sortUnitsAlphabetically() {
   var items = $(".class_container .class_list").get();

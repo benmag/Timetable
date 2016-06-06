@@ -4,8 +4,13 @@
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
   "main": "start.js",
   "scripts": {
-    "start": "electron .",
-    "build": "electron-packager . Timetable"
+    "start": "electron ./app",
+    "postinstall": "install-app-deps",
+    "dev": "NODE_ENV='development' npm run start",
+    "dist": "npm run dist:osx && npm run dist:win32 && npm run dist:win64",
+    "dist:osx": "build --platform darwin",
+    "dist:win32": "build --platform win32 --arch ia32",
+    "dist:win64": "build --platform win32 --arch x64"
   },
   "repository": {
     "type": "git",
