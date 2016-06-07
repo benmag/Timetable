@@ -18,10 +18,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed issues with importing blank units
 - Reduced unit colour intensity
 - Moved 'TODO' from README to Github issues page
-- Updated semester IDs to semester 2
 - Separated launch.js and import.js
 - Moved icons to the /img/ folder
 - Removed sleep requirement when importing units
+- Added dynamic fetching of semester IDs
 
 ## [2.0.1] - 2016-03-25
 ### Fixed

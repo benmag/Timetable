@@ -1,4 +1,5 @@
 var hasError = false;
+var ENTER_KEY = 13;
 
 /**
  * Toggle the visibility of the sidebar
@@ -69,6 +70,50 @@ function slideDownCurrentList(currentList, allLists) {
 }
 
 /**
+ * Fetch semester IDs from the QUT advanced search page using HTTP GET
+ */
+function getSemesterIDs() {
+  var advSearch = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.show_search_adv";
+
+  // Attempt cross-site GET
+  $.get(advSearch, function(data) {
+    // Remove the backup options
+    $("select").empty();
+
+    // Extract the dropdown from the data
+    var select = $(data).find("select[name='p_time_period_id']")[0];
+
+    // Add each option to our own dropdown
+    // TODO Store these results in localStorage for offline use
+    $.each(select.options, function() {
+      // Remove the date ranges from the text
+      var regex = /.+(?:GP|KG|CB)/;
+      var text = regex.exec(this.text);
+      $("select").append($("<option />").val(this.value).text(text));
+    })
+
+  })
+}
+
+/**
+ * Load a hint underneath the calendar
+ */
+function loadHint() {
+  // TODO Load tips from an external source
+  var hints = [
+    "Hover your mouse over a class type in the sidebar to preview all available classes of that type!",
+    "Search for a unit code or description using the search bar at the top-left and pressing 'Enter'!",
+    "Use the dropdown in the search bar to select your campus when searching for classes!",
+    "New to QUT? We have 3 campuses: Gardens Point (GP), Kelvin Grove (KG) and Caboolture (CB)!",
+    "These tips will show every time you refresh the page. Want to see a new one? Ctrl+R!"
+  ];
+
+  // Randomly select a hint from the array
+  var hint = hints[Math.floor(Math.random() * hints.length)];
+  $(".alert").append(hint);
+}
+
+/**
  * Handle sidebar height adjustments when the window is resized
  */
 $(window).on("resize", function(){
@@ -91,16 +136,12 @@ $( window ).unload(function() {
 });
 
 $(document).ready(function() {
-  // Load a hint underneath the calendar
-  var tips = [
-    "Hover your mouse over a class type in the sidebar to preview all available classes of that type!",
-    "Search for a unit code or description using the search bar at the top-left and pressing 'Enter'!",
-    "Use the dropdown in the search bar to select your campus when searching for classes!",
-    "New to QUT? We have 3 campuses: Gardens Point (GP), Kelvin Grove (KG) and Caboolture (CB)!",
-    "These tips will show every time you refresh the page. Want to see a new one? Ctrl+R!"
-  ];
-  var tip = $(".alert").html() + tips[Math.floor(Math.random() * tips.length)];
-  $(".alert").html(tip);
+
+  // Load the campus selector options for unit search
+  getSemesterIDs();
+
+  // Load the helpful hints underneath the calendar
+  loadHint();
 
   // Initialize the calendar
   var cal = $(".calendar").fullCalendar({
@@ -118,7 +159,7 @@ $(document).ready(function() {
     droppable: false
   });
 
-  // Reload the imported subjects from memory
+  // Restore saved subjects from localStorage
   var classLists = localStorage.getItem("classLists");
   if (classLists !== null) {
     $(".class_container").append(classLists);
@@ -137,7 +178,7 @@ $(document).ready(function() {
    * Trigger a search when the user presses the Enter key in the search bar
    */
   $("#unit-search").keyup(function(event) {
-    if (event.keyCode == 13) { // Enter
+    if (event.keyCode == ENTER_KEY) {
       var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?";
       var params = {
         p_time_period_id: $("#campus-selector").val()

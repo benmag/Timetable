@@ -156,17 +156,20 @@
   line-height: 40px;
   text-shadow: none;
   border: none;
-  outline: none; /*csslint outline-none:false*/
+  outline: none;
 }
 
 .sidebar-search > input {
   background: none;
+  margin-right: 10px;
   width: 100%;
   display: block;
 }
 
 .sidebar-search > select {
   background: #5E97F6;
+  width: 100%;
+  height: 40px;
 }
 
 /* Sidebar Styles */
