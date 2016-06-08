@@ -179,7 +179,7 @@ $(document).ready(function() {
    */
   $("#unit-search").keyup(function(event) {
     if (event.keyCode == ENTER_KEY) {
-      var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?";
+      /*var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?";
       var params = {
         p_time_period_id: $("#campus-selector").val()
       };
@@ -194,8 +194,120 @@ $(document).ready(function() {
       }
 
       window.open(baseURL + $.param(params), "_blank");
+    */
+        getClassesLocation();
     }
   });
+
+
+  /**Mitch Added Code here **/
+//TODO make these not public variable
+
+    //TODO I have broken the String search that was going on (i.e can search for "databases" rather than CAB230)
+  var requests_made = 0;
+    var total_requests = 50;
+    var locations = [];
+
+    function getClassesLocation() {
+        var advSearch = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.show_search_adv";
+//reset the location array
+        requests_made = 0;
+        locations = [];
+
+        // Attempt cross-site GET
+        $.get(advSearch, function (data) {
+            // Extract the dropdown from the data
+            var select = $(data).find("select[name='p_time_period_id']")[0];
+
+            //save the length of it to a public variable
+          //  total_requests = data.length;
+            // Add each option to our own dropdown
+            // TODO Store these results in localStorage for offline use
+            $.each(select.options, function () {
+                // Remove the date ranges from the text
+                var regex = /.+(?:GP|KG|CB)/;
+                var text = regex.exec(this.text);
+                //Run the checking script for each location
+                checkCampus(this.value, $('#unit-search').val(), text[0]);
+            })
+        })
+    }
+
+
+    /**Check if the campus id has the course the user wants and add it to an array if it is available**/
+  function checkCampus(campusId, courseId, campus) {
+      var search_url = 'https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?p_time_period_id=' + campusId + '&p_unit_cd=' + courseId;
+      $.get(search_url, function (data) {
+          // TODO Need to change this logic as it is currently relying on no error text
+          var noResultRegex = /No results matched your search criteria. Please return to the/;
+          var match = noResultRegex.exec(data);
+          if (match == null || match.length <= 0) {
+              locations.push({'campusId': campusId, "campusText": campus})
+          }
+          requests_made++;
+          allPlacesSearched();
+      })
+  }
+
+  /**Gets run after each place is searched as I couldn't think of a better way
+   * of doing asynchronously and waiting till all are complete**/
+  function allPlacesSearched() {
+    if (requests_made >= total_requests) {
+        console.log("Locations")
+        console.log((locations));
+      if (locations.length == 1) {//there is only one place
+        console.log("Just load it");
+      } else if (locations == null || locations.length == 0) { //There is no place
+        console.log("error was made");
+      }
+      else {
+        var bodyText = "Please Select a Teaching Period<br><select id = 'timePeriod'>";
+        for (var x = 0; x < locations.length; x++) {
+          bodyText += "<option value='" + locations[x].campusId + "'>" + locations[x].campusText + "</option>";
+        }
+        bodyText += "</select>";
+          console.log(bodyText)
+        $.confirm({
+          title: 'Select an Option!',
+          content: bodyText,
+          confirm: function () {
+            var userSelect = $('#timePeriod').val();
+            console.log(userSelect)
+            unitSearch(userSelect, $('#unit-search').val());
+          },
+          cancel: function () {
+          }
+        });
+      }
+    }
+    else {
+      console.log("Still waiting");
+    }
+  }
+
+  /**Actually open up the new page with the provided values **/
+  function unitSearch(campusId, courseCode){
+    var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.process_search?";
+    var params = {
+      p_time_period_id: campusId
+    };
+
+    // Determine if search is a unit code or unit description
+    var searchText = courseCode
+    var regex = /\b[a-zA-Z]{3}\d{3}\b/; // 3 letters, 3 digits
+    if (regex.test(searchText)){
+      params.p_unit_cd = searchText;
+    } else {
+      params.p_unit_description = searchText;
+    }
+    window.open(baseURL + $.param(params), "_blank");
+  }
+
+
+
+
+
+
 
   /**
    * Show or hide the classes for an imported subject
