@@ -54,6 +54,11 @@
             <img src="img/search.png" />
           </div>
           <input id="unit-search" placeholder="Unit Search" type="text" tabindex="0" />
+          <div class="loader" hidden="true">
+            <svg class="circular" viewBox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+            </svg>
+          </div>
         </li>
 
         <li class="sidebar-search">
@@ -62,9 +67,7 @@
           </div>
           <select id="campus-selector">
             <!-- Default codes for Sem 2 2016 -->
-            <option value="293554">GP</option>
-            <option value="293555">KG</option>
-            <option value="404959">CB</option>
+            <option value="-1">Loading...</option>
           </select>
         </li>
 
@@ -126,16 +129,23 @@
   </div>
   <!-- /#wrapper -->
 
-  <!-- Javascript -->
+  <!-- Core Javascript -->
   <script src="js/jquery.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="js/jquery-scrollLock.min.js"></script>
-  <script src="js/crel.min.js"></script>
   <script src="cal/lib/moment.min.js"></script>
   <script src="cal/fullcalendar.min.js"></script>
+
+  <!-- Libaries -->
+  <script src="js/jquery-query-yql.min.js"></script>
+  <script src="js/jquery-scrollLock.min.js"></script>
+  <script src="js/jquery-confirm.min.js"></script>
+  <script src="js/crel.min.js"></script>
   <script src="js/date.js"></script>
+
+  <!-- Custom Javascript -->
   <script src="js/import.js"></script>
-  <script src = "js/jquery-confirm.min.js"></script>
+  <script src="js/class.js"></script>
+  <script src="js/search.js"></script>
   <script src="js/main.js"></script>
 
 </body>

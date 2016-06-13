@@ -79,18 +79,6 @@ function sendUnit(unitData) {
 }
 
 /**
- * Forces the code to wait for a given number of milliseconds
- */
-function sleep(milliseconds) {
-  var start = new Date().getTime();
-  for (var i = 0; i < 1e7; i++) {
-    if ((new Date().getTime() - start) > milliseconds) {
-      break;
-    }
-  }
-}
-
-/**
  * Add an event listener for the import button
  */
 $("button.importButton").bind("click", function() {
@@ -99,10 +87,6 @@ $("button.importButton").bind("click", function() {
 
   chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
     if (response == "Done!") {
-      // Send the script to sleep before importing classes
-      // This ensures the timetabler is ready to receive the classes
-      sleep(500);
-
       // Set the button to show the class has been imported
       sender.css("background-color", "#4CAF50");
       sender.text("Imported!");
@@ -121,10 +105,6 @@ $("button.importAllButton").bind("click", function() {
   chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
     // Wait for the timetabler to say it has finished loading
     if (response == "Done!") {
-      // Send the script to sleep before importing classes
-      // This ensures the timetabler is ready to receive the classes
-      sleep(500);
-
       // Set the butten to show the class has been imported
       $(".btn").each(function() {
         $(this).css("background-color", "#4CAF50");
