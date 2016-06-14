@@ -4,24 +4,30 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 ### Changed
-- Scrolling a class list in the sidebar will no longer scroll the whole page
-- Searches are now directed to QUT's public search page to remove login requirements
+- Implemented YQL requests to get unit data; imports from injected scripts not required
+- Fixed incorrect padding on sidebar input
+
+## [2.0.2] - 2016-06-08
+### Added
 - Added desktop app for Windows, OS X and Linux based on [Electron](http://electron.atom.io/)
 - Added Firefox extension (not published)
-- Improved unit and class removal performance
-- Units added to the sidebar will now be sorted alphabetically
-- Added campus selector to the search bar (requires manual updating of semester IDs)
 - Implemented rotating helpful hints underneath the calendar
+- Added campus selector to the search bar
+- Added dynamic fetching of semester IDs
+
+### Changed
+- Searches are now directed to QUT's public search page to remove login requirements
+- Units added to the sidebar will now be sorted alphabetically
 - Fixed inconsistency with class time formatting
 - Reduced the minimum height for class lists to improve readability in small frames
 - Changed class type grouping to remove "Other" category
-- Fixed issues with importing blank units
 - Reduced unit colour intensity
-- Moved 'TODO' from README to Github issues page
-- Separated launch.js and import.js
-- Moved icons to the /img/ folder
 - Removed sleep requirement when importing units
-- Added dynamic fetching of semester IDs
+
+### Fixed
+- Scrolling a class list in the sidebar will no longer scroll the whole page
+- Improved unit and class removal performance
+- Fixed issues with importing blank units
 
 ## [2.0.1] - 2016-03-25
 ### Fixed
@@ -57,7 +63,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed event overlap and padding. Classes now accurately resize depending on how many units are in the same time slot
 - Fixed calendar stretching when modifying inline element sizing (Seems to be fixed by FullCalendar update)
 
-
-[Unreleased]: https://github.com/benmag/Timetable/compare/2.0.1
+[Unreleased]: https://github.com/benmag/Timetable/compare/2.0.2
+[2.0.2]: https://github.com/benmag/Timetable/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/benmag/Timetable/compare/2.0.0...2.0.1
 [2.0.0]: https://github.com/benmag/Timetable/compare/1.1.1...2.0.0

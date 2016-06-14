@@ -96,24 +96,6 @@ $(window).resize(function() {
 });
 
 /**
- * Load the previously selected campus
- */
-function loadCampus() {
-  var currentCampus = localStorage.getItem("currentCampus")
-  if (currentCampus != null) {
-    $("#campus-selector").val(currentCampus);
-  }
-}
-
-/**
- * Save the current campus so we don't have to keep changing the dropdown
- */
-function saveCampus() {
-  var currentCampus = $("#campus-selector").val();
-  localStorage.setItem("currentCampus", currentCampus);
-}
-
-/**
  * Save current units so we don't have to import them every time we refresh
  */
 $(window).unload(function() {
@@ -123,10 +105,15 @@ $(window).unload(function() {
 
 $(document).ready(function() {
 
+  jconfirm.defaults = {
+    backgroundDismiss: true,
+    keyboardEnabled: true,
+  }
+
   // Load the campus selector options for unit search
   getAllSemesterIDs().done(function() {
     // Load the previous campus into the dropdown
-    loadCampus();
+    loadSelectedCampus();
   })
 
   // Load the helpful hints underneath the calendar
@@ -157,16 +144,19 @@ $(document).ready(function() {
     if (event.keyCode == ENTER_KEY) {
       var searchText = $(this).val().trim();
       if (searchText != "") {
+        var semesterID = $("#campus-selector").val();
+
         // Determine if search is a unit code or unit description
         var regex = /\b[a-zA-Z]{3}\d{3}\b/; // 3 letters, 3 digits
         if (regex.test(searchText)){
-          var semesterID = $("#campus-selector").val();
-          getClassCampus(searchText, semesterID);
+          searchUnitCode(searchText, semesterID);
         } else {
-          var semesterID = $("#campus-selector").val();
-          unitSearch(searchText, semesterID);
+          searchDescription(searchText, semesterID);
         }
       }
+
+      // Select the text, ready for the next search
+      $(this).select();
 
     }
   });

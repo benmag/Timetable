@@ -1,16 +1,15 @@
 var requests_made = 0;
 var max_requests = 50;
-var semesterIDs = [];
 var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.";
 
 /**
- * Fetch semester IDs from the QUT advanced search page using HTTP GET
+ * Fetch semester IDs from the QUT advanced search page using YQL
  */
 function getAllSemesterIDs() {
   // Use Yahoo Query Language to extract data from URL
   // Using Open Data Tables to ignore robots.txt on QUTVirtual
-  var advSearch = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.show_search_adv";
-  var statement = "select content from data.headers where url='" + advSearch +  "'";
+  var url = baseURL + "show_search_adv";
+  var statement = "select content from data.headers where url='" + url +  "'";
   return $.queryYQL(statement, "all", function (data) {
     data = data.query.results.resources.content;
 
@@ -36,7 +35,13 @@ function getAllSemesterIDs() {
 
 }
 
-function getClassCampus(unitID, semesterID) {
+/**
+ *
+ */
+function searchUnitCode(unitID, semesterID) {
+  // TODO Change behaviour of "Gardens Point (GP)" option
+  // to search all GP semesters, instead of just the latest.
+
   // Show a loading icon while fetching data
   $(".loader").show();
 
@@ -49,78 +54,99 @@ function getClassCampus(unitID, semesterID) {
   $.queryYQL(statement, "all", function (data) {
     data = data.query.results.resources.content;
 
-    // Extract the dropdown options
-    var select = $(data).find("select[name='p_time_period_id']")[0];
-    $.each(select.options, function() {
-      // Remove the date ranges from the text
-      var regex = /.+(?:GP|KG|CB)/;
-      var text = regex.exec(this.text)[0];
+    // Check if there are semesters available
+    var selects = $(data).find("select[name='p_time_period_id']")
+    if (selects.length > 0) {
+      var select = selects[0];
 
-      // Add the result to our list
-      semesterIDs.push({"text": text, "value": this.value})
-    })
+      // Extract the dropdown options
+      $.each(select.options, function() {
+        // Remove the date ranges from the text
+        var regex = /.+(?:GP|KG|CB)/;
+        var text = regex.exec(this.text)[0];
+        semesterIDs.push({"text": text, "value": this.value})
+      })
+    } else {
+      // No semesters found
+      semesterIDs = null;
+    }
+
   }).done(function() {
+    if (semesterIDs == null || semesterIDs.length == 0) {
+      $.alert({
+        title: "Unit Not Found!",
+        content: "Unit does not have any recent or future timetables."
+      });
+    } else {
+
+      if (semesterIDs.length == 1) {
+        importUnit(semesterIDs[0].value, unitID);
+        return;
+      }
+
+      if (semesterID == 0) { // Always ask
+        selectSemesterImport(unitID, semesterIDs);
+        return;
+      }
+
+      semesterID = getLatest(semesterID);
+
+      // Extract the semester ID values
+      var semesterValues = $.map(semesterIDs, function(semester) {
+        return semester.value;
+      });
+
+      // Check if the unit is in the selected semester
+      if (semesterValues.indexOf(semesterID) > -1) {
+        importUnit(semesterID, unitID);
+      } else {
+        // TODO Suggest which semester to select
+        var semesterText = $("#campus-selector > option[value=" + semesterID + "]").text();
+        $.alert({
+          title: "Invalid Campus or Semester",
+          content: "Unit exists, but was not found in " + semesterText + "."
+        });
+      }
+    }
+  }).fail(function() {
+    $.alert({
+      title: "Unknown Error",
+      content: "An unknown error has occured while fetching unit data."
+    });
+  }).always(function() {
     // Hide the loading spinner
     $(".loader").hide();
-
-    var IDs = $.map(semesterIDs, function(semester) {
-      return semester.value;
-    });
-
-    switch(semesterID) {
-      case "0": // Always ask
-        allPlacesSearched(unitID, semesterIDs);
-        break;
-      case "1": // Latest GP
-        semesterID = $("#campus-selector option:contains('GP')")[1].value;
-      case "2": // Latest KG
-        semesterID = $("#campus-selector option:contains('KG')")[1].value;
-      case "3": // Latest CB
-        semesterID = $("#campus-selector option:contains('CB')")[1].value;
-      default: // User has selected a semester
-        if (IDs.indexOf(semesterID) > -1) {
-          allPlacesSearched(unitID, [{"value": semesterID}]);
-        }
-        break;
-    }
   });
 }
 
 // Gets run after each place is searched as I couldn't think of a
 // better way of doing asynchronously and waiting till all are complete
-function allPlacesSearched(unitID, semesterIDs) {
+function selectSemesterImport(unitID, semesterIDs) {
+  var bodyText = "";
 
-  if (semesterIDs.length == 1) {
-    // Unit only found in one semester. Import
-    var campusID = semesterIDs[0].value;
-    importUnit(campusID, unitID);
-  } else if (semesterIDs == null || semesterIDs.length == 0) {
-    $.alert({
-      title: "Error occurred!",
-      content: "An error has occurred, or there is no unit by this name."
-    })
-  } else {
-    var bodyText = "Please Select a Teaching Period<br><select id='timePeriod'>";
-    semesterIDs.forEach(function(id) {
-      bodyText += "<option value='" + id.value + "'>" + id.text + "</option>";
-    })
-    bodyText += "</select>";
+  var timePeriod = $("<select id='timePeriod'/>");
+  semesterIDs.forEach(function(id) {
+    timePeriod.append($("<option/>").val(id.value).text(id.text));
+  })
 
-    $.confirm({
-      title: 'Select an Option!',
-      content: bodyText,
-      confirm: function () {
-        var campusID = $('#timePeriod').val();
-        importUnit(campusID, unitID);
-      },
-    });
-  }
+  bodyText += timePeriod.prop('outerHTML');
+
+  $.confirm({
+    title: 'Select a Teaching Period!',
+    content: bodyText,
+    confirmButton: 'Import',
+    cancelButton: 'Cancel',
+    confirm: function () {
+      var campusID = $('#timePeriod').val();
+      importUnit(campusID, unitID);
+    },
+  });
 }
 
-function importUnit(campusID, unitID) {
+function importUnit(semesterID, unitID) {
   // Construct the URL
   var params = {
-    p_time_period_id: campusID,
+    p_time_period_id: semesterID,
     p_unit_cd: unitID
   };
   var url = baseURL + "process_search?" + $.param(params);
@@ -135,7 +161,13 @@ function importUnit(campusID, unitID) {
     var table = $(data).find(".qv_table")[0];
     unitData = extractUnitData(table);
     updateUnitList(unitData);
-  })
+
+    var semesterText = $("#campus-selector > option[value=" + semesterID + "]").text();
+    $.alert({
+      title: "Import Successful",
+      content: "Imported " + unitID.toUpperCase() + " (" + semesterText + ")"
+    });
+  });
 }
 
 /**
@@ -184,60 +216,79 @@ function extractUnitData(table) {
   return unitData;
 }
 
-/**Actually open up the new page with the provided values **/
-function unitSearch(description, semesterID){
-  switch(semesterID) {
-    case "0":
-      // Ask the user to select the semester
-        var bodyText = "Please Select a Teaching Period<br>";
-        var length = $("#campus-selector")[0].length;
-        var options = $("#campus-selector option").slice(length-50, length);
+/**
+ * Search for a unit description in a given
+ * semester and open the results in a new tab
+ */
+function searchDescription(description, semesterID){
+  if (semesterID == 0) { // Always ask
+    // Copy the semesterID options
+    var bodyText = "Please select a teaching period...<br>";
+    var length = $("#campus-selector")[0].length;
+    var options = $("#campus-selector > option").clone().slice(length-50, length);
+    var timePeriod = $("<select id='timePeriod'/>").append(options);
+    bodyText += $(timePeriod).prop('outerHTML');;
 
-        var timePeriod = $("<select id='timePeriod'/>");
-        $.each(options, function() {
-          timePeriod.append($("<option/>").val(this.value).text(this.text));
-        });
-
-        bodyText += $(timePeriod).prop('outerHTML');;
-
-        $.alert({
-          title: 'Select an Option!',
-          content: bodyText,
-          confirm: function () {
-            semesterID = $('#timePeriod').val();
-            openWindow(description, semesterID);
-          },
-        });
-      break;
-    case "1":
-      // Select the latest GP
-      semesterID = $("#campus-selector option:contains('GP')")[1].value;
-      openWindow(description, semesterID);
-      break;
-    case "2":
-      // Select the latest KG
-      semesterID = $("#campus-selector option:contains('KG')")[1].value;
-      openWindow(description, semesterID);
-      break;
-    case "3":
-      // Select the latest CB
-      semesterID = $("#campus-selector option:contains('CB')")[1].value;
-      openWindow(description, semesterID);
-      break;
-    default:
-      openWindow(description, semesterID);
-      break;
+    $.confirm({
+      title: 'Select Semester To Search',
+      content: bodyText,
+      confirm: function () {
+        semesterID = $('#timePeriod').val();
+        openSearchResults(description, semesterID);
+      },
+    });
+  } else {
+    semesterID = getLatest(semesterID);
+    openSearchResults(description, semesterID);
   }
+}
 
-  function openWindow(description, semesterID) {
-    // Construct the search URL
-    var params = {
-      "p_time_period_id": semesterID,
-      "p_unit_description": description
-    };
-    var url = baseURL + "process_search?" + $.param(params);
-
-    // Open the window in a new tab
-    window.open(url, "_blank");
+/**
+ * Return the semester ID for the latest selected campus
+ * latestID: 1 = GP, 2 = KG, 3 = CB
+ */
+function getLatest(latestID) {
+  // TODO Return latest SEMESTER instead of latest teaching period
+  var result = latestID;
+  if (latestID == 1) { // Latest GP
+    result = $("#campus-selector > option:contains('GP')")[1].value;
+  } else if (latestID == 2) { // Latest KG
+    result = $("#campus-selector > option:contains('KG')")[1].value;
+  } else if (latestID == 3) { // Latest CB
+    result = $("#campus-selector > option:contains('CB')")[1].value;
   }
+  return result;
+}
+
+/**
+ * Open a new window with the search results of the given parameters
+ */
+function openSearchResults(description, semesterID) {
+  // Construct the search URL
+  var params = {
+    "p_time_period_id": semesterID,
+    "p_unit_description": description
+  };
+  var url = baseURL + "process_search?" + $.param(params);
+
+  // Open the window in a new tab
+  window.open(url, "_blank");
+}
+
+/**
+ * Load the previously selected campus
+ */
+function loadSelectedCampus() {
+  var currentCampus = localStorage.getItem("currentCampus")
+  if (currentCampus != null) {
+    $("#campus-selector").val(currentCampus);
+  }
+}
+
+/**
+ * Save the current campus so we don't have to keep changing the dropdown
+ */
+function saveCampus() {
+  var currentCampus = $("#campus-selector").val();
+  localStorage.setItem("currentCampus", currentCampus);
 }

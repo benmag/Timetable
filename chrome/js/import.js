@@ -135,6 +135,14 @@ function updateUnitList(unitData) {
     if (classes.length > 0) {
       crelOptions = ["div", {"class": camelise(classNames[key].toLowerCase())},
         crel("b", classNames[key])];
+
+      // TODO Automatically add classes with no alternatives
+      // if (classes.length == 1) {
+      //   $(classes[0]).attr("selected", "true");
+      //   $(classes[0]).append(crel("div", {"class": "remove_class"}, "x"));
+      //   addClass(cal, $(classes[0]));
+      // }
+
       crelOptions = crelOptions.concat(classes);
       classCategoryElements.push(crel.apply(crel, crelOptions));
     }
