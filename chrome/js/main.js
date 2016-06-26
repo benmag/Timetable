@@ -108,13 +108,14 @@ $(document).ready(function() {
   jconfirm.defaults = {
     backgroundDismiss: true,
     keyboardEnabled: true,
-  }
+    opacity: 1
+  };
 
   // Load the campus selector options for unit search
   getAllSemesterIDs().done(function() {
     // Load the previous campus into the dropdown
-    loadSelectedCampus();
-  })
+    loadCampus();
+  });
 
   // Load the helpful hints underneath the calendar
   loadHint();
@@ -135,6 +136,7 @@ $(document).ready(function() {
     droppable: false
   });
 
+  // Load the class data into the sidebar and calendar
   loadClassData();
 
   /**
@@ -143,7 +145,7 @@ $(document).ready(function() {
   $("#unit-search").keyup(function(event) {
     if (event.keyCode == ENTER_KEY) {
       var searchText = $(this).val().trim();
-      if (searchText != "") {
+      if (searchText !== "") {
         var semesterID = $("#campus-selector").val();
 
         // Determine if search is a unit code or unit description
@@ -157,7 +159,6 @@ $(document).ready(function() {
 
       // Select the text, ready for the next search
       $(this).select();
-
     }
   });
 
@@ -170,7 +171,7 @@ $(document).ready(function() {
     // Determine if the current list is showing
     if (currentList.css("display") == "none") {
       var allLists = $(this).parent().parent().find(".classes");
-      var allVisible = $(this).parent().parent().find(".classes:visible");
+      var allVisible = allLists.filter(":visible");
 
       // Hide any visible class lists before showing the clicked list
       if (allVisible.length !== 0) {
@@ -226,6 +227,14 @@ $(document).ready(function() {
       $(this).attr("selected", "true");
       $(this).append(crel("div", {"class": "remove_class"}, "x"));
       generateClassOutput();
+
+      // Update error status
+      // TODO Check if class times overlap
+      var classCount = $(this).parent().children("div[selected='selected']").length;
+      if (classCount > 1) {
+        //alert("show error");
+        // TODO Add error icon
+      }
 
       // Track this with GA
       var GAlabel = "[" + $(this).attr("classType") + "] " +

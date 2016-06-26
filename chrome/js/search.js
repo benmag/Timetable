@@ -3,14 +3,20 @@ var max_requests = 50;
 var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.";
 
 /**
- * Fetch semester IDs from the QUT advanced search page using YQL
+ * Return the YQL statement necessary for getting cross-origin source code
+ */
+function statement(url) {
+  return "select content from data.headers where url='" + url +  "'";
+}
+
+/**
+ * Fetch semester IDs from the QUT advanced search page
  */
 function getAllSemesterIDs() {
-  // Use Yahoo Query Language to extract data from URL
+  // Use Yahoo Query Language (YQL) to extract data from URL
   // Using Open Data Tables to ignore robots.txt on QUTVirtual
   var url = baseURL + "show_search_adv";
-  var statement = "select content from data.headers where url='" + url +  "'";
-  return $.queryYQL(statement, "all", function (data) {
+  return $.queryYQL(statement(url), "all", function (data) {
     data = data.query.results.resources.content;
 
     // Extract the dropdown from the data
@@ -32,14 +38,13 @@ function getAllSemesterIDs() {
       $("#campus-selector").append($("<option/>").val(this.value).text(text));
     });
   });
-
 }
 
 /**
  *
  */
 function searchUnitCode(unitID, semesterID) {
-  // TODO Change behaviour of "Gardens Point (GP)" option
+  // TODO (?) Change behaviour of "Gardens Point (GP)" option
   // to search all GP semesters, instead of just the latest.
 
   // Show a loading icon while fetching data
@@ -50,12 +55,11 @@ function searchUnitCode(unitID, semesterID) {
   // Execute YQL GET to extract available campus IDs
   var params = { "p_unit_cd": unitID };
   var url = baseURL + "process_teach_period_search?" + $.param(params);
-  var statement = "select content from data.headers where url='" + url +  "'";
-  $.queryYQL(statement, "all", function (data) {
+  $.queryYQL(statement(url), "all", function (data) {
     data = data.query.results.resources.content;
 
     // Check if there are semesters available
-    var selects = $(data).find("select[name='p_time_period_id']")
+    var selects = $(data).find("select[name='p_time_period_id']");
     if (selects.length > 0) {
       var select = selects[0];
 
@@ -64,15 +68,15 @@ function searchUnitCode(unitID, semesterID) {
         // Remove the date ranges from the text
         var regex = /.+(?:GP|KG|CB)/;
         var text = regex.exec(this.text)[0];
-        semesterIDs.push({"text": text, "value": this.value})
-      })
+        semesterIDs.push({"text": text, "value": this.value});
+      });
     } else {
       // No semesters found
       semesterIDs = null;
     }
 
   }).done(function() {
-    if (semesterIDs == null || semesterIDs.length == 0) {
+    if (semesterIDs === null || semesterIDs.length === 0) {
       $.alert({
         title: "Unit Not Found!",
         content: "Unit does not have any recent or future timetables."
@@ -84,8 +88,8 @@ function searchUnitCode(unitID, semesterID) {
         return;
       }
 
-      if (semesterID == 0) { // Always ask
-        selectSemesterImport(unitID, semesterIDs);
+      if (semesterID === 0) { // Always ask
+        selectSemesterandImport(unitID, semesterIDs);
         return;
       }
 
@@ -119,17 +123,16 @@ function searchUnitCode(unitID, semesterID) {
   });
 }
 
-// Gets run after each place is searched as I couldn't think of a
-// better way of doing asynchronously and waiting till all are complete
-function selectSemesterImport(unitID, semesterIDs) {
-  var bodyText = "";
-
+/**
+ * Prompt the user to select a semester to perform an import
+ */
+function selectSemesterandImport(unitID, semesterIDs) {
   var timePeriod = $("<select id='timePeriod'/>");
   semesterIDs.forEach(function(id) {
     timePeriod.append($("<option/>").val(id.value).text(id.text));
-  })
+  });
 
-  bodyText += timePeriod.prop('outerHTML');
+  var bodyText = timePeriod.prop('outerHTML');
 
   $.confirm({
     title: 'Select a Teaching Period!',
@@ -143,6 +146,9 @@ function selectSemesterImport(unitID, semesterIDs) {
   });
 }
 
+/**
+ * Import a unit into the timetabler using the unit code and semester ID
+ */
 function importUnit(semesterID, unitID) {
   // Construct the URL
   var params = {
@@ -152,8 +158,7 @@ function importUnit(semesterID, unitID) {
   var url = baseURL + "process_search?" + $.param(params);
 
   // Fetch the page containing the unit details
-  var statement = "select content from data.headers where url='" + url +  "'";
-  $.queryYQL(statement, "all", function (data) {
+  $.queryYQL(statement(url), "all", function (data) {
     // Get to the good stuff
     data = data.query.results.resources.content;
 
@@ -171,7 +176,8 @@ function importUnit(semesterID, unitID) {
 }
 
 /**
- * Handles the importing of class times. Grabs the data from the table and sends it to the timetabler page
+ * Handles the importing of class times. Grabs the data from the table and
+ * sends it to the timetabler page
  */
 function extractUnitData(table) {
   // Get the unit ID and subject name from above the table
@@ -217,17 +223,16 @@ function extractUnitData(table) {
 }
 
 /**
- * Search for a unit description in a given
- * semester and open the results in a new tab
+ * Open a QUT search for a unit description in a new tab
  */
 function searchDescription(description, semesterID){
-  if (semesterID == 0) { // Always ask
+  if (semesterID === 0) { // Always ask
     // Copy the semesterID options
     var bodyText = "Please select a teaching period...<br>";
     var length = $("#campus-selector")[0].length;
-    var options = $("#campus-selector > option").clone().slice(length-50, length);
+    var options = $("#campus-selector > option").clone().slice(6, length);
     var timePeriod = $("<select id='timePeriod'/>").append(options);
-    bodyText += $(timePeriod).prop('outerHTML');;
+    bodyText += timePeriod.prop('outerHTML');
 
     $.confirm({
       title: 'Select Semester To Search',
@@ -278,9 +283,10 @@ function openSearchResults(description, semesterID) {
 /**
  * Load the previously selected campus
  */
-function loadSelectedCampus() {
-  var currentCampus = localStorage.getItem("currentCampus")
-  if (currentCampus != null) {
+function loadCampus() {
+  //TODO Update to handle missing semester IDs
+  var currentCampus = localStorage.getItem("currentCampus");
+  if (currentCampus !== null) {
     $("#campus-selector").val(currentCampus);
   }
 }
