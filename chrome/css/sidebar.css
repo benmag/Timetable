@@ -8,10 +8,10 @@
 
 .wrapper {
   padding-left: 0;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease;
 }
 
 .toggled {
@@ -29,10 +29,10 @@
   overflow-y: hidden;
   overflow-x: hidden;
   background: #4285f4;
-  -webkit-transition: all 0.5s ease;
-  -moz-transition: all 0.5s ease;
-  -o-transition: all 0.5s ease;
-  transition: all 0.5s ease;
+  -webkit-transition: all .5s ease;
+  -moz-transition: all .5s ease;
+  -o-transition: all .5s ease;
+  transition: all .5s ease;
 }
 
 .toggled .sidebar-wrapper {
@@ -49,27 +49,6 @@
   margin-right: -220px;
 }
 
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-  color: #fff;
-}
-
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color: #fff;
-  opacity: 1;
-}
-
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color: #fff;
-  opacity: 1;
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #fff;
-}
-
-:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
-  color: #fff;
-}
 
 @media(min-width:768px) {
   .wrapper {
@@ -101,7 +80,7 @@
 
 /* Custom Code */
 
-.class_container {
+.class-container {
   cursor: pointer; /* Remove text cursor */
 }
 
@@ -121,20 +100,26 @@
   background: rgba(0,0,0,0.1);
 }
 
-.remove_class {
+.remove-class {
   cursor: pointer;
   width: 23px;
   float: right;
   text-indent: 0;
 }
 
-.remove_unit {
+.remove-unit {
   color: #fff;
   cursor: pointer;
   float: right;
   width: 40px;
   text-align: center;
   text-indent: 0;
+}
+
+.duplicate-badge {
+  text-indent: 0;
+  float: right;
+  width: 28px;
 }
 
 /* Search Box */
@@ -150,23 +135,38 @@
   margin-right: 5px;
 }
 
-.sidebar-search > input, select {
-  background: none;
+/* Input */
+
+.sidebar-search > input,
+.sidebar-search > select {
   color: #fff;
+  background: #5E97F6;
   font-size: 1.2em;
-  line-height: 40px;
-  text-shadow: none;
   border: none;
   outline: none;
   width: 100%;
-  padding: 0;
 }
 
-.sidebar-search > input {
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color: #fff;
 }
 
-.sidebar-search > select {
-  background: #5E97F6;
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #fff;
+  opacity: 1;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #fff;
+  opacity: 1;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #fff;
+}
+
+:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  color: #fff;
 }
 
 /* Sidebar Styles */
@@ -218,58 +218,34 @@
   background: none;
 }
 
-/* Loader (https://codepen.io/jczimm/pen/vEBpoL) */
+.signature {
+  color: #fff;
 
-.loader {
-  position: relative;
-  margin: 0 10px 0 0;
-  width: 24px;
-}
+  text-indent: 0 !important;
+  text-align: center;
+  width: 100%; /* 220px; */
 
-.circular {
-  animation: rotate 2s linear infinite;
-  height: 100%;
-  transform-origin: center center;
-  width: 100%;
+  height: 40px;
+  line-height: 40px;
+  vertical-align: middle;
+
   position: absolute;
-  top: 0;
   bottom: 0;
-  left: 0;
-  right: 0;
-  margin: auto;
+  width: 220px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
 }
 
-.path {
-  stroke-dasharray: 1, 200;
-  stroke-dashoffset: 0;
-  animation: dash 1.5s ease-in-out infinite, color 6s ease-in-out infinite;
-  stroke-linecap: round;
+.signature img {
+  margin-top: -7px;
+  vertical-align: middle;
 }
 
-@keyframes rotate {
-  100% {
-    transform: rotate(360deg);
-  }
+.signature i {
+  text-indent: 0;
 }
 
-@keyframes dash {
-  0% {
-    stroke-dasharray: 1, 200;
-    stroke-dashoffset: 0;
-  }
-  50% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -35px;
-  }
-  100% {
-    stroke-dasharray: 89, 200;
-    stroke-dashoffset: -124px;
-  }
-}
-
-@keyframes color {
-  100%,
-  0% {
-    stroke: #fff;
-  }
+.icon-logo-code {
+  display: inline !important;
 }

@@ -10,24 +10,27 @@
 
   <title>Timetabler</title>
 
+  <link rel="manifest" href="web.manifest.json" />
+  <link rel="shortcut icon" type="image/png" href="img/icon128.png" />
+
   <!-- Bootstrap Core CSS -->
   <link href="css/bootstrap.min.css" rel="stylesheet" />
 
   <!-- Custom Font -->
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet" type="text/css" />
+  <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" type="text/css" />
 
   <!--Alert Scripts-->
   <link rel="stylesheet" type="text/css" href="css/jquery-confirm.min.css">
 
-
   <!-- FullCalendar CSS -->
-  <link href="cal/fullcalendar.min.css" rel="stylesheet" />
-  <link href="cal/fullcalendar.print.css" rel="stylesheet" media="print" />
+  <link href="css/fullcalendar.min.css" rel="stylesheet" />
+  <!-- <link href="css/fullcalendar.print.css" rel="stylesheet" media="print" /> -->
 
-   <!-- Custom CSS -->
+  <!-- Custom CSS -->
+  <link href="css/loader.css" rel="stylesheet" />
   <link href="css/sidebar.css" rel="stylesheet" />
   <link href="css/main.css" rel="stylesheet" />
-
 
   <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
   <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -39,6 +42,7 @@
 
 <body>
   <div class="wrapper">
+
     <!-- Sidebar -->
     <div class="sidebar-wrapper">
       <ul class="sidebar-nav">
@@ -55,8 +59,8 @@
           </div>
           <input id="unit-search" placeholder="Unit Search" type="text" tabindex="0" />
           <div class="loader" hidden="true">
-            <svg class="circular" viewBox="25 25 50 50">
-              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"/>
+            <svg class="circular" viewbox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10" />
             </svg>
           </div>
         </li>
@@ -73,9 +77,19 @@
         </li>
 
         <!-- Class Content Placeholder -->
-        <div class="class_container"></div>
+        <li class="class-container"></li>
 
       </ul>
+
+      <!-- <div class="signature">
+        <span>
+          Made with <i class="fa fa-heart" aria-hidden="true"></i> by
+        </span>
+        <a class="icon-logo-code" href="http://www.codenetwork.co/">
+          <img src="img/code.png" height="20px" />
+        </a>
+      </div> -->
+
     </div>
     <!-- /#sidebar-wrapper -->
 
@@ -92,13 +106,14 @@
             <a class="btn btn-default" id="menu-toggle">Toggle Menu</a>
           </div>
           <div class="col-xs-6">
-            <a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a></br>
+            <a class="pull-right" href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank">View times for enrolled units</a>
+            <br>
             <a class="pull-right" href="https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.show_search_adv" target="_blank">Search for a unit with advanced search</a>
           </div>
         </div>
 
         <!-- Helpful Hint(s) -->
-        <div class="alert alert-info alert-dismissable">
+        <div class="alert alert-info alert-dismissable hints">
           <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
           <!-- Placeholder for helpful hints text -->
         </div>
@@ -117,7 +132,7 @@
               <div class="modal-body"></div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Fix Manually</button>
-                <button type="button" class="btn btn-danger remove_all" data-dismiss="modal">Remove Data</button>
+                <button type="button" class="btn btn-danger remove-all" data-dismiss="modal">Remove Data</button>
               </div>
             </div>
           </div>
@@ -131,10 +146,10 @@
   <!-- /#wrapper -->
 
   <!-- Core Javascript -->
-  <script src="js/jquery.js"></script>
+  <script src="js/jquery.min.js"></script>
   <script src="js/bootstrap.min.js"></script>
-  <script src="cal/lib/moment.min.js"></script>
-  <script src="cal/fullcalendar.min.js"></script>
+  <script src="js/cal/moment.min.js"></script>
+  <script src="js/cal/fullcalendar.min.js"></script>
 
   <!-- Libaries -->
   <script src="js/jquery-query-yql.min.js"></script>

@@ -5,6 +5,7 @@
   "main": "start.js",
   "scripts": {
     "start": "electron ./app",
+    "build": "babel chrome -d lib",
     "postinstall": "install-app-deps",
     "dev": "NODE_ENV='development' npm run start",
     "dist": "npm run dist:osx && npm run dist:win32 && npm run dist:win64",
@@ -28,8 +29,18 @@
     "iconUrl": "https://raw.githubusercontent.com/benmag/Timetable/master/app/img/icon.ico"
   },
   "devDependencies": {
+    "babel-cli": "^6.10.1",
+    "babel-eslint": "^6.1.2",
+    "babel-preset-es2016": "^6.11.3",
+    "babel-preset-stage-0": "^6.5.0",
+    "babelify": "^7.3.0",
+    "browserify": "^13.0.1",
     "electron-builder": "^4.2.3",
     "electron-packager": "^7.0.3",
-    "electron-prebuilt": "^0.37.8"
+    "electron-prebuilt": "^0.37.8",
+    "eslint": "^3.0.1"
+  },
+  "dependencies": {
+    "core-js": "^2.4.0"
   }
 }
