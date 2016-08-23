@@ -10,7 +10,7 @@ body {
   margin-bottom: 20px;
 }
 
-.alert {
+.hints {
   margin-top: 20px;
 }
 
@@ -20,13 +20,12 @@ body {
     background: #fff;
 }
 
-.fc-content .fc-time{
-   display : none;
-}
-
 .fc-event {
-  border-radius: 0; /* 3px */
-  border: 1px solid #ddd; /* #3a87ad default BORDER color */
+  background-color: #ccc; /* default: #3a87ad */
+  border-radius: 0; /* default: 3px */
+  border-color: #ddd; /* default: #3a87ad */
+  margin: 0 -1px -1px -1px;
+  padding: 5px;
 }
 
 .fc-event,
@@ -35,28 +34,21 @@ body {
   color: #000; /* default TEXT color */
 }
 
-.fc-ltr .fc-time-grid .fc-event-container { /* space on the sides of events for LTR (default) */
-  margin: 0; /* 0 2.5% 0 2px; */
-}
-
+.fc-ltr .fc-time-grid .fc-event-container, /* space on the sides of events for LTR (default) */
 .fc-rtl .fc-time-grid .fc-event-container { /* space on the sides of events for RTL */
-  margin: 0; /* 0 2px 0 2.5%; */
-}
-
-.fc-event {
-  background: #CCC; /* Default */
-  margin: 0 -1px -1px -1px;
-  padding: 5px;
+  /* defaultLTR: 0 2.5% 0 2px; */
+  /* defaultRTL: 0 2px 0 2.5%; */
+  margin: 0;
 }
 
 /* Custom event colours */
 
-.lec { background: #FFEE58; } /* Yellow 400 */
-.tut { background: #42A5F5; } /* Blue 400 */
-.prc { background: #66BB6A;} /* Green 400 */
-.wor { background: #EC407A; } /* Pink 400 */
-.clb { background: #BA68C8; } /* Purple 300 */
-.preview { opacity:0.4; }
+.lec { background-color: #FFEE58; } /* Yellow 400 */
+.tut { background-color: #42A5F5; } /* Blue 400 */
+.prc { background-color: #66BB6A;} /* Green 400 */
+.wor { background-color: #EC407A; } /* Pink 400 */
+.clb { background-color: #BA68C8; } /* Purple 300 */
+.preview { opacity: .4; }
 
 /* Class Output Footer */
 
@@ -67,7 +59,7 @@ body {
   columns: 4;
 }
 
-@media screen and (max-width: 1420px) {
+/*@media screen and (max-width: 1420px) {
   .unitOverview {
     -moz-columns: 3;
     -webkit-columns: 3;
@@ -89,9 +81,9 @@ body {
     -webkit-columns: 1;
     columns: 1;
   }
-}
+}*/
 
-.unitOverview>div {
+.unitOverview > div {
   padding-bottom: 20px;
   -moz-column-break-inside: avoid;
   -webkit-column-break-inside: avoid;
@@ -123,7 +115,7 @@ body {
   box-shadow: inset 0 0 6px rgba(0,0,0,0.1);
 }
 
-/*Location Popup Css*/
-#timePeriod{
-  color:black;
+/* Alert Dropdown */
+.timePeriod{
+  width: 100%;
 }

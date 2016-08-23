@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 - Implemented YQL requests to get unit data; imports from injected scripts not required
 - Fixed incorrect padding on sidebar input
+- Added warning icon when user selects multiple classes of the same type
+- Added calendar highlight when user hovers over a selected class in the sidebar
+- Updated jQuery to version ???
 
 ## [2.0.2] - 2016-06-08
 ### Added

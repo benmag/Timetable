@@ -38,7 +38,7 @@ function camelise(str) {
  * http://stackoverflow.com/a/304428
  */
 function sortUnitsAlphabetically() {
-  var items = $(".class_container .class_list").get();
+  var items = $(".class-container .class-list").get();
   items.sort(function(a,b){
     var keyA = $(a).text();
     var keyB = $(b).text();
@@ -48,7 +48,7 @@ function sortUnitsAlphabetically() {
     return 0;
   });
 
-  var ul = $(".class_container");
+  var ul = $(".class-container");
   $.each(items, function(i, li){
     ul.append(li);
   });
@@ -63,13 +63,13 @@ function updateUnitList(unitData) {
   var classes = unitData.classes;
 
   // Check if the class has already been imported
-  if ($(".class_container").find("a:contains(" + unitID + ")").length > 0) {
+  if ($(".class-container").find("a:contains(" + unitID + ")").length > 0) {
     notify(unitID + " has already been imported!");
     return;
   }
 
   // Check if the max units has been reached
-  if ($(".class_container").find(".class_list").length >= 10) {
+  if ($(".class-container").find(".class-list").length >= 10) {
     notify("Max units imported. Take it easy, tiger!");
     return;
   }
@@ -139,7 +139,7 @@ function updateUnitList(unitData) {
       // TODO Automatically add classes with no alternatives
       // if (classes.length == 1) {
       //   $(classes[0]).attr("selected", "true");
-      //   $(classes[0]).append(crel("div", {"class": "remove_class"}, "x"));
+      //   $(classes[0]).append(crel("div", {"class": "remove-class"}, "x"));
       //   addClass(cal, $(classes[0]));
       // }
 
@@ -151,14 +151,14 @@ function updateUnitList(unitData) {
   crelOptions = ["div", {"class": "classes", "style": "display: none;"}].concat(classCategoryElements);
   classesElement = crel.apply(crel, crelOptions);
 
-  var classListElement = crel("li", {"class": "class_list"},
-    crel("div", {"class": "remove_unit"}, "x"),
+  var classListElement = crel("li", {"class": "class-list"},
+    crel("div", {"class": "remove-unit"}, "x"),
     crel("a", unitID),
     classesElement
   );
 
   // Add the element to the class list in the sidebar
-  $(".class_container").append(classListElement);
+  $(".class-container").append(classListElement);
   $(window).trigger("resize");
   $(classesElement).scrollLock();
 
@@ -172,17 +172,18 @@ function updateUnitList(unitData) {
   _gaq.push(["_trackEvent", unitName, "imported"]);
 }
 
+// TODO Uncomment this function
 
 /**
  * Listen for various Chrome messages from the injected script
  */
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+/*chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.type == "unit_import"){
     // Update timetable options
     classInfo = JSON.parse(request.class_info);
     updateUnitList(classInfo);
   }
-});
+});*/
 
 /**
  * Initialise Google Analytics

@@ -20,7 +20,7 @@
     {
       "matches": ["https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show", "https://qutvirtual3.qut.edu.au/*/ttab_unit_search_p.process_search*"],
       "css": ["css/inject.css"],
-      "js": ["js/jquery.js", "js/crel.min.js", "js/inject.js"]
+      "js": ["js/jquery.min.js", "js/crel.min.js", "js/inject.js"]
     }
   ],
   "icons": {
@@ -28,6 +28,6 @@
     "48": "img/icon48.png",
     "128": "img/icon128.png"
   },
-  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com; object-src 'self'",
+  "content_security_policy": "script-src 'self' https://ssl.google-analytics.com https://query.yahooapis.com/; object-src 'self'",
   "manifest_version": 2
 }

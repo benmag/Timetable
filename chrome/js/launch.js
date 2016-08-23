@@ -2,7 +2,7 @@
  * Open or focus the main timetabler page
  */
 function launchTimetabler(focus) {
-  var optionsUrl = chrome.extension.getURL("timetabler.html");
+  var optionsUrl = chrome.extension.getURL("index.html");
   chrome.tabs.query({ url: optionsUrl }, function(tabs) {
     if (tabs.length === 0) {
       // If tab doesn't exist, create it
