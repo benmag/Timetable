@@ -191,9 +191,8 @@ function extractUnitData(table) {
       "classType": td.eq(1).text(),
       "day": td.eq(2).text(),
       "time": { // raw = "11:00AM-01:00PM" or "11:00am - 01:00pm"
-        "raw": td.eq(3).text().toLowerCase().replace("m-", "m - "),
-        "start": td.eq(3).text().split("-")[0].trim(),
-        "end": td.eq(3).text().split("-")[1].trim(),
+        "start" : td.eq(3).text().toLowerCase().replace("m-", "m - ").split("-")[0].trim(),
+        "end" : td.eq(3).text().toLowerCase().replace("m-", "m - ").split("-")[1].trim(),
       },
       "location": td.eq(4).text().trim(),
       "staff": td.eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
