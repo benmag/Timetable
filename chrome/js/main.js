@@ -101,10 +101,10 @@ $(window).resize(function() {
 /**
  * Save current units so we don't have to import them every time we refresh
  */
-$(window).unload(function() {
+window.onbeforeunload = function() {
   saveClassData();
   saveCampus();
-});
+};
 
 $(document).ready(function() {
   jconfirm.defaults = {

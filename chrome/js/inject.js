@@ -7,7 +7,7 @@ showImportButton();
 function showImportButton() {
   // Add import button to each subject
   var importButton = crel("button",
-    {"class": "btn importButton"},
+    {"class": "btn-timetable importButton"},
     "Subject Found. Import Classes?"
   );
   $(".qv_table").prepend(importButton);
@@ -15,7 +15,7 @@ function showImportButton() {
   // Add importAll button if more than one subject exists
   if ($(".qv_table").length > 1) {
     var importAllButton = crel("button",
-      {"class": "btn importAllButton"},
+      {"class": "btn-timetable importAllButton"},
       "Multiple Subjects Found. Import ALL Classes?"
     );
     $(".divider:nth-of-type(1)").prepend(importAllButton);
@@ -53,9 +53,8 @@ function exportUnitData(table) {
       "classType": td.eq(1).text(),
       "day": td.eq(2).text(),
       "time":  { // raw = "11:00AM-01:00PM" or "11:00am - 01:00pm"
-        "raw" : td.eq(3).text().toLowerCase().replace("m-", "m - "),
-        "start" : td.eq(3).text().split("-")[0].trim(),
-        "end" : td.eq(3).text().split("-")[1].trim(),
+        "start" : td.eq(3).text().toLowerCase().replace("m-", "m - ").split("-")[0].trim(),
+        "end" : td.eq(3).text().toLowerCase().replace("m-", "m - ").split("-")[1].trim(),
       },
       "location": td.eq(4).text().trim(),
       "staff": td.eq(5).text().replace(/(\r\n|\n|\r)/gm, "")
@@ -73,7 +72,7 @@ function exportUnitData(table) {
  */
 function sendUnit(unitData) {
   chrome.runtime.sendMessage({
-    type: "unit_import",
+    unitImport: true,
     class_info: JSON.stringify(unitData)
   });
 }
@@ -85,7 +84,7 @@ $("button.importButton").bind("click", function() {
   // Check the timetabler is running
   var sender = $(this);
 
-  chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
+  chrome.runtime.sendMessage({checkTab: true}, function(response) {
     if (response == "Done!") {
       // Set the button to show the class has been imported
       sender.css("background-color", "#4CAF50");
@@ -102,11 +101,11 @@ $("button.importButton").bind("click", function() {
  */
 $("button.importAllButton").bind("click", function() {
   // Check the timetabler is running
-  chrome.runtime.sendMessage({type: "checkTab"}, function(response) {
+  chrome.runtime.sendMessage({checkTab: true}, function(response) {
     // Wait for the timetabler to say it has finished loading
     if (response == "Done!") {
       // Set the butten to show the class has been imported
-      $(".btn").each(function() {
+      $(".btn-timetable").each(function() {
         $(this).css("background-color", "#4CAF50");
         $(this).text("Imported!");
       });

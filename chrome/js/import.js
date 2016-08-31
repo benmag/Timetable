@@ -74,93 +74,90 @@ function updateUnitList(unitData) {
     return;
   }
 
+  // Human-readable class types
+  var classNames = {
+    "LEC": "Lectures",
+    "TUT": "Tutorials",
+    "PRC": "Practicals",
+    "WOR": "Workshops",
+    "CLB": "Computer Labs"
+  };
+
   // Placeholder categories for classes
   var categorisedClasses = {
     "LEC": [],
     "TUT": [],
     "PRC": [],
     "WOR": [],
-    "CLB": [],
-    "other": []
+    "CLB": []
   };
 
-  var classNames = {
-    "LEC": "Lectures",
-    "TUT": "Tutorials",
-    "PRC": "Practicals",
-    "WOR": "Workshops",
-    "CLB": "Computer Labs",
-    "other": "Other Classes",
-  };
-
-  var validClassTypes = [];
-  $.each(categorisedClasses, function(key) {
-    validClassTypes.push(key);
-  });
-
-  // Convert the times into a bunch of elements
+  // Convert the class data into div elements and categorise by class type
   for (var c in classes) {
     var classType = classes[c].classType;
 
+    var day = classes[c].day;
+    var start = classes[c].time.start;
+    var end = classes[c].time.end;
     var classElement = crel("div", {
-        "class": "class",
-        "unitID": unitID,
-        "unitName": unitName,
-        "className": classes[c].className,
-        "classType": classType,
-        "day": classes[c].day,
-        "start": classes[c].time.start,
-        "end": classes[c].time.end,
-        "location": classes[c].location,
-        "staff": classes[c].staff
-      },
-      classes[c].day + ": " + classes[c].time.raw
-    );
+      "class": "class",
+      "unitID": unitID,
+      "unitName": unitName,
+      "className": classes[c].className,
+      "classType": classType,
+      "day": day,
+      "start": start,
+      "end": end,
+      "location": classes[c].location,
+      "staff": classes[c].staff
+    }, day + ": " + start + " - " + end );
 
-    // Add each class type to their respective variable
-    if ($.inArray(classType, validClassTypes) >= 0) {
+    // Add each class type to their respective category
+    if (classType in categorisedClasses) {
       categorisedClasses[classType].push(classElement);
     } else {
-      //categorisedClasses.other.push(classElement);
       // Add the class type as a new category
-      validClassTypes.push(classType);
       classNames[classType] = classType + "s";
       categorisedClasses[classType] = [classElement];
     }
   }
 
-  var classCategoryElements = [];
-  var crelOptions;
+  var classGroups = [];
   $.each(categorisedClasses, function(key, classes) {
     if (classes.length > 0) {
-      crelOptions = ["div", {"class": camelise(classNames[key].toLowerCase())},
-        crel("b", classNames[key])];
+      // Add a bold heading for the category
+      var classGroup = [crel("div", {
+        "class": camelise(classNames[key].toLowerCase())
+      }, crel("b", classNames[key]))];
 
-      // TODO Automatically add classes with no alternatives
-      // if (classes.length == 1) {
-      //   $(classes[0]).attr("selected", "true");
-      //   $(classes[0]).append(crel("div", {"class": "remove-class"}, "x"));
-      //   addClass(cal, $(classes[0]));
-      // }
+      // Automatically select classes with no alternatives
+      if (classes.length === 1) {
+        $(classes[0]).attr("selected", "true");
+        $(classes[0]).append(crel("div", {"class": "remove-class"}, "x"));
+      }
 
-      crelOptions = crelOptions.concat(classes);
-      classCategoryElements.push(crel.apply(crel, crelOptions));
+      // Append the classes after the heading and add to list of groups
+      classGroup = classGroup.concat(classes);
+      classGroups.push(classGroup);
     }
   });
 
-  crelOptions = ["div", {"class": "classes", "style": "display: none;"}].concat(classCategoryElements);
-  classesElement = crel.apply(crel, crelOptions);
+  // Add the class groups into a hidden div to be expanded later
+  unitList = [crel("div", {
+    "class": "classes", "style": "display: none;"
+  })].concat(classGroups);
 
-  var classListElement = crel("li", {"class": "class-list"},
+  // Create a list item for the unit to be added to the sidebar
+  var unitElement = crel("li", {"class": "class-list"},
     crel("div", {"class": "remove-unit"}, "x"),
     crel("a", unitID),
-    classesElement
+    crel.apply(crel, unitList)
   );
 
   // Add the element to the class list in the sidebar
-  $(".class-container").append(classListElement);
+  $(".class-container").append(unitElement);
   $(window).trigger("resize");
-  $(classesElement).scrollLock();
+  $(unitElement).scrollLock();
 
   // Notify the user that their times have been imported
   notify("Class times for " + unitID + " imported!");
@@ -172,18 +169,16 @@ function updateUnitList(unitData) {
   _gaq.push(["_trackEvent", unitName, "imported"]);
 }
 
-// TODO Uncomment this function
-
 /**
  * Listen for various Chrome messages from the injected script
  */
-/*chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-  if (request.type == "unit_import"){
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+  if (request.unitImport) {
     // Update timetable options
     classInfo = JSON.parse(request.class_info);
     updateUnitList(classInfo);
   }
-});*/
+});
 
 /**
  * Initialise Google Analytics
