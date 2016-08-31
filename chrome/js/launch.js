@@ -13,21 +13,27 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 /**
  * Open or focus the main timetabler page
  */
-function launchTimetabler(indexURL) {
-  // Add event listener to respond when the page has loaded
-  chrome.tabs.onUpdated.addListener(checkLoad);
-  chrome.tabs.create({ url: indexURL, active: false });
-}
+function launchTimetabler(focus, sendResponse = null) {  
+  // Check if a timetabler tab is open
+  var indexURL = chrome.extension.getURL("index.html");
+  chrome.tabs.query({ url: indexURL }, function(tabs) {
+    if (tabs.length === 0) {
+      // Add event listener to respond when the page has loaded
+      chrome.tabs.onUpdated.addListener(checkLoad);
+      chrome.tabs.create({ url: indexURL, active: focus });
+      asyncResponse = sendResponse;
+    } else {
+      // If there's more than one, close all but the first
+      for (var i = 1; i < tabs.length; i++) {
+          chrome.tabs.remove(tabs[i].id);
+      }
 
-function focusTimetabler(tabs) {
-  // If there's more than one, close all but the first
-  for (var i = 1; i < tabs.length; i++) {
-      chrome.tabs.remove(tabs[i].id);
-  }
-
-  // Focus the window and tab containing the page we want
-  chrome.tabs.update(tabs[0].id, {active: true});
-  chrome.windows.update(tabs[0].windowId, {focused: true});
+      // Focus the window and tab containing the page we want
+      chrome.tabs.update(tabs[0].id, {active: true});
+      chrome.windows.update(tabs[0].windowId, {focused: true});
+      sendResponse("Done!");
+    }
+  });
 }
 
 /**
@@ -35,17 +41,8 @@ function focusTimetabler(tabs) {
  */
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
   if (request.checkTab){
-    // Check if a timetabler tab is open
-    var indexURL = chrome.extension.getURL("index.html");
-    chrome.tabs.query({ url: indexURL }, function(tabs) {
-      if (tabs.length === 0) {
-        launchTimetabler(indexURL);
-        asyncResponse = sendResponse;
-      } else {
-        focusTimetabler(tabs);
-        sendResponse("Done!");
-      }
-    });
+
+    launchTimetabler(false, sendResponse)
 
     // Keep the port open for async response
     return true;

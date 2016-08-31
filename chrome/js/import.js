@@ -1,11 +1,12 @@
 /**
  * Show a notification indicating the class has been imported.
  * Clicking the notification will open up the timetabler
+ * TODO: Fix the scope of launchTimetabler
  */
 function notify(text) {
   // Check their bowser can handle notifications
   if (!Notification) {
-    launchTimetabler(true);
+    launchTimetabler(true, null);
   } else {
     if (Notification.permission != "granted") {
       Notification.requestPermission();
@@ -15,8 +16,8 @@ function notify(text) {
         body: "Click here to start planning."
       });
 
-      notification.onclick = function () {
-        launchTimetabler(true);
+      notification.onclick = function() {
+        launchTimetabler(true, null);
       };
     }
   }
