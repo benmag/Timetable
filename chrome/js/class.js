@@ -105,6 +105,7 @@ function removeClassPreview(calendar, classData) {
 
 /**
  * Restore saved subjects from localStorage
+ * TODO: Delay injected import until this has completed, or check for duplicates within this function.
  */
 function loadClassData(calendar) {
   var classLists = localStorage.getItem("classLists");
