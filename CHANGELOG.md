@@ -8,7 +8,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed incorrect padding on sidebar input
 - Added warning icon when user selects multiple classes of the same type
 - Added calendar highlight when user hovers over a selected class in the sidebar
-- Updated jQuery to version ???
+- Added Bower package management to the project
+- Added class overlap detection and controls
+- Performance improvements for recursive functions
+- Localised all assets for improved speed
+- Storing units as JSON instead of saving the entire 'class-container' HTML
+- Changed time range from 07:00-22:00 to 08:00-23:00
 
 ## [2.0.2] - 2016-06-08
 ### Added

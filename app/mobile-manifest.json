@@ -1,0 +1,26 @@
+{
+  "name": "QUT Timetable Planner",
+  "icons": [
+    {
+      "src": "img/icon16.png",
+      "sizes": "16x16",
+      "type": "image/png",
+      "density": 0.33
+    },
+    {
+      "src": "img/icon48.png",
+      "sizes": "48x48",
+      "type": "image/png",
+      "density": 1.0
+    },
+    {
+      "src": "img/icon128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "density": 1.375
+    }
+  ],
+  "start_url": "index.html",
+  "display": "standalone",
+  "orientation": "portrait"
+}
