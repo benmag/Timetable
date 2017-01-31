@@ -1,0 +1,17 @@
+/**
+ * Custom scroll bar
+ */
+
+.classes::-webkit-scrollbar {
+  width: 0.6em;
+  height: 0.6em;
+}
+
+.classes::-webkit-scrollbar-track-piece {
+  /*background-color: none;*/
+}
+
+.classes::-webkit-scrollbar-thumb {
+  background-color: #ccc;
+  border-radius: 10px;
+}

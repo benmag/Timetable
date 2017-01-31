@@ -1,11 +1,12 @@
 /**
  * Show a notification indicating the class has been imported.
  * Clicking the notification will open up the timetabler
+ * TODO Fix the scope of launchTimetabler
  */
 function notify(text) {
   // Check their bowser can handle notifications
   if (!Notification) {
-    //launchTimetabler(true);
+    launchTimetabler(true, null);
   } else {
     if (Notification.permission != "granted") {
       Notification.requestPermission();
@@ -15,8 +16,8 @@ function notify(text) {
         body: "Click here to start planning."
       });
 
-      notification.onclick = function () {
-        //launchTimetabler(true);
+      notification.onclick = function() {
+        launchTimetabler(true, null);
       };
     }
   }
@@ -38,7 +39,7 @@ function camelise(str) {
  * http://stackoverflow.com/a/304428
  */
 function sortUnitsAlphabetically() {
-  var items = $(".class_container .class_list").get();
+  var items = $(".class-container").find(".class-list").get();
   items.sort(function(a,b){
     var keyA = $(a).text();
     var keyB = $(b).text();
@@ -48,31 +49,38 @@ function sortUnitsAlphabetically() {
     return 0;
   });
 
-  var ul = $(".class_container");
-  $.each(items, function(i, li){
-    ul.append(li);
-  });
+  $(".class-container").append(items);
 }
 
 /**
  * Adds the unit and class elements into the sidebar
  */
 function updateUnitList(unitData) {
-  var unitID = unitData.unitID;
-  var unitName = unitData.unitName;
-  var classes = unitData.classes;
+  // Add the unit data directly to localStorage
+  var storedData = JSON.parse(localStorage.getItem("unitData")) || {};
+  storedData[unitData.unitID] = unitData;
+  localStorage.setItem("unitData", JSON.stringify(storedData));
 
   // Check if the class has already been imported
-  if ($(".class_container").find("a:contains(" + unitID + ")").length > 0) {
-    //notify(unitID + " has already been imported!");
-    return;
+  if ($(".class-container").find(".unit-name:contains(" + unitData.unitID + ")").length > 0) {
+    notify(unitData.unitID + " has already been imported!");
+    return false;
   }
 
   // Check if the max units has been reached
-  if ($(".class_container").find(".class_list").length >= 10) {
-    //notify("Max units imported. Take it easy, tiger!");
-    return;
+  if ($(".class-container").find(".class-list").length >= 10) {
+    notify("Max units imported. Take it easy, tiger!");
+    return false;
   }
+
+  // Human-readable class types
+  var classNames = {
+    "LEC": "Lectures",
+    "TUT": "Tutorials",
+    "PRC": "Practicals",
+    "WOR": "Workshops",
+    "CLB": "Computer Labs"
+  };
 
   // Placeholder categories for classes
   var categorisedClasses = {
@@ -80,108 +88,118 @@ function updateUnitList(unitData) {
     "TUT": [],
     "PRC": [],
     "WOR": [],
-    "CLB": [],
-    "other": []
+    "CLB": []
   };
 
-  var classNames = {
-    "LEC": "Lectures",
-    "TUT": "Tutorials",
-    "PRC": "Practicals",
-    "WOR": "Workshops",
-    "CLB": "Computer Labs",
-    "other": "Other Classes",
-  };
+  // Convert the class data into div elements and categorise by class type
+  for (var c in unitData.classes) {
+    // Check key doesn't originate from prototype
+    if (!unitData.classes.hasOwnProperty(c)) {
+      continue;
+    }
 
-  var validClassTypes = [];
-  $.each(categorisedClasses, function(key) {
-    validClassTypes.push(key);
-  });
+    var classType = unitData.classes[c].classType;
+    var day = unitData.classes[c].day;
+    var start = unitData.classes[c].start;
+    var end = unitData.classes[c].end;
 
-  // Convert the times into a bunch of elements
-  for (var c in classes) {
-    var classType = classes[c].classType;
-
-    var classElement = crel("div", {
+    // Create the class
+    var classElement = crel("div",
+      {
         "class": "class",
-        "unitID": unitID,
-        "unitName": unitName,
-        "className": classes[c].className,
+        "unitID": unitData.unitID,
+        "unitName": unitData.unitName,
+        "className": unitData.classes[c].className,
         "classType": classType,
-        "day": classes[c].day,
-        "start": classes[c].time.start,
-        "end": classes[c].time.end,
-        "location": classes[c].location,
-        "staff": classes[c].staff
+        "day": day,
+        "start": start,
+        "end": end,
+        "location": unitData.classes[c].location,
+        "staff": unitData.classes[c].staff,
       },
-      classes[c].day + ": " + classes[c].time.raw
+      crel("div", {
+        "class": "class-text"
+      }, day + ": " + start + " - " + end )
     );
 
-    // Add each class type to their respective variable
-    if ($.inArray(classType, validClassTypes) >= 0) {
+    classElement.selected = unitData.classes[c].selected;
+
+    // Check if the class type exists
+    if (classType in categorisedClasses) {
+      // Add the class to its respective category
       categorisedClasses[classType].push(classElement);
     } else {
-      //categorisedClasses.other.push(classElement);
       // Add the class type as a new category
-      validClassTypes.push(classType);
       classNames[classType] = classType + "s";
       categorisedClasses[classType] = [classElement];
     }
   }
 
-  var classCategoryElements = [];
-  var crelOptions;
-  $.each(categorisedClasses, function(key, classes) {
-    if (classes.length > 0) {
-      crelOptions = ["div", {"class": camelise(classNames[key].toLowerCase())},
-        crel("b", classNames[key])];
-      crelOptions = crelOptions.concat(classes);
-      classCategoryElements.push(crel.apply(crel, crelOptions));
+  var classGroups = [];
+
+  Object.keys(categorisedClasses).forEach(function(key) {
+    var classes = categorisedClasses[key];
+    if (classes.length < 1) {
+      return false;
     }
+
+    // Add a bold heading for the category
+    var classGroup = [crel("div", {
+      "class": camelise(classNames[key])
+    }, crel("b", {"class": "class-type"}, classNames[key]))];
+
+    // TODO Automatically select classes with no alternatives
+    // if (classes.length === 1) {
+    //   $(classes[0]).attr("selected", "true");
+    //   $(classes[0]).append(crel("div", {"class": "remove-class"}, "x"));
+    // }
+
+    // Append the classes after the heading and add to list of groups
+    $(classGroup[0]).append(classes);
+    classGroups.push(classGroup);
   });
 
-  crelOptions = ["div", {"class": "classes", "style": "display: none;"}].concat(classCategoryElements);
-  classesElement = crel.apply(crel, crelOptions);
+  // Add the class groups into a hidden div to be expanded later
+  unitList = [crel("div", {
+    "class": "classes", "style": "display: none;"
+  })].concat(classGroups);
 
-  var classListElement = crel("li", {"class": "class_list"},
-    crel("div", {"class": "remove_unit"}, "x"),
-    crel("a", unitID),
-    classesElement
+  // Create a list item for the unit to be added to the sidebar
+  var unitElement = crel("li", {
+    "class": "class-list"
+  }, crel("div", {
+      "class": "list-button remove-unit",
+      "aria-hidden": true
+    }, "x"),
+    crel("div", {
+      "class": "unit-name"
+    }, unitData.unitID),
+    crel.apply(crel, unitList)
   );
 
   // Add the element to the class list in the sidebar
-  $(".class_container").append(classListElement);
+  $(".class-container").append(unitElement);
   $(window).trigger("resize");
-  $(classesElement).scrollLock();
+  $(unitElement).children(".classes").scrollLock();
 
   // Notify the user that their times have been imported
-  //notify("Class times for " + unitID + " imported!");
+  // notify("Class times for " + unitID + " imported!");
 
   // Sort the units in the sidebar alphabetically
   sortUnitsAlphabetically();
 
-  // Track this with GA
-  _gaq.push(["_trackEvent", unitName, "imported"]);
+  // TODO Update the calendar if classes have been selected automatically
 }
 
 /**
- * Listen for various Chrome messages from the injected script
+ * Listen for various Chrome messages from the injected script TODO
  */
- require("electron").ipcRenderer.on("unit_import", function(event, arg) {
-   // Update timetable options
-   classInfo = JSON.parse(arg);
-   updateUnitList(classInfo);
- });
-
-/**
- * Initialise Google Analytics
- */
-var _gaq = _gaq || [];
-_gaq.push(["_setAccount", "UA-51599319-1"]);
-_gaq.push(["_trackPageview"]);
-
-(function() {
-  var ga = document.createElement("script"); ga.type = "text/javascript"; ga.async = true;
-  ga.src = "https://ssl.google-analytics.com/ga.js";
-  var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(ga, s);
-})();
+if (window.chrome && chrome.runtime && chrome.runtime.id) {
+  chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.unitImport) {
+      // Update timetable options
+      classInfo = JSON.parse(request.unitData);
+      updateUnitList(classInfo);
+    }
+  });
+}

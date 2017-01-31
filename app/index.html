@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=0"/>
+
+  <meta name="description" content="Plan your perfect timetable with this free open-source utility for QUT students" />
+  <meta name="author" content="Ben M, Dave A and Andrew C" />
+
+  <title>QUT Timetable Planner</title>
+
+  <link rel="manifest" href="mobile-manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="128x128" href="img/icon128.png" />
+  <link rel="icon" sizes="128x128" href="img/icon128.png">
+
+  <!-- Fonts -->
+  <link href="lib/font-roboto/dist/styles/roboto.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Core CSS -->
+  <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="lib/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="lib/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" type="text/css" media="print" /> -->
+  <link href="lib/jquery-confirm2/dist/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Custom CSS -->
+  <link href="css/loader.css" rel="stylesheet" type="text/css" />
+  <link href="css/sidebar.css" rel="stylesheet" type="text/css" />
+  <link href="css/scrollbar.css" rel="stylesheet" type="text/css" />
+  <link href="css/fullcalendar.css" rel="stylesheet" type="text/css" />
+  <link href="css/events.css" rel="stylesheet" type="text/css" />
+  <link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div class="wrapper">
+
+    <nav class="sidebar-wrapper">
+      <ul class="sidebar-nav">
+
+        <li class="sidebar-brand">
+          Timetable Planner
+        </li>
+
+        <li class="sidebar-search">
+          <div class="search-icon">
+            <img src="img/search.png" />
+          </div>
+
+          <div class="search-control">
+            <input id="unit-search" placeholder="Unit Search" type="text" tabindex="0" />
+          </div>
+
+          <div class="loader" style="display:none">
+            <svg class="circular" viewbox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
+            </svg>
+          </div>
+        </li>
+
+        <li class="sidebar-search">
+          <div class="search-icon">
+            <img src="img/campus.png" />
+          </div>
+
+          <div class="search-control">
+            <select id="campus-selector">
+              <option value="0">Loading...</option>
+            </select>
+          </div>
+        </li>
+
+        <li class="class-container"></li>
+
+      </ul>
+    </nav>
+
+    <main class="page-content-wrapper">
+      <div class="container-fluid">
+
+        <!-- Calendar Placeholder -->
+        <div class="calendar"></div>
+
+        <!-- Helpful Hint(s) -->
+        <div class="alert alert-info alert-dismissible fade show hints hidden-print" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <!-- Placeholder for helpful hints text -->
+        </div>
+
+        <!-- Controls -->
+        <div class="row">
+          <div class="col">
+            <button type="button" class="btn btn-secondary" id="menu-toggle">Toggle Sidebar</button>
+          </div>
+          <div class="col">
+            <button type="button" class="btn btn-primary float-right" id="view-enrolled">View Enrolled Units</button>
+          </div>
+        </div>
+
+        <!-- Selected Class Output Placeholder -->
+        <div class="unitOverview"></div>
+
+        <!-- Unit Overview -->
+        <div class="row">
+          <div class="col">
+            <div class="card">
+              <h3 class="card-header">CAB230</h3>
+              <div class="card-block">
+                <h4 class="card-title">Lectures</h4>
+                <p class="card-text">THU 09:00am - 10:30am GP Z406</p>
+                <h4 class="card-title">Practicals</h4>
+                <p class="card-text">THU 11:00am - 01:00pm GP S502</p>
+                <p class="card-text">THU 11:00am - 01:00pm GP S507</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <h3 class="card-header">CAB301</h3>
+              <div class="card-block">
+                <h4 class="card-title">Lectures</h4>
+                <p class="card-text">THU 06:00pm - 08:00pm GP Z406</p>
+                <h4 class="card-title">Practicals</h4>
+                <p class="card-text">FRI 04:00pm - 06:00pm GP S502</p>
+              </div>
+            </div>
+          </div>
+          <div class="col">
+            <div class="card">
+              <h3 class="card-header">EGB240</h3>
+              <div class="card-block">
+                <h4 class="card-title">Lectures</h4>
+                <p class="card-text">FRI 11:00am - 01:00pm GP Z406</p>
+                <h4 class="card-title">Practicals</h4>
+                <p class="card-text">MON 03:00pm - 05:00pm GP S905A</p>
+                <h4 class="card-title">Workshops</h4>
+                <p class="card-text">MON 01:00pm - 03:00pm GP S919</p>
+                <h4 class="card-title">STUs</h4>
+                <p class="card-text">FRI 02:00pm - 04:00pm GP Z406</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </main>
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Libraries -->
+  <script src="lib/jquery/dist/jquery.min.js"></script>
+  <script src="lib/tether/dist/js/tether.min.js"></script>
+  <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="lib/moment/moment.js"></script>
+  <script src="lib/fullcalendar/dist/fullcalendar.min.js"></script>
+  <script src="lib/crel/crel.min.js"></script>
+  <script src="lib/date.js/build/date.js"></script>
+
+  <!-- Extensions -->
+  <script src="lib/jquery-confirm2/dist/jquery-confirm.min.js"></script>
+  <script src="lib/jquery-scrollLock/jquery-scrollLock.min.js"></script>
+
+  <!-- Custom -->
+  <script src="js/extract.js"></script>
+  <script src="js/import.js"></script>
+  <script src="js/class.js"></script>
+  <script src="js/jquery-yql.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/main.js"></script>
+
+</body>
+
+</html>

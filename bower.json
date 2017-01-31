@@ -1,0 +1,16 @@
+{
+  "name": "qut-timetabler",
+  "dependencies": {
+    "bootstrap": "v4.0.0-alpha.6",
+    "crel": "*",
+    "date.js": "*",
+    "font-roboto": "^0.0.2",
+    "fullcalendar": "^3.1.0",
+    "html5shiv": "^3.7.3",
+    "jquery": "^3.1.1",
+    "jquery-confirm2": "craftpip/jquery-confirm#^3.0.3",
+    "jquery-scrollLock": "^3.0.0",
+    "respond": "^1.4.2",
+    "tether": "^1.4.0"
+  }
+}
