@@ -14,6 +14,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Localised all assets for improved speed
 - Storing units as JSON instead of saving the entire 'class-container' HTML
 - Changed time range from 07:00-22:00 to 08:00-23:00
+- Improved unit summary by breaking down selected classes into unit cards
 
 ## [2.0.2] - 2016-06-08
 ### Added
