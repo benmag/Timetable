@@ -92,37 +92,35 @@ function updateUnitList(unitData) {
   };
 
   // Convert the class data into div elements and categorise by class type
-  for (var c in unitData.classes) {
-    // Check key doesn't originate from prototype
-    if (!unitData.classes.hasOwnProperty(c)) {
-      continue;
-    }
+  var len = unitData.classes.length, i = 0;
+  for (i; i < len; i++) {
+    var classData = unitData.classes[i];
+    var classType = classData.classType;
+    var day = classData.day;
+    var start = classData.start;
+    var end = classData.end;
 
-    var classType = unitData.classes[c].classType;
-    var day = unitData.classes[c].day;
-    var start = unitData.classes[c].start;
-    var end = unitData.classes[c].end;
+    // Create the class text element
+    var classText = crel("div", {
+      "class": "class-text"
+    }, day + ": " + start + " - " + end );
 
     // Create the class
-    var classElement = crel("div",
-      {
-        "class": "class",
-        "unitID": unitData.unitID,
-        "unitName": unitData.unitName,
-        "className": unitData.classes[c].className,
-        "classType": classType,
-        "day": day,
-        "start": start,
-        "end": end,
-        "location": unitData.classes[c].location,
-        "staff": unitData.classes[c].staff,
-      },
-      crel("div", {
-        "class": "class-text"
-      }, day + ": " + start + " - " + end )
-    );
+    var classElement = crel("div", {
+      "class": "class",
+      "unitID": unitData.unitID,
+      "unitName": unitData.unitName,
+      "classIndex": i,
+      "className": classData.className,
+      "classType": classType,
+      "day": day,
+      "start": start,
+      "end": end,
+      "location": classData.location,
+      "staff": classData.staff,
+    }, classText);
 
-    classElement.selected = unitData.classes[c].selected;
+    classElement.selected = classData.selected;
 
     // Check if the class type exists
     if (classType in categorisedClasses) {
@@ -146,13 +144,16 @@ function updateUnitList(unitData) {
     // Add a bold heading for the category
     var classGroup = [crel("div", {
       "class": camelise(classNames[key])
-    }, crel("b", {"class": "class-type"}, classNames[key]))];
+    }, crel("b", {
+      "class": "class-type"
+    }, classNames[key]))];
 
-    // TODO Automatically select classes with no alternatives
-    // if (classes.length === 1) {
-    //   $(classes[0]).attr("selected", "true");
-    //   $(classes[0]).append(crel("div", {"class": "remove-class"}, "x"));
-    // }
+    // Automatically select classes with no alternatives
+    // TODO Make sure this class is added to the calendar
+    // TODO Maybe make this feature optional
+    if (classes.length === 1) {
+      classes[0].selected = true;
+    }
 
     // Append the classes after the heading and add to list of groups
     $(classGroup[0]).append(classes);
@@ -161,7 +162,8 @@ function updateUnitList(unitData) {
 
   // Add the class groups into a hidden div to be expanded later
   unitList = [crel("div", {
-    "class": "classes", "style": "display: none;"
+    "class": "classes",
+    "style": "display: none;"
   })].concat(classGroups);
 
   // Create a list item for the unit to be added to the sidebar
