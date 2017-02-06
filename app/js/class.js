@@ -42,11 +42,10 @@ function getClassText(classData) {
  * Create a human-readable overview of the class to be used in the class output
  */
 function getClassOverview(classData) {
-  return classData.getAttribute("classType") + " " +
-    classData.getAttribute("day") + " " +
+  return classData.getAttribute("day") + " " +
     classData.getAttribute("start") + " - " +
     classData.getAttribute("end") + " " +
-    classData.getAttribute("location") + "<br />";
+    classData.getAttribute("location");
 }
 
 /**
