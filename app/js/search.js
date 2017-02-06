@@ -55,6 +55,7 @@ function getSemesterIDs() {
     var campusSelector = $("#campus-selector");
     campusSelector[0].options[0].textContent = "Always Ask...";
     campusSelector.append(semesters.options);
+    campusSelector[0].value = 0; // Default to 'Always Ask'
   });
 }
 
@@ -249,7 +250,7 @@ function searchDescription(description, semesterID) {
   if (semesterID === "0") { // Always ask
     // Copy the semesterID options
     var length = $("#campus-selector")[0].length;
-    var options = $("#campus-selector > option").clone().slice(6, length);
+    var options = $("#campus-selector > option").clone().slice(1, length);
     var timePeriod = $("<select class='timePeriod'/>").append(options);
 
     $.confirm({
