@@ -74,32 +74,15 @@ function addClass(classElement) {
 
 /**
  * Update the selected status of a class in localStorage
- * TODO: Find a more efficient way of doing this
  */
 function updateClassSelected(classElement) {
   // Get the class data
   var unitID = classElement.getAttribute("unitid");
-  var classes = $(classElement.parentNode.parentNode).find(".class");
-
-  // Unit data is sorted by classType and time, but the sidebar maintains a
-  // custom order for usability purposes. Sort our list of classes so we can
-  // correctly index what's stored in localStorage.
-  var sorted = classes.sort(function(a, b) {
-    var typeA = a.getAttribute("classType");
-    var typeB = b.getAttribute("classType");
-    var startA = Date.parse(a.getAttribute("day") + " " + a.getAttribute("start"));
-    var startB = Date.parse(b.getAttribute("day") + " " + b.getAttribute("start"));
-    if (typeA < typeB) return -1;
-    if (typeA > typeB) return 1;
-    if (startA < startB) return -1;
-    if (startA > startB) return 1;
-    return 0;
-  });
-  var index = sorted.index(classElement);
+  var classIndex = classElement.getAttribute("classIndex");
 
   // Update the 'selected' state in localStorage
   var storedData = JSON.parse(localStorage.getItem("unitData")) || {};
-  storedData[unitID].classes[index].selected = classElement.selected;
+  storedData[unitID].classes[classIndex].selected = classElement.selected;
   localStorage.setItem("unitData", JSON.stringify(storedData));
 }
 
