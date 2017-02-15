@@ -76,6 +76,7 @@ function checkLoad(tabId, info, tab) {
  * http://stackoverflow.com/a/14957674
  */
 chrome.runtime.onInstalled.addListener(function(details) {
+  // TODO Check for and remove deprecated 'classLists' in localStorage
   if (details.reason == "install"){
     console.log("This is a first install!");
   } else if (details.reason == "update"){

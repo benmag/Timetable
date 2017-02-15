@@ -1,6 +1,6 @@
 /* Loader (https://codepen.io/jczimm/pen/vEBpoL) */
 
-.loader {
+#loader {
   position: relative;
   margin: 0 10px 0 0;
   width: 24px;

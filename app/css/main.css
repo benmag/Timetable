@@ -9,7 +9,7 @@ body {
   font-family: "Roboto", sans-serif;
 }
 
-.calendar {
+#calendar {
   background: #fff;
   margin-bottom: 1rem;
 }
