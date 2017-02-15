@@ -35,7 +35,7 @@
 </head>
 
 <body>
-  <div class="wrapper">
+  <div id="wrapper">
 
     <nav class="sidebar-wrapper">
       <ul class="sidebar-nav">
@@ -53,7 +53,7 @@
             <input id="unit-search" placeholder="Unit Search" type="text" tabindex="0" />
           </div>
 
-          <div class="loader" style="display:none">
+          <div id="loader" style="display:none">
             <svg class="circular" viewbox="25 25 50 50">
               <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
             </svg>
@@ -72,7 +72,7 @@
           </div>
         </li>
 
-        <li class="class-container"></li>
+        <li id="class-container"></li>
 
       </ul>
     </nav>
@@ -81,10 +81,10 @@
       <div class="container-fluid">
 
         <!-- Calendar Placeholder -->
-        <div class="calendar"></div>
+        <div id="calendar"></div>
 
         <!-- Helpful Hint(s) -->
-        <div class="alert alert-info alert-dismissible fade show hints hidden-print" role="alert">
+        <div id="hints" class="alert alert-info alert-dismissible fade show hidden-print" role="alert">
           <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
           </button>
@@ -102,7 +102,7 @@
         </div>
 
         <!-- Selected Class Output Placeholder -->
-        <div class="unitOverview card-columns"></div>
+        <div id="unitOverview" class="card-columns"></div>
 
       </div>
     </main>

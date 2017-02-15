@@ -39,7 +39,7 @@ function camelise(str) {
  * http://stackoverflow.com/a/304428
  */
 function sortUnitsAlphabetically() {
-  var items = $(".class-container").find(".class-list").get();
+  var items = $("#class-container").find(".class-list").get();
   items.sort(function(a,b){
     var keyA = $(a).text();
     var keyB = $(b).text();
@@ -49,7 +49,7 @@ function sortUnitsAlphabetically() {
     return 0;
   });
 
-  $(".class-container").append(items);
+  $("#class-container").append(items);
 }
 
 /**
@@ -62,13 +62,13 @@ function updateUnitList(unitData) {
   localStorage.setItem("unitData", JSON.stringify(storedData));
 
   // Check if the class has already been imported
-  if ($(".class-container").find(".unit-name:contains(" + unitData.unitID + ")").length > 0) {
+  if ($("#class-container").find(".unit-name:contains(" + unitData.unitID + ")").length > 0) {
     notify(unitData.unitID + " has already been imported!");
     return false;
   }
 
   // Check if the max units has been reached
-  if ($(".class-container").find(".class-list").length >= 10) {
+  if ($("#class-container").find(".class-list").length >= 10) {
     notify("Max units imported. Take it easy, tiger!");
     return false;
   }
@@ -149,7 +149,7 @@ function updateUnitList(unitData) {
     }, classNames[key]))];
 
     // Automatically select classes with no alternatives
-    // TODO Make sure this class is added to the calendar
+    // BUG Making the class selected does not add the class to the calendar. Refresh required
     // TODO Maybe make this feature optional
     if (classes.length === 1) {
       classes[0].selected = true;
@@ -180,7 +180,7 @@ function updateUnitList(unitData) {
   );
 
   // Add the element to the class list in the sidebar
-  $(".class-container").append(unitElement);
+  $("#class-container").append(unitElement);
   $(window).trigger("resize");
   $(unitElement).children(".classes").scrollLock();
 

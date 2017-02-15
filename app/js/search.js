@@ -64,7 +64,7 @@ function getSemesterIDs() {
  */
 function searchUnitCode(unitID, semesterID) {
   // Show a loading icon while fetching data
-  $(".loader").show();
+  $("#loader").show();
 
   // Construct the URL for the teaching period search
   var url = "process_teach_period_search?" + $.param({
@@ -141,7 +141,7 @@ function searchUnitCode(unitID, semesterID) {
     });
   }).always(function() {
     // Hide the loading icon
-    $(".loader").hide();
+    $("#loader").hide();
   });
 }
 
@@ -201,7 +201,7 @@ function checkTableName(table, className) {
  */
 function importUnit(semesterID, unitID) {
   // Show a loading icon while fetching data
-  $(".loader").show();
+  $("#loader").show();
 
   // Construct the URL
   var url = "process_search?" + $.param({
@@ -239,7 +239,7 @@ function importUnit(semesterID, unitID) {
     });
   }).always(function() {
     // Hide the loading icon
-    $(".loader").hide();
+    $("#loader").hide();
   });
 }
 
@@ -313,18 +313,10 @@ function extractYQLData(JSONdata) {
  * Load the previously selected campus
  */
 function loadCampus() {
-  //TODO Update to handle missing semester IDs
+  // TODO Update to handle missing semester IDs
   var currentCampus = localStorage.getItem("currentCampus");
   var exists = $('#campus-selector option[value='+ currentCampus +']').length !== 0;
   if (currentCampus !== null && exists) {
     $("#campus-selector").val(currentCampus);
   }
-}
-
-/**
- * Save the current campus so we don't have to keep changing the dropdown
- */
-function saveCampus() {
-  var currentCampus = $("#campus-selector").val();
-  localStorage.setItem("currentCampus", currentCampus);
 }

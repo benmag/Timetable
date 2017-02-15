@@ -55,7 +55,7 @@ function addClass(classElement) {
   classElement.selected = true;
 
   // Remove the event previes
-  var cal = $(".calendar");
+  var cal = $("#calendar");
   cal.fullCalendar("removeEvents", "preview");
 
   // Add a button to remove the selected class
@@ -141,7 +141,7 @@ function previewClass(calendar, classData) {
   } else {
     // Find the event on the calendar and make it a preview
     var id = getClassID(classData);
-    var events = $(".calendar").fullCalendar("clientEvents", id);
+    var events = $("#calendar").fullCalendar("clientEvents", id);
     if (events[0].className.indexOf("preview") === -1) {
       events[0].className.push("preview");
       calendar.fullCalendar("updateEvent", events[0]);
@@ -199,7 +199,7 @@ function getTimes(classElement) {
 }
 
 /**
- *
+ * Determine if any selected classes are overlapping
  */
 function checkClassOverlap(newClass) {
   // Check if there are at least two classes
@@ -230,7 +230,7 @@ function checkClassOverlap(newClass) {
             action: function() {
               // Remove the new class from sidebar and the calendar
               $(newClass).find(".remove-class")[0].click();
-              removeClassEvent($(".calendar"), newClass);
+              removeClassEvent($("#calendar"), newClass);
             }
           },
           new: {
@@ -239,7 +239,7 @@ function checkClassOverlap(newClass) {
             action: function() {
               // Remove the old class from sidebar and the calendar
               $(oldClass).find(".remove-class")[0].click();
-              removeClassEvent($(".calendar"), oldClass);
+              removeClassEvent($("#calendar"), oldClass);
             }
           }
         }
@@ -269,33 +269,6 @@ function loadClassData(calendar) {
   for (i; i < len; i++) {
     addClass(classes[i]);
   }
-}
-
-/**
- * Save subjects into localStorage
- */
-function saveClassData() {
-  // TODO Store selected unit in localStorage
-
-  // var storedData = JSON.parse(localStorage.getItem("unitData")) || {};
-  // storedData[unitID].classes[c].selected = selected;
-  // localStorage.setItem("unitData", JSON.stringify(storedData));
-  //
-  // // TODO Fix this mess
-  // var units = $(".class-container").find(".class-list");
-  // var ulen = units.length; u = 0;
-  // for (u; u < ulen; u++) {
-  //   var classes = $(units[u]).find(".class");
-  //   var clen = classes.length; c = 0;
-  //   for (c; c < clen; c++) {
-  //     var selected = classes[c].selected;
-  //     var unitID = $(units[u]).find(".unit-name").text();
-  //     storedData[unitID].classes[c].selected = selected;
-  //   }
-  // }
-  //
-  // localStorage.setItem("unitData", JSON.stringify(storedData));
-
 }
 
 /**

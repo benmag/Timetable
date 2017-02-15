@@ -3,7 +3,7 @@
  */
 $("#menu-toggle").click(function(e) {
   e.preventDefault();
-  $(".wrapper").toggleClass("toggled");
+  $("#wrapper").toggleClass("toggled");
 });
 
 /**
@@ -28,9 +28,9 @@ function slideDownCurrentList(currentList, allLists) {
  * Handle sidebar height adjustments when the window is resized
  */
 $(window).resize(function() {
-  var currentList = $(".class-container").find(".classes:visible");
+  var currentList = $("#class-container").find(".classes:visible");
   if (currentList.length === 1) {
-    var allLists = $(".class-container").find(".classes");
+    var allLists = $("#class-container").find(".classes");
     slideDownCurrentList(currentList[0], allLists);
   }
 });

@@ -24,7 +24,7 @@ function showError(text) {
           btnClass: 'btn-danger',
           action: function(){
             hasError = false;
-            $(".class-container").empty();
+            $("#class-container").empty();
             generateClassOutput();
           }
         },
@@ -34,6 +34,9 @@ function showError(text) {
   }
 }
 
+/**
+ * Generate a new unit card to contain unit details
+ */
 function newUnitColumn(unitID) {
   var cardHeader = crel("h3", {
     "class": "card-header"
@@ -46,6 +49,9 @@ function newUnitColumn(unitID) {
   return card;
 }
 
+/**
+ * Generate a new unit card block to contain class details
+ */
 function newCardBlock(classElement) {
   var className = classElement.getAttribute("className");
   var cardTitle = crel("h4", {
@@ -68,7 +74,7 @@ function newCardBlock(classElement) {
 function generateClassOutput() {
   // TODO Find a way to organise cards left-to-right to prevent empty columns
 
-  var cardRow = $(".unitOverview");
+  var cardRow = $("#unitOverview");
   cardRow.empty(); // Clear what was there before
 
   var selectedClasses = $(".class:selected");
@@ -116,16 +122,8 @@ function loadHint() {
 
   // Randomly select a hint from the array
   var hint = hints[Math.floor(Math.random() * hints.length)];
-  $(".alert").append(hint);
+  $("#hints").append(hint);
 }
-
-/**
- * Save current units so we don't have to import them every time we refresh
- */
-window.onbeforeunload = function() {
-  saveClassData();
-  saveCampus();
-};
 
 $(document).ready(function() {
   jconfirm.defaults = {
@@ -137,14 +135,14 @@ $(document).ready(function() {
     // Load the previous campus into the dropdown
     loadCampus();
   }).fail(function() {
-
+    // TODO Show an error or retry
   });
 
   // Load the helpful hints underneath the calendar
   loadHint();
 
   // Initialize the calendar
-  var cal = $(".calendar").fullCalendar({
+  var cal = $("#calendar").fullCalendar({
     header: false,
     allDaySlot: false,
     allDayDefault: false,
@@ -288,8 +286,15 @@ $(document).ready(function() {
     removeUnit(subjectCode);
     generateClassOutput();
 
-    //Trigger a resize event to resize the sidebar
+    // Trigger a resize event to resize the sidebar
     $(window).trigger("resize");
+  });
+
+  /**
+   * Save the current campus so we don't have to keep changing the dropdown
+   */
+  $(document).on("change", "#campus-selector", function() {
+    localStorage.setItem("currentCampus", this.value);
   });
 
 });

@@ -3,6 +3,7 @@ app/lib/
 dist/
 .tags
 .tags_swap
+*.log
 
 #############
 ## Windows detritus
