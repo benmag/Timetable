@@ -1,6 +1,8 @@
 # QUT Timetable Planner
 
-A Chrome web extension to help plan your QUT timetable.
+Plan your perfect timetable with this free open-source utility for QUT students.
+
+## Screenshots
 
 ![alt text](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot.png "Timetable Screenshot")
 
@@ -11,7 +13,11 @@ A Chrome web extension to help plan your QUT timetable.
 Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgabpdhboja) to open the Chrome extension and 'ADD TO CHROME' to install it.
 
 ## Noteworthy Features
--
+
+- Easy unit navigation
+- Colour-coded class types for
+- Browser integration for assisted unit imports
+- Unit summary
 
 ## Planned Changes
 
@@ -21,3 +27,7 @@ Click [here](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgab
 - Find a way to increase hour (row) height when an event has overflow on the y-axis
 - Make the subject overview interactive, allowing the user to see more info (e.g. teaching staff)
 - Show how many class categories have at least one class selected (to prevent missing classes)
+
+## Versioning
+
+This project adheres to [Semantic Versioning](http://semver.org/). For the versions available, see the [tags on this repository](https://github.com/benmag/Timetable/tags).
