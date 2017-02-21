@@ -1,3 +1,5 @@
+var ALWAYS_ASK = "0";
+
 /**
  * This class enables data extraction from QUT pages using Yahoo Query Language
  * (YQL) and Open Data Tables to ignore the server's robots.txt
@@ -105,9 +107,12 @@ function searchUnitCode(unitID, semesterID) {
     }
 
     // Unit has been found in one or more teaching periods
-    // Check if user selected to 'Always Ask'
-    if (semesterID === "0") {
-      selectSemesterandImport(unitID, semesterIDs);
+    if (semesterID === ALWAYS_ASK) {
+      if (semesterIDs.length === 1) {
+        importUnit(semesterID, semesterIDs[0]);
+      } else {
+        selectSemesterandImport(unitID, semesterIDs);
+      }
       return false;
     }
 
