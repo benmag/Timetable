@@ -1,3 +1,7 @@
+/* GLOBAL */
+var CLASS_NAME = 0;
+var CLASSES = 1;
+
 /**
  * Show a notification indicating the class has been imported.
  * Clicking the notification will open up the timetabler
@@ -73,22 +77,19 @@ function updateUnitList(unitData) {
     return false;
   }
 
-  // Human-readable class types
-  var classNames = {
-    "LEC": "Lectures",
-    "TUT": "Tutorials",
-    "PRC": "Practicals",
-    "WOR": "Workshops",
-    "CLB": "Computer Labs"
-  };
-
   // Placeholder categories for classes
-  var categorisedClasses = {
-    "LEC": [],
-    "TUT": [],
-    "PRC": [],
-    "WOR": [],
-    "CLB": []
+  var sortedClasses = {
+    "LEC": ["Lectures",           []],
+    "LET": ["Lectorial",          []],
+    "TUT": ["Tutorials",          []],
+    "PRC": ["Practicals",         []],
+    "WOR": ["Workshops",          []],
+    "CLB": ["Computer Labs",      []],
+    "CTU": ["Computing Tutorial", []],
+    "STU": ["Studios",            []],
+    "SEM": ["Seminars",           []],
+    "SSE": ["Support Sessions",   []],
+    "FTR": ["Field Trips",        []]
   };
 
   // Convert the class data into div elements and categorise by class type
@@ -121,37 +122,36 @@ function updateUnitList(unitData) {
     classElement.selected = classData.selected;
 
     // Check if the class type exists
-    if (classType in categorisedClasses) {
+    if (classType in sortedClasses) {
       // Add the class to its respective category
-      categorisedClasses[classType].push(classElement);
+      sortedClasses[classType][CLASSES].push(classElement);
     } else {
       // Add the class type as a new category
-      classNames[classType] = classType + "s";
-      categorisedClasses[classType] = [classElement];
+      sortedClasses[classType] = [classType + "s", [classElement]];
     }
   }
 
   var classGroups = [];
 
-  Object.keys(categorisedClasses).forEach(function(key) {
-    var classes = categorisedClasses[key];
-    if (classes.length < 1) {
+  Object.keys(sortedClasses).forEach(function(key) {
+    var classes = sortedClasses[key][CLASSES];
+    if (classes.length === 0) {
       return false;
     }
 
     // Add a bold heading for the category
     var classGroup = [crel("div", {
-      "class": camelise(classNames[key])
+      "class": camelise(sortedClasses[key][CLASS_NAME])
     }, crel("b", {
       "class": "class-type"
-    }, classNames[key]))];
+    }, sortedClasses[key][CLASS_NAME]))];
 
     // Automatically select classes with no alternatives
     // BUG Making the class selected does not add the class to the calendar. Refresh required
     // TODO Maybe make this feature optional
-    if (classes.length === 1) {
-      classes[0].selected = true;
-    }
+    // if (classes.length === 1) {
+    //   classes[0].selected = true;
+    // }
 
     // Append the classes after the heading and add to list of groups
     $(classGroup[0]).append(classes);

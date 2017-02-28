@@ -255,7 +255,7 @@ $(document).ready(function() {
     // If the class is selected, it is already on the calendar
     var classElement = this.parentNode;
     if (!hasError && !classElement.selected) {
-      addClass(classElement);
+      addClasses(classElement);
     }
   });
 
@@ -264,10 +264,7 @@ $(document).ready(function() {
    */
   $(document).on("click", ".remove-class", function() {
     var classElement = this.parentNode;
-    removeClassEvent(cal, classElement);
-    updateClassSelected(classElement);
-    removeDuplicateBadge(classElement);
-    generateClassOutput();
+    removeClass(classElement);
   });
 
   /**

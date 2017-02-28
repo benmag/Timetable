@@ -33,7 +33,22 @@ function getClassOverview(classElement) {
 }
 
 /**
- * Add a new class
+ * Add a list of classes
+ */
+function addClasses(classes) {
+  if (classes.length > 1) {
+    var len = classes.length, i = 0;
+    for (i; i < len; i++) {
+      addClass(classes[i]);
+    }
+  } else {
+    addClass(classes);
+  }
+  generateClassOutput();
+}
+
+/**
+ * Add a new class to the calendar
  */
 function addClass(classElement) {
   classElement.selected = true;
@@ -53,8 +68,20 @@ function addClass(classElement) {
   addClassEvent(cal, classElement);
   updateClassSelected(classElement);
   addDuplicateBadge(classElement);
+}
+
+/**
+ * Remove an existing class from the calendar
+ */
+function removeClass(classElement) {
+  // Remove the old class from sidebar and the calendar
+  var cal = $("#calendar");
+  removeClassEvent(cal, classElement);
+  updateClassSelected(classElement);
+  removeDuplicateBadge(classElement);
   generateClassOutput();
 }
+
 
 /**
  * Update the selected status of a class in localStorage
@@ -213,18 +240,14 @@ function checkClassOverlap(newClass) {
           old: {
             keys: ["esc"],
             action: function() {
-              // Remove the new class from sidebar and the calendar
-              $(newClass).find(".remove-class")[0].click();
-              removeClassEvent($("#calendar"), newClass);
+              removeClass(newClass);
             }
           },
           new: {
             btnClass: "btn-primary",
             keys: ["enter"],
             action: function() {
-              // Remove the old class from sidebar and the calendar
-              $(oldClass).find(".remove-class")[0].click();
-              removeClassEvent($("#calendar"), oldClass);
+              removeClass(oldClass);
             }
           }
         }
@@ -250,10 +273,7 @@ function loadClassData(calendar) {
   }
 
   var classes = $(".classes").find(".class:selected");
-  var len = classes.length, i = 0;
-  for (i; i < len; i++) {
-    addClass(classes[i]);
-  }
+  addClasses(classes);
 }
 
 /**
