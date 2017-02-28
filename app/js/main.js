@@ -1,6 +1,8 @@
 // TODO Replace jQuery functions with vanilla Javascript to boost performance
 // TODO Replace showError() checks with new JSON-oriented validation
 
+/* GLOBAL */
+var ENTER_KEY = 13;
 var hasError = false;
 
 /**
@@ -24,106 +26,13 @@ function showError(text) {
           btnClass: 'btn-danger',
           action: function(){
             hasError = false;
-            $("#class-container").empty();
-            generateClassOutput();
+            // TODO Clear localStorage and refresh data on page
           }
         },
       }
     });
 
   }
-}
-
-/**
- * Generate a new unit card to contain unit details
- */
-function newUnitColumn(unitID) {
-  var cardHeader = crel("h3", {
-    "class": "card-header"
-  }, unitID);
-
-  var card =  crel("div", {
-    "class": "card " + unitID
-  }, cardHeader /* , _cardBlock_ */ );
-
-  return card;
-}
-
-/**
- * Generate a new unit card block to contain class details
- */
-function newCardBlock(classElement) {
-  var className = classElement.getAttribute("className");
-  var cardTitle = crel("h4", {
-    "class": "card-title"
-  }, className);
-
-  var classType = classElement.getAttribute("classType");
-  var cardBlock = crel("div", {
-    "class": "card-block " + classType
-  }, cardTitle);
-
-  return cardBlock;
-}
-
-/**
- * Generate a nice little output of the classes the user has selected
- * so they can be ready for registration day
- * TODO Make sure this function is only called once per update (check refresh)
- */
-function generateClassOutput() {
-  // TODO Find a way to organise cards left-to-right to prevent empty columns
-
-  var cardRow = $("#unitOverview");
-  cardRow.empty(); // Clear what was there before
-
-  var selectedClasses = $(".class:selected");
-  var len = selectedClasses.length, i = 0;
-  for (i; i < len; i++) {
-    // Check if there is a card for this unit
-    var unitElement = ($(selectedClasses[i]).parents().eq(2))[0];
-    var unitID = unitElement.getAttribute("unitID");
-    var unitCard = $(".card." + unitID);
-    if (unitCard.length < 1) {
-      // Create the unit card
-      unitCard = newUnitColumn(unitID);
-      cardRow.append(unitCard);
-    }
-
-    // Check if there is a type header for this class
-    var classType = selectedClasses[i].getAttribute("classType");
-    var typeBlock = $(unitCard).find(".card-block." + classType);
-    if (typeBlock.length < 1) {
-      // Create new type block
-      typeBlock = newCardBlock(selectedClasses[i]);
-      unitCard.append(typeBlock);
-    }
-
-    // Get the class-text
-    var cardText = crel("p", {
-      "class": "card-text"
-    }, getClassOverview(selectedClasses[i]));
-    typeBlock.append(cardText);
-  }
-}
-
-/**
- * Load a hint underneath the calendar
- */
-function loadHint() {
-  // TODO Load hints from an external source
-  var hints = [
-    "Hover your mouse over a class type in the sidebar to preview all available classes of that type!",
-    "Search for a unit code or description using the search bar at the top-left and pressing 'Enter'!",
-    "Use the dropdown in the search bar to select your campus when searching for classes!",
-    "New to QUT? We have 3 campuses: Gardens Point (GP), Kelvin Grove (KG) and Caboolture (CB)!",
-    "These tips will show every time you refresh the page. Want to see a new one? Ctrl+R!",
-    "You can search for a unit code, or a unit description using the 'unit search' box in the sidebar!"
-  ];
-
-  // Randomly select a hint from the array
-  var hint = hints[Math.floor(Math.random() * hints.length)];
-  $("#hints").append(hint);
 }
 
 $(document).ready(function() {
@@ -155,7 +64,8 @@ $(document).ready(function() {
     height: "auto",
     columnFormat: "ddd",
     slotEventOverlap: false,
-    weekends: false
+    weekends: false,
+    tooltip: ('<div class="tooltip_title">' + 'title' + '</div>' + '<div>' + '10:00 to 12:00'+ '<br>' +' doing this' + '</div>')
   });
 
   // Load the class data into the sidebar and calendar
@@ -165,7 +75,7 @@ $(document).ready(function() {
    * Trigger a search when the user presses the Enter key in the search bar
    */
   $("#unit-search").keyup(function(e) {
-    if (e.keyCode == 13) { // ENTER_KEY
+    if (e.keyCode === ENTER_KEY) {
       var searchText = $(this).val().trim();
       if (searchText !== "") {
         var semesterID = $("#campus-selector").val();
@@ -219,19 +129,15 @@ $(document).ready(function() {
    * Preview all same-type classes when the user hovers over a class-type heading
    */
   $(document).on("mouseover", ".class-type", function() {
-    if (!hasError) {
-      var classes = $(this.parentNode).find(".class").not(":selected");
-      previewClasses(cal, classes);
-    }
+    var classes = $(this.parentNode).find(".class").not(":selected");
+    previewClasses(cal, classes);
   });
 
   /**
    * Preview a class on the calendar when the user hovers over it in the sidebar
    */
   $(document).on("mouseover", ".class", function() {
-    if (!hasError) {
-      previewClass(cal, this);
-    }
+    previewClass(cal, this);
   });
 
   /**
@@ -254,7 +160,7 @@ $(document).ready(function() {
   $(document).on("click", ".class-text", function() {
     // If the class is selected, it is already on the calendar
     var classElement = this.parentNode;
-    if (!hasError && !classElement.selected) {
+    if (!classElement.selected) {
       addClasses(classElement);
     }
   });
@@ -293,6 +199,14 @@ $(document).ready(function() {
    */
   $(document).on("change", "#campus-selector", function() {
     localStorage.setItem("currentCampus", this.value);
+  });
+
+  /**
+   * Open a new tab to the selected unit's outline
+   */
+  $(document).on("click", ".card-link", function() {
+    var unitID = this.parentNode.textContent;
+    window.open("https://www.qut.edu.au/study/unit?unitCode=" + unitID);
   });
 
 });
