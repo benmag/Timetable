@@ -1,33 +1,36 @@
-var ALWAYS_ASK = "0";
-
 /**
  * This class enables data extraction from QUT pages using Yahoo Query Language
  * (YQL) and Open Data Tables to ignore the server's robots.txt
  */
 
 /* GLOBAL */
-var baseURL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.";
+var ALWAYS_ASK = "0";
+var BASE_URL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.";
 
 /**
  * Extract a list of <option> tags containing available semesters
  */
-function extractTag(tag, data) {
+function extractSelect(data) {
   // Extract the dropdown from the data using regex
-  // Using $.find() seems to load unwanted assets
-  var regex = new RegExp("<" + tag + "[^>]*>([^]*)<\/" + tag + ">");
+  // Using $.find() seems to load unwanted external assets
+  var regex = new RegExp("<select[^>]*>([^]*)<\/select>");
   return $(data.match(regex)[0])[0];
 }
 
 /**
- * TODO
+ * Show an error message if the name of the select element is invalid
  */
-function checkSelectName(select, name) {
-  if (select === undefined || select.name !== name) {
+function checkInvalidSelectName(select, name) {
+  // Determine if the name is invalid
+  var invalid = (select === undefined || select.name !== name);
+
+  // Show an error message to the user
+  if (invalid) {
     $("#campus-selector")[0].options[0].textContent = "Error loading...";
     $("#campus-selector").append($("<option/>").val(0).text("QUT Virtual may be unavailable"));
-    return false;
   }
-  return true;
+
+  return invalid;
 }
 
 /**
@@ -36,27 +39,27 @@ function checkSelectName(select, name) {
 function getSemesterIDs() {
   // TODO Add a fallback for if this functions fails, maybe retry
   // TODO Store semester IDs in localStorage with expiration for offline use
-  return $.queryYQL(createYQLStatement("show_search_adv"), "all", function(data) {
-    data = extractYQLData(data);
+  return $.queryYQL(createYQLStatement("show_search_adv"), "all", function(response) {
+    data = response.query.results.resources.content;
 
-    // Get the list of semesters from the response
-    var semesters = extractTag("select", data);
-    if (!checkSelectName(semesters, "p_time_period_id")) {
+    // Get the semester list from the response data
+    var select = extractSelect(data);
+    if (checkInvalidSelectName(select, "p_time_period_id")) {
       return false;
     }
 
     // Remove the date ranges from the text
     regex = /.+(?:GP|KG|CB)/;
-    var len = semesters.length, i = 0;
+    var len = select.length, i = 0;
     for (i; i < len; i++) {
-      var parsed = regex.exec(semesters[i].textContent)[0];
-      semesters[i].textContent = parsed;
+      var parsed = regex.exec(select[i].textContent)[0];
+      select[i].textContent = parsed;
     }
 
     // Add each option to our own dropdown
     var campusSelector = $("#campus-selector");
     campusSelector[0].options[0].textContent = "Always Ask...";
-    campusSelector.append(semesters.options);
+    campusSelector.append(select.options);
     campusSelector[0].value = 0; // Default to 'Always Ask'
   });
 }
@@ -77,12 +80,12 @@ function searchUnitCode(unitID, semesterID) {
   var semesterIDs = null;
 
   // Get available semesterIDs for this unit
-  $.queryYQL(createYQLStatement(url), "all", function(data) {
-    data = extractYQLData(data);
+  $.queryYQL(createYQLStatement(url), "all", function(response) {
+    data = response.query.results.resources.content;
 
     // Get the list of semesters from the response
-    var semesters = extractTag("select", data);
-    if (!checkSelectName(semesters, "p_time_period_id")) {
+    var semesters = extractSelect(data);
+    if (checkInvalidSelectName(semesters, "p_time_period_id")) {
       return false;
     }
 
@@ -99,7 +102,7 @@ function searchUnitCode(unitID, semesterID) {
         content: "Unit does not have any recent or future timetables.",
         buttons: {
           ok: {
-            keys: ['enter']
+            keys: ["enter"]
           }
         }
       });
@@ -109,7 +112,7 @@ function searchUnitCode(unitID, semesterID) {
     // Unit has been found in one or more teaching periods
     if (semesterID === ALWAYS_ASK) {
       if (semesterIDs.length === 1) {
-        importUnit(semesterID, semesterIDs[0]);
+        importUnit(semesterIDs[0], unitID);
       } else {
         selectSemesterandImport(unitID, semesterIDs);
       }
@@ -130,7 +133,7 @@ function searchUnitCode(unitID, semesterID) {
       content: "Unit exists, but was not found in " + semesterText + ".",
       buttons: {
         ok: {
-          keys: ['enter']
+          keys: ["enter"]
         }
       }
     });
@@ -140,7 +143,7 @@ function searchUnitCode(unitID, semesterID) {
       content: "An unknown error has occured while fetching unit data.",
       buttons: {
         ok: {
-          keys: ['enter']
+          keys: ["enter"]
         }
       }
     });
@@ -167,14 +170,14 @@ function selectSemesterandImport(unitID, semesterIDs) {
   }
 
   $.confirm({
-    title: 'Import a teaching period...',
-    content: timePeriod.prop('outerHTML'),
+    title: "Import a teaching period...",
+    content: timePeriod.prop("outerHTML"),
     buttons: {
       import: {
         text: "Import",
-        keys: ['enter'],
+        keys: ["enter"],
         action: function() {
-          var campusID = $('.timePeriod').val();
+          var campusID = $(".timePeriod").val();
           importUnit(campusID, unitID);
         }
       }
@@ -183,22 +186,26 @@ function selectSemesterandImport(unitID, semesterIDs) {
 }
 
 /**
- * TODO
+ * Show an error message if the name of the table is invalid
  */
-function checkTableName(table, className) {
-  if (table === undefined || table.className !== className) {
+function checkInvalidTableName(table, className) {
+  // Determine if the class name is invalid
+  var invalid = (table === undefined || table.className !== className);
+
+  // Show an error message to the user
+  if (invalid) {
     $.alert({
       title: "Error!",
       content: "Unable to extract class data. QUT Virtual may be unavailable.",
       buttons: {
         ok: {
-          keys: ['enter']
+          keys: ["enter"]
         }
       }
     });
-    return false;
   }
-  return true;
+
+  return invalid;
 }
 
 /**
@@ -215,18 +222,14 @@ function importUnit(semesterID, unitID) {
   });
 
   // Fetch the page containing the unit details
-  $.queryYQL(createYQLStatement(url), "all", function(data) {
-    data = extractYQLData(data);
+  $.queryYQL(createYQLStatement(url), "all", function(response) {
+    data = response.query.results.resources.content;
 
     // Extract the class data table
-    // BUG TODO Undo this extractTag() so that extractUnitData()
-    // can still get the unit name and ID
-    // var table = extractTag("table", data);
-    // if (!checkTableName(table, "qv_table")) {
-    //   return false;
-    // }
-
-    var table = $(data).find(".qv_table");
+    var table = $(data).find(".qv_table")[0];
+    if (checkInvalidTableName(table, "qv_table")) {
+      return false;
+    }
 
     // Extract and import the unit data
     unitData = extractUnitData(table);
@@ -238,7 +241,7 @@ function importUnit(semesterID, unitID) {
       content: "Imported " + unitID.toUpperCase() + " (" + semesterText + ")",
       buttons: {
         ok: {
-          keys: ['enter']
+          keys: ["enter"]
         }
       }
     });
@@ -259,14 +262,14 @@ function searchDescription(description, semesterID) {
     var timePeriod = $("<select class='timePeriod'/>").append(options);
 
     $.confirm({
-      title: 'Search a teaching period...',
-      content: timePeriod.prop('outerHTML'),
+      title: "Search a teaching period...",
+      content: timePeriod.prop("outerHTML"),
       buttons: {
         confirm: {
-          text: 'Search',
-          keys: ['enter'],
+          text: "Search",
+          keys: ["enter"],
           action: function() {
-            semesterID = $('.timePeriod').val();
+            semesterID = $(".timePeriod").val();
             openSearchResults(description, semesterID);
           }
         }
@@ -282,7 +285,7 @@ function searchDescription(description, semesterID) {
  */
 function openSearchResults(description, semesterID) {
   // Construct the search URL
-  var url = baseURL + "process_search?" + $.param({
+  var url = BASE_URL + "process_search?" + $.param({
     "p_time_period_id": semesterID,
     "p_unit_description": description
   });
@@ -295,23 +298,7 @@ function openSearchResults(description, semesterID) {
  * Return the YQL statement necessary for getting cross-origin source code
  */
 function createYQLStatement(url) {
-  return "select content from data.headers where url='" + baseURL + url + "'";
-}
-
-/**
- * Traverse JSON and strip evaluated tags
- */
-function extractYQLData(JSONdata) {
-  // Get to the good stuff
-  var data = JSONdata.query.results.resources.content;
-
-  // Remove 'img' and 'link' tags to prevent jQuery
-  // throwing 404's for attempting to load missing assets
-  // TODO Find a way to prevent jQuery from evaluating
-  // these tags instead of removing them
-  // data = data.replace(/<[head][^>]*>/g, "");
-
-  return data;
+  return "select content from data.headers where url='" + BASE_URL + url + "'";
 }
 
 /**
@@ -320,7 +307,7 @@ function extractYQLData(JSONdata) {
 function loadCampus() {
   // TODO Update to handle missing semester IDs
   var currentCampus = localStorage.getItem("currentCampus");
-  var exists = $('#campus-selector option[value='+ currentCampus +']').length !== 0;
+  var exists = $("#campus-selector option[value="+ currentCampus +"]").length !== 0;
   if (currentCampus !== null && exists) {
     $("#campus-selector").val(currentCampus);
   }
