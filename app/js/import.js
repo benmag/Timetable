@@ -108,8 +108,6 @@ function updateUnitList(unitData) {
     // Create the class
     var classElement = crel("div", {
       "class": "class",
-      "unitID": unitData.unitID,
-      "unitName": unitData.unitName,
       "classIndex": i,
       "className": classData.className,
       "classType": classType,
@@ -168,7 +166,9 @@ function updateUnitList(unitData) {
 
   // Create a list item for the unit to be added to the sidebar
   var unitElement = crel("li", {
-    "class": "class-list"
+    "class": "class-list",
+    "unitID": unitData.unitID,
+    "unitName": unitData.unitName
   }, crel("div", {
       "class": "list-button remove-unit",
       "aria-hidden": true

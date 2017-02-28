@@ -81,7 +81,8 @@ function generateClassOutput() {
   var len = selectedClasses.length, i = 0;
   for (i; i < len; i++) {
     // Check if there is a card for this unit
-    var unitID = selectedClasses[i].getAttribute("unitID");
+    var unitElement = ($(selectedClasses[i]).parents().eq(2))[0];
+    var unitID = unitElement.getAttribute("unitID");
     var unitCard = $(".card." + unitID);
     if (unitCard.length < 1) {
       // Create the unit card

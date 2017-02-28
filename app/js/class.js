@@ -1,39 +1,23 @@
 /**
  * Create a unique identifier for classes on the calendar, following the
- * format: unitID_classType_locCampus_locRoom_timeDay_timeStart_timeEnd
+ * Format: [unitID][classIndex]
  */
 function getClassID(classElement) {
-  // TODO Consider replacing this ID system with "[unitID][classIndex]",
-  // e.g. "MAB126_0", where the classIndex originates from localStorage
-  // console.time("oldFunc");
-  var idData = [
-    classElement.getAttribute("unitID"),
-    classElement.getAttribute("className").replace(" ", "_"),
-    classElement.getAttribute("classType"),
-    classElement.getAttribute("location").replace(" ", "_"),
-    classElement.getAttribute("day"),
-    classElement.getAttribute("start"),
-    classElement.getAttribute("end")
-  ];
-  // console.timeEnd("oldFunc");
-
-  // Much slower than current implementation
-  // console.time("newFunc");
-  // var idData = classElement.getAttribute("unitID") +
-  //   $(classElement.parentNode.parentNode).find(".class").index(classElement);
-  // console.timeEnd("newFunc");
-
-  return idData.join("_");
+  var unitElement = ($(classElement).parents().eq(2))[0];
+  var unitID = unitElement.getAttribute("unitID");
+  var classIndex = classElement.getAttribute("classIndex");
+  return unitID + classIndex;
 }
 
 /**
  * Create a human-readable description of the class to be used in the calendar
  */
-function getClassText(classData) {
-  return classData.getAttribute("unitID") + "\n" +
-    classData.getAttribute("classType") + " " +
-    classData.getAttribute("location") + "\n\n" +
-    classData.getAttribute("unitName");
+function getClassText(classElement) {
+  var unitElement = ($(classElement).parents().eq(2))[0];
+  return unitElement.getAttribute("unitID") + "\n" +
+    classElement.getAttribute("classType") + " " +
+    classElement.getAttribute("location") + "\n\n" +
+    unitElement.getAttribute("unitName");
 
   // TODO Include number of sessions (requires parsing)
 }
@@ -41,11 +25,11 @@ function getClassText(classData) {
 /**
  * Create a human-readable overview of the class to be used in the class output
  */
-function getClassOverview(classData) {
-  return classData.getAttribute("day") + " " +
-    classData.getAttribute("start") + " - " +
-    classData.getAttribute("end") + " " +
-    classData.getAttribute("location");
+function getClassOverview(classElement) {
+  return classElement.getAttribute("day") + " " +
+    classElement.getAttribute("start") + " - " +
+    classElement.getAttribute("end") + " " +
+    classElement.getAttribute("location");
 }
 
 /**
@@ -77,7 +61,8 @@ function addClass(classElement) {
  */
 function updateClassSelected(classElement) {
   // Get the class data
-  var unitID = classElement.getAttribute("unitid");
+  var unitElement = ($(classElement).parents().eq(2))[0];
+  var unitID = unitElement.getAttribute("unitID");
   var classIndex = classElement.getAttribute("classIndex");
 
   // Update the 'selected' state in localStorage
