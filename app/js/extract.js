@@ -31,6 +31,7 @@ function extractUnitData(table) {
     // raw = "11:00AM-01:00PM" or "11:00am - 01:00pm"
     var times = cells[3].textContent.toLowerCase().split("-");
 
+    // TODO Consider moving classType attribute to a container
     var classData = {
       "className": cells[0].textContent.trim(),
       "classType": cells[1].textContent,

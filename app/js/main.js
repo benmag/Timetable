@@ -45,7 +45,8 @@ $(document).ready(function() {
     // Load the previous campus into the dropdown
     loadCampus();
   }).fail(function() {
-    // TODO Show an error or retry
+    // TODO Retry
+    showError("Unable to retrieve QUT semesters. The search will not function.");
   });
 
   // Load the helpful hints underneath the calendar
@@ -64,8 +65,7 @@ $(document).ready(function() {
     height: "auto",
     columnFormat: "ddd",
     slotEventOverlap: false,
-    weekends: false,
-    tooltip: ('<div class="tooltip_title">' + 'title' + '</div>' + '<div>' + '10:00 to 12:00'+ '<br>' +' doing this' + '</div>')
+    weekends: false
   });
 
   // Load the class data into the sidebar and calendar
@@ -161,7 +161,8 @@ $(document).ready(function() {
     // If the class is selected, it is already on the calendar
     var classElement = this.parentNode;
     if (!classElement.selected) {
-      addClasses(classElement);
+      addClass(classElement);
+      generateClassOutput();
     }
   });
 
