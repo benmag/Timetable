@@ -111,7 +111,6 @@ function updateUnitList(unitData) {
       "class": "class",
       "classIndex": i,
       "className": classData.className,
-      "classType": classType,
       "day": day,
       "start": start,
       "end": end,
@@ -141,7 +140,8 @@ function updateUnitList(unitData) {
 
     // Add a bold heading for the category
     var classGroup = [crel("div", {
-      "class": camelise(sortedClasses[key][CLASS_NAME])
+      "class": camelise(sortedClasses[key][CLASS_NAME]),
+      "classType": key
     }, crel("b", {
       "class": "class-type"
     }, sortedClasses[key][CLASS_NAME]))];

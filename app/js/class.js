@@ -13,9 +13,10 @@ function getClassID(classElement) {
  * Create a human-readable description of the class to be used in the calendar
  */
 function getClassText(classElement) {
+  var classTypeElement = classElement.parentNode;
   var unitElement = ($(classElement).parents().eq(2))[0];
   return unitElement.getAttribute("unitID") + "\n" +
-    classElement.getAttribute("classType") + " " +
+    classTypeElement.getAttribute("classType") + " " +
     classElement.getAttribute("location") + "\n\n" +
     unitElement.getAttribute("unitName");
 
@@ -36,15 +37,14 @@ function getClassOverview(classElement) {
  * Add a list of classes
  */
 function addClasses(classes) {
-  if (classes.length > 1) {
-    var len = classes.length, i = 0;
-    for (i; i < len; i++) {
+  var length = classes.length;
+  if (length > 0) {
+    var i = 0;
+    for (i; i < length; i++) {
       addClass(classes[i]);
     }
-  } else {
-    addClass(classes);
+    generateClassOutput();
   }
-  generateClassOutput();
 }
 
 /**
@@ -101,23 +101,24 @@ function updateClassSelected(classElement) {
 /**
  * Add a new class event to the calendar
  */
-function addClassEvent(calendar, classData) {
+function addClassEvent(calendar, classElement) {
+  var classTypeElement = classElement.parentNode;
   calendar.fullCalendar("renderEvent", {
-    id: getClassID(classData),
-    title: getClassText(classData),
-    start: Date.parse(classData.getAttribute("day") + " " + classData.getAttribute("start")),
-    end: Date.parse(classData.getAttribute("day") + " " + classData.getAttribute("end")),
-    className: classData.getAttribute("classType").toLowerCase()
+    id: getClassID(classElement),
+    title: getClassText(classElement),
+    start: Date.parse(classElement.getAttribute("day") + " " + classElement.getAttribute("start")),
+    end: Date.parse(classElement.getAttribute("day") + " " + classElement.getAttribute("end")),
+    className: classTypeElement.getAttribute("classType").toLowerCase()
   });
 }
 
 /**
  * Remove a class event from the calendar
  */
-function removeClassEvent(calendar, classData) {
-  calendar.fullCalendar("removeEvents", getClassID(classData));
-  classData.selected = false;
-  $(classData).find(".remove-class").remove();
+function removeClassEvent(calendar, classElement) {
+  calendar.fullCalendar("removeEvents", getClassID(classElement));
+  classElement.selected = false;
+  $(classElement).find(".remove-class").remove();
 }
 
 /**
@@ -132,27 +133,28 @@ function removeUnit(unitID) {
 /*
  * Create an event to be added to the calendar
  */
-function createEvent(classData) {
+function createEvent(classElement) {
+  var classTypeElement = classElement.parentNode;
   return {
     id: "preview",
-    title: getClassText(classData),
-    start: Date.parse(classData.getAttribute("day") + " " + classData.getAttribute("start")),
-    end: Date.parse(classData.getAttribute("day") + " " + classData.getAttribute("end")),
-    className: "preview " + classData.getAttribute("classType").toLowerCase()
+    title: getClassText(classElement),
+    start: Date.parse(classElement.getAttribute("day") + " " + classElement.getAttribute("start")),
+    end: Date.parse(classElement.getAttribute("day") + " " + classElement.getAttribute("end")),
+    className: "preview " + classTypeElement.getAttribute("classType").toLowerCase()
   };
 }
 
 /**
  * Add a class preview to the calendar
  */
-function previewClass(calendar, classData) {
+function previewClass(calendar, classElement) {
   // Check if the class has been added to the calendar
-  if (!classData.selected) {
+  if (!classElement.selected) {
     // Add the event details to the calendar as a preview
-    calendar.fullCalendar("renderEvent", createEvent(classData));
+    calendar.fullCalendar("renderEvent", createEvent(classElement));
   } else {
     // Find the event on the calendar and make it a preview
-    var id = getClassID(classData);
+    var id = getClassID(classElement);
     var events = $("#calendar").fullCalendar("clientEvents", id);
     if (events[0].className.indexOf("preview") === -1) {
       events[0].className.push("preview");
@@ -164,12 +166,12 @@ function previewClass(calendar, classData) {
 /*
  * Add a list of class previews to the calendar
  */
-function previewClasses(calendar, classData) {
+function previewClasses(calendar, classElement) {
   // Convert the list of classes into events
   var events = [];
-  var len = classData.length, i = 0;
+  var len = classElement.length, i = 0;
   for (i; i < len; i++) {
-    var event = createEvent(classData[i]);
+    var event = createEvent(classElement[i]);
     events.push(event);
   }
 
@@ -180,9 +182,9 @@ function previewClasses(calendar, classData) {
 /**
  * Remove a class preview from the calendar
  */
-function removeClassPreview(calendar, classData) {
+function removeClassPreview(calendar, classElement) {
   // Get the event from the calendar
-  var id = getClassID(classData);
+  var id = getClassID(classElement);
   var events = calendar.fullCalendar("clientEvents", id);
 
   // Check if the preview for this class exists
@@ -279,10 +281,10 @@ function loadClassData(calendar) {
 /**
  * Add a warning badge for duplicate classes to the class type heading
  */
-function addDuplicateBadge(classData) {
-  var classCount = $(classData.parentNode).find(".class:selected").length;
+function addDuplicateBadge(classElement) {
+  var classCount = $(classElement.parentNode).find(".class:selected").length;
   if (classCount > 1) {
-    var title = $(classData.parentNode).find(".class-type");
+    var title = $(classElement.parentNode).find(".class-type");
     if (!title.has(".duplicate-badge").length) {
       title.prepend(crel("div", {
           "class": "list-button duplicate-badge",
@@ -298,9 +300,9 @@ function addDuplicateBadge(classData) {
 /**
  * Remove the duplicate classes badge from the class type heading
  */
-function removeDuplicateBadge(classData) {
-  var classCount = $(classData.parentNode).find(".class:selected").length;
+function removeDuplicateBadge(classElement) {
+  var classCount = $(classElement.parentNode).find(".class:selected").length;
   if (classCount < 2) {
-    $(classData.parentNode).find(".duplicate-badge").remove();
+    $(classElement.parentNode).find(".duplicate-badge").remove();
   }
 }
