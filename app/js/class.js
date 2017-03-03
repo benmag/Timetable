@@ -43,7 +43,6 @@ function addClasses(classes) {
     for (i; i < length; i++) {
       addClass(classes[i]);
     }
-    generateClassOutput();
   }
 }
 
@@ -68,6 +67,7 @@ function addClass(classElement) {
   addClassEvent(cal, classElement);
   updateClassSelected(classElement);
   addDuplicateBadge(classElement);
+  updateClassOutput(classElement);
 }
 
 /**
@@ -79,9 +79,8 @@ function removeClass(classElement) {
   removeClassEvent(cal, classElement);
   updateClassSelected(classElement);
   removeDuplicateBadge(classElement);
-  generateClassOutput();
+  updateClassOutput(classElement);
 }
-
 
 /**
  * Update the selected status of a class in localStorage
@@ -276,6 +275,7 @@ function loadClassData(calendar) {
 
   var classes = $(".classes").find(".class:selected");
   addClasses(classes);
+  generateClassOutput();
 }
 
 /**
