@@ -41,7 +41,7 @@ function newCardBlock(classElement) {
 function generateClassOutput() {
   // TODO Find a way to organise cards left-to-right to prevent empty columns
   var cardRow = $("#unitOverview");
-  cardRow.empty(); // Clear what was there before
+  // cardRow.empty(); // Clear what was there before
 
   var selectedClasses = $(".class:selected");
   var len = selectedClasses.length, i = 0;
@@ -53,7 +53,9 @@ function generateClassOutput() {
     if (unitCard.length < 1) {
       // Create the unit card
       unitCard = newUnitColumn(unitID);
-      cardRow.append(unitCard);
+
+      // TODO Consider replacing Salvattore with Masonry for gap-filling
+      salvattore.appendElements(cardRow[0], [unitCard]);
     }
 
     // Check if there is a type header for this class
@@ -72,4 +74,44 @@ function generateClassOutput() {
     }, getClassOverview(selectedClasses[i]));
     typeBlock.append(cardText);
   }
+}
+
+/**
+ * Update the classes displayed in the unit cards
+ */
+function updateClassOutput(classElement) {
+  // Get the card to modify
+  var unitElement = ($(classElement).parents().eq(2))[0];
+  var unitID = unitElement.getAttribute("unitID");
+  var unitOverview = document.getElementById("unitOverview");
+  var unitCard = $(unitOverview).find(".card." + unitID);
+
+  // Get the class-type block to modify
+  var classTypeElement = classElement.parentNode;
+  var classType = classTypeElement.getAttribute("classType");
+  var classBlock = $(unitCard).find(".card-block." + classType);
+
+  // Regenerate the classes of this type
+  var selectedClasses = $("[unitID=" + unitID + "] [classType=" + classType + "] .class:selected");
+  var len = selectedClasses.length, i = 0;
+  var classTextList = [];
+  for (i; i < len; i++) {
+    // Get the class-text
+    var cardText = crel("p", {
+      "class": "card-text"
+    }, getClassOverview(selectedClasses[i]));
+
+    classTextList[i] = cardText;
+  }
+
+  // Check if the list of selected classes is empty
+  if (classTextList.length === 0) {
+    // Remove the class type block
+    $(classBlock).remove();
+  } else {
+    // Replace the list of classes
+    $(classBlock).find(".card-text").remove();
+    classBlock.append(classTextList);
+  }
+
 }

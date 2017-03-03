@@ -162,7 +162,6 @@ $(document).ready(function() {
     var classElement = this.parentNode;
     if (!classElement.selected) {
       addClass(classElement);
-      generateClassOutput();
     }
   });
 
