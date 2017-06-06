@@ -1,12 +1,12 @@
 /**
  * Generate a new unit card to contain unit details
  */
-function newUnitColumn(unitID) {
+function newUnitColumn(unitID, unitName) {
   var cardHeader = crel("h3", {
     "class": "card-header"
-  }, unitID, crel("div", {
+  }, crel("div", {
     "class": "card-link",
-  }));
+  }), unitID + " - " + unitName);
 
   var card =  crel("div", {
     "class": "card " + unitID
@@ -49,10 +49,11 @@ function generateClassOutput() {
     // Check if there is a card for this unit
     var unitElement = ($(selectedClasses[i]).parents().eq(2))[0];
     var unitID = unitElement.getAttribute("unitID");
+    var unitName = unitElement.getAttribute("unitName");
     var unitCard = $(".card." + unitID);
     if (unitCard.length < 1) {
       // Create the unit card
-      unitCard = newUnitColumn(unitID);
+      unitCard = newUnitColumn(unitID, unitName);
 
       // TODO Consider replacing Salvattore with Masonry for gap-filling
       salvattore.appendElements(cardRow[0], [unitCard]);
