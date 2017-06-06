@@ -4,16 +4,15 @@
 * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap/blob/gh-pages/LICENSE)
 */
 
-
 /* Toggle Styles */
 
 #wrapper {
   padding-left: 0;
-  transition: all .5s ease;
 }
 
 #wrapper.toggled {
   padding-left: 220px;
+  transition: padding .5s ease;
 }
 
 .sidebar-wrapper {
@@ -28,7 +27,7 @@
   overflow-y: hidden;
   overflow-x: hidden;
   background-color: #4285f4;
-  transition: all .5s ease;
+  transition: width .5s ease;
 }
 
 #wrapper.toggled .sidebar-wrapper {
