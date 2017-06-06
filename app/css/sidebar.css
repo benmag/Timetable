@@ -91,6 +91,10 @@
   overflow-y: hidden;
 }
 
+.class-text {
+  white-space: nowrap;
+}
+
 .class-text:hover,
 .class-type:hover,
 .remove-class:hover {
