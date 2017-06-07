@@ -74,7 +74,7 @@ body {
 }
 
 #unitOverview[data-columns]::before {
-	content: '2 .column.size-1of2';
+  content: '2 .column.size-1of2';
 }
 
 .card {
