@@ -66,7 +66,7 @@ function addClass(classElement) {
   checkClassOverlap(classElement);
   addClassEvent(cal, classElement);
   updateClassSelected(classElement);
-  addDuplicateBadge(classElement);
+  updateClassBadges(classElement);
   updateClassOutput(classElement);
 }
 
@@ -78,7 +78,7 @@ function removeClass(classElement) {
   var cal = $("#calendar");
   removeClassEvent(cal, classElement);
   updateClassSelected(classElement);
-  removeDuplicateBadge(classElement);
+  updateClassBadges(classElement);
   updateClassOutput(classElement);
 }
 
@@ -165,12 +165,12 @@ function previewClass(calendar, classElement) {
 /*
  * Add a list of class previews to the calendar
  */
-function previewClasses(calendar, classElement) {
+function previewClasses(calendar, classElements) {
   // Convert the list of classes into events
   var events = [];
-  var len = classElement.length, i = 0;
+  var len = classElements.length, i = 0;
   for (i; i < len; i++) {
-    var event = createEvent(classElement[i]);
+    var event = createEvent(classElements[i]);
     events.push(event);
   }
 
@@ -279,30 +279,45 @@ function loadClassData(calendar) {
 }
 
 /**
- * Add a warning badge for duplicate classes to the class type heading
+ * Add a warning badge for duplicate classes or a done badge for valid ones
  */
-function addDuplicateBadge(classElement) {
+function updateClassBadges(classElement) {
   var classCount = $(classElement.parentNode).find(".class:selected").length;
+  var title = $(classElement.parentNode).find(".class-type");
+
+  // Add a warning badge
   if (classCount > 1) {
-    var title = $(classElement.parentNode).find(".class-type");
-    if (!title.has(".duplicate-badge").length) {
+    if (!title.has(".badge-warn").length) {
       title.prepend(crel("div", {
-          "class": "list-button duplicate-badge",
-          "title": "Duplicate classes detected!"
+          "class": "list-button badge-warn",
+          "title": "Duplicate classes!"
         }, crel("img", {
           "src": "img/warn.png"
         })
       ));
     }
   }
-}
 
-/**
- * Remove the duplicate classes badge from the class type heading
- */
-function removeDuplicateBadge(classElement) {
-  var classCount = $(classElement.parentNode).find(".class:selected").length;
+  // Add a done badge
+  if (classCount === 1) {
+    if (!title.has(".badge-done").length) {
+      title.prepend(crel("div", {
+          "class": "list-button badge-done",
+          "title": "Done!"
+        }, crel("img", {
+          "src": "img/done.png"
+        })
+      ));
+    }
+  }
+
+  // Remove the warning badge
   if (classCount < 2) {
-    $(classElement.parentNode).find(".duplicate-badge").remove();
+    $(classElement.parentNode).find(".badge-warn").remove();
+  }
+
+  // Remove the done badge
+  if (classCount !== 1) {
+    $(classElement.parentNode).find(".badge-done").remove();
   }
 }

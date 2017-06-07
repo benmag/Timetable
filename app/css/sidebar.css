@@ -103,37 +103,11 @@
 }
 
 .list-button {
-  -webkit-appearance: none;
   cursor: pointer;
   float: right;
   width: 40px;
   text-align: center;
   text-indent: 0;
-}
-
-
-/* Input */
-
-::-webkit-input-placeholder { /* WebKit, Blink, Edge */
-  color: #fff;
-}
-
-:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
-  color: #fff;
-  opacity: 1;
-}
-
-::-moz-placeholder { /* Mozilla Firefox 19+ */
-  color: #fff;
-  opacity: 1;
-}
-
-:-ms-input-placeholder { /* Internet Explorer 10-11 */
-  color: #fff;
-}
-
-:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
-  color: #fff;
 }
 
 
@@ -167,6 +141,31 @@
 }
 
 
+/* Input */
+
+::-webkit-input-placeholder { /* WebKit, Blink, Edge */
+  color: #fff;
+}
+
+:-moz-placeholder { /* Mozilla Firefox 4 to 18 */
+  color: #fff;
+  opacity: 1;
+}
+
+::-moz-placeholder { /* Mozilla Firefox 19+ */
+  color: #fff;
+  opacity: 1;
+}
+
+:-ms-input-placeholder { /* Internet Explorer 10-11 */
+  color: #fff;
+}
+
+:placeholder-shown { /* Standard (https://drafts.csswg.org/selectors-4/#placeholder) */
+  color: #fff;
+}
+
+
 /* Search Box */
 
 .sidebar-search {
@@ -188,10 +187,6 @@
   width: 100%;
 }
 
-.search-control > input {
-  padding-left: 3px; /* Align text with <select> */
-}
-
 .search-control > input,
 .search-control > select {
   color: #fff;
@@ -200,8 +195,37 @@
   outline: none;
 
   font-size: 1.1rem;
+  padding-left: 1rem;
 
   display: block;
   height: 40px; /* required for <select> */
   width: 100%;
+
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+}
+
+.search-control.campus-selector {
+  position:relative;
+  display: -moz-inline-stack;
+  display: inline-block;
+  vertical-align: middle;
+  zoom: 1;
+}
+
+.search-control.campus-selector:after {
+  content: "v"; /* TODO Replace with chevron from font or graphic */
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index: 1;
+  text-align: center;
+  width: 2rem;
+  height: 100%;
+  pointer-events: none;
+}
+
+select::-ms-expand {
+  display: none; /* Hide the dropdown arrow in IE */
 }
