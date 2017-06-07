@@ -22,11 +22,19 @@
   transition: all .2s ease-in-out;
 }
 
-.importButton {
+.importUnitButton {
+  background-color: #f0ad4e;
+}
+
+.importUnitButton:hover {
+  background-color: #ec971f;
+}
+
+.importSemesterButton {
   background-color: #0275d8;
 }
 
-.importButton:hover {
+.importSemesterButton:hover {
   background-color: #025aa5;
 }
 
