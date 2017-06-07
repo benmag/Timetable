@@ -70,6 +70,7 @@ function generateClassOutput() {
     }
 
     // Get the class-text
+    // TODO Convert 12-hour to 24-hour time format
     var cardText = crel("p", {
       "class": "card-text"
     }, getClassOverview(selectedClasses[i]));

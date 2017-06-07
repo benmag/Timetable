@@ -19,6 +19,11 @@
       "matches": ["https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show", "https://qutvirtual3.qut.edu.au/*/ttab_unit_search_p.process_search*"],
       "css": ["css/inject.css"],
       "js": ["lib/jquery/dist/jquery.min.js", "lib/crel/crel.min.js", "js/inject.js", "js/extract.js"]
+    },
+    {
+      "matches": ["https://estudent.qut.edu.au/T1SMSAMSPRD/WebApps/eStudent/SM/StuTtable10.aspx*"],
+      "css": ["css/inject.css"],
+      "js": ["lib/jquery/dist/jquery.min.js", "lib/crel/crel.min.js", "js/estudent.js", "js/extract.js"]
     }
   ],
   "icons": {
