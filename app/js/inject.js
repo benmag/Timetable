@@ -2,23 +2,35 @@
 showImportButton();
 
 /**
- * Shows buttons to allow the user to import subjects into the timetabler
+ * Shows buttons to allow the user to import units into the timetabler
  */
 function showImportButton() {
-  // Add import button to each subject
-  var importButton = crel("button",
-    {"class": "btn-timetable importButton"},
-    "Subject Found. Import Classes?"
+  // Unit import button
+  var importUnitButton = crel("button",
+    {"class": "btn-timetable importUnitButton"},
+    "Unit Found. Import Classes?"
   );
 
+  // Add import button to every unit table
   var qv_table = $(".qv_table");
-  qv_table.prepend(importButton);
+  qv_table.prepend(importUnitButton);
 
-  // Add importAll button if more than one subject exists
-  if (qv_table.length > 1) {
+  // Semester import button
+  var semesterButton = crel("button",
+    {"class": "btn-timetable importSemesterButton"},
+    "Semester Found. Import Units?"
+  );
+
+  // Add semester import button to every semester
+  var semesters = $("h2:contains(' to ')"); // /qv/
+  if (semesters.length === 0) semesters = $("p > strong:only-child").parent(); // /qvpublic/
+  $(semesters).after(semesterButton);
+
+  // Add importAll button if more than one unit exists
+  if (semesters.length > 1) {
     var importAllButton = crel("button",
       {"class": "btn-timetable importAllButton"},
-      "Multiple Subjects Found. Import ALL Classes?"
+      "Multiple Semesters Found. Import ALL Units?"
     );
     $(".divider:nth-of-type(1)").prepend(importAllButton);
   }
@@ -34,7 +46,7 @@ function sendUnit(unitData) {
   });
 }
 
-/*
+/**
  * Add an event listener for the import buttons
  */
 $("button.btn-timetable").bind("click", function() {
@@ -49,21 +61,31 @@ $("button.btn-timetable").bind("click", function() {
       if (sender.className.indexOf("importAllButton") > -1) {
         buttons = $(".btn-timetable");
         tables = $(".qv_table");
+      } else if (sender.className.indexOf("importSemesterButton") > -1) {
+        tables = $(sender).nextUntil(".importSemesterButton", ".qv_table");
+        buttons = tables.children(".btn-timetable");
+
+        // Set the button style
+        sender.style.backgroundColor = "#4CAF50";
+        sender.textContent = "Imported!";
       } else {
         buttons = [sender];
         tables = [sender.parentNode];
       }
 
-      // Set the buttons to show the class has been imported
-      var len = buttons.length, i = 0;
-      for (i; i < len; i++) {
-        buttons[i].style.backgroundColor = "#4CAF50";
-        buttons[i].textContent = "Imported!";
-      }
+      // Set the button style to show the unit has been imported
+      $(buttons).css("backgroundColor", "#4caf50");
+      $(buttons).text("Imported!");
+
+      // var len = buttons.length, i = 0;
+      // for (i; i < len; i++) {
+      //   buttons[i].style.backgroundColor = "#4CAF50";
+      //   buttons[i].textContent = "Imported!";
+      // }
 
       // Import the classes into the timetabler
       len = tables.length;
-      i = 0;
+      var i = 0;
       for (i; i < len; i++) {
         var unitData = extractUnitData(tables[i]);
         sendUnit(unitData);
