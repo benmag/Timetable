@@ -102,13 +102,6 @@ $("#unit-search").keyup(function(e) {
 });
 
 /**
- * Open a new tab to the user's enrolled units
- */
-$("#view-enrolled").click(function(e) {
-  window.open("https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show");
-});
-
-/**
  * Show or hide the classes for an imported subject
  */
 $(document).on("click", ".unit-name", function() {
