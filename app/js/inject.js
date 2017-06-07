@@ -22,8 +22,11 @@ function showImportButton() {
   );
 
   // Add semester import button to every semester
-  var semesters = $("h2:contains(' to ')"); // /qv/
-  if (semesters.length === 0) semesters = $("p > strong:only-child").parent(); // /qvpublic/
+  // Check the semester heading contains '(* to * )' found on /qv/
+  var containsDateRange = ":contains(' ('):contains(' to '):contains(')')";
+  var semesters = $("h2" + containsDateRange);
+  // If no semesters were found, try format from /qvpublic/
+  if (semesters.length === 0) semesters = $("p > strong:only-child" + containsDateRange).parent();
   $(semesters).after(semesterButton);
 
   // Add importAll button if more than one unit exists
