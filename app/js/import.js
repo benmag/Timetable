@@ -166,10 +166,10 @@ function updateUnitList(unitData) {
 
   // Create a list item for the unit to be added to the sidebar
   var unitElement = crel("li", {
-    "class": "class-list",
-    "unitID": unitData.unitID,
-    "unitName": unitData.unitName
-  }, crel("div", {
+      "class": "class-list",
+      "unitID": unitData.unitID,
+      "unitName": unitData.unitName
+    }, crel("div", {
       "class": "list-button remove-unit",
       "aria-hidden": true
     }, "x"),
