@@ -5,7 +5,7 @@
 function extractUnitData(table) {
   // Get the unit ID and subject name from above the table
   var unitString = "";
-  if (location.pathname == "/qv/ttab_student_p.show") { // Enrollment page
+  if (location.pathname == "/qv/ttab_student_p.show") { // Enrolment page
     unitString = $(table).prev().prev().find("strong").text().trim();
   } else { // Search page
     unitString = $(table).prevAll("h2:first").text();
