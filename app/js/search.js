@@ -170,7 +170,7 @@ function selectSemesterandImport(unitID, semesterIDs) {
   }
 
   $.confirm({
-    title: "Import a teaching period...",
+    title: "Import a teaching period for " + unitID.toUpperCase() + "...",
     content: timePeriod.prop("outerHTML"),
     buttons: {
       import: {
