@@ -1,16 +1,20 @@
 /**
  * Generate a new unit card to contain unit details
  */
-function newUnitColumn(unitID, unitName) {
+function newUnitCard(unitID, unitName) {
   var cardHeader = crel("h3", {
     "class": "card-header"
   }, crel("div", {
     "class": "card-link",
   }), unitID + " - " + unitName);
 
+  var cardBody = crel("div", {
+    "class": "card-body"
+  });
+
   var card =  crel("div", {
     "class": "card " + unitID
-  }, cardHeader /* , _cardBlock_ */ );
+  }, cardHeader, cardBody );
 
   return card;
 }
@@ -27,7 +31,7 @@ function newCardBlock(classElement) {
 
   var classType = classTypeElement.getAttribute("classType");
   var cardBlock = crel("div", {
-    "class": "card-block " + classType
+    "class": "card-text " + classType
   }, cardTitle);
 
   return cardBlock;
@@ -41,11 +45,11 @@ function newCardBlock(classElement) {
 function generateClassOutput() {
   // TODO Find a way to organise cards left-to-right to prevent empty columns
   var cardRow = $("#unitOverview");
-  // cardRow.empty(); // Clear what was there before
+  $(cardRow).children(".column").empty(); // Clear what was there before
 
   var selectedClasses = $(".class:selected");
-  var len = selectedClasses.length, i = 0;
-  for (i; i < len; i++) {
+  var numSelectedClasses = selectedClasses.length, i = 0;
+  for (i; i < numSelectedClasses; i++) {
     // Check if there is a card for this unit
     var unitElement = ($(selectedClasses[i]).parents().eq(2))[0];
     var unitID = unitElement.getAttribute("unitID");
@@ -53,20 +57,21 @@ function generateClassOutput() {
     var unitCard = $(".card." + unitID);
     if (unitCard.length < 1) {
       // Create the unit card
-      unitCard = newUnitColumn(unitID, unitName);
+      unitCard = newUnitCard(unitID, unitName);
 
       // TODO Consider replacing Salvattore with Masonry for gap-filling
       salvattore.appendElements(cardRow[0], [unitCard]);
     }
 
-    // Check if there is a type header for this class
+    // Check if there is a type header (e.g. LEC) for this class
     var classTypeElement = selectedClasses[i].parentNode;
     var classType = classTypeElement.getAttribute("classType");
-    var typeBlock = $(unitCard).find(".card-block." + classType);
+    var unitCardBody = $(unitCard).children(".card-body");
+    var typeBlock = $(unitCardBody).find(".card-text." + classType);
     if (typeBlock.length < 1) {
       // Create new type block
       typeBlock = newCardBlock(selectedClasses[i]);
-      unitCard.append(typeBlock);
+      unitCardBody.append(typeBlock);
     }
 
     // Get the class-text
@@ -91,13 +96,13 @@ function updateClassOutput(classElement) {
   // Get the class-type block to modify
   var classTypeElement = classElement.parentNode;
   var classType = classTypeElement.getAttribute("classType");
-  var classBlock = $(unitCard).find(".card-block." + classType);
+  var classBlock = $(unitCard).find(".card-body > .card-text." + classType);
 
   // Regenerate the classes of this type
   var selectedClasses = $("[unitID=" + unitID + "] [classType=" + classType + "] .class:selected");
-  var len = selectedClasses.length, i = 0;
+  var numSelectedClasses = selectedClasses.length, i = 0;
   var classTextList = [];
-  for (i; i < len; i++) {
+  for (i; i < numSelectedClasses; i++) {
     // Get the class-text
     var cardText = crel("p", {
       "class": "card-text"

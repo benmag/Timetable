@@ -44,6 +44,7 @@ function addClasses(classes) {
       addClass(classes[i]);
     }
   }
+  generateClassOutput();
 }
 
 /**
@@ -275,7 +276,6 @@ function loadClassData(calendar) {
 
   var classes = $(".classes").find(".class:selected");
   addClasses(classes);
-  generateClassOutput();
 }
 
 /**
