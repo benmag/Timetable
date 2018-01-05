@@ -1,7 +1,7 @@
 {
   "name": "qut-timetabler",
   "dependencies": {
-    "bootstrap": "v4.0.0-alpha.6",
+    "bootstrap": "v4.0.0-beta.3",
     "crel": "*",
     "date.js": "*",
     "font-roboto": "^0.0.2",
