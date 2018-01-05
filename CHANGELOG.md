@@ -72,7 +72,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed event overlap and padding. Classes now accurately resize depending on how many units are in the same time slot
 - Fixed calendar stretching when modifying inline element sizing (Seems to be fixed by FullCalendar update)
 
-[Unreleased]: https://github.com/benmag/Timetable/compare/2.0.2
-[2.0.2]: https://github.com/benmag/Timetable/compare/2.0.1...2.0.2
-[2.0.1]: https://github.com/benmag/Timetable/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/benmag/Timetable/compare/1.1.1...2.0.0
+[Unreleased]: https://github.com/DeathIsUnknown/qut-timetable/compare/2.0.2
+[2.0.2]: https://github.com/DeathIsUnknown/qut-timetable/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/DeathIsUnknown/qut-timetable/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/DeathIsUnknown/qut-timetable/compare/1.1.1...2.0.0
