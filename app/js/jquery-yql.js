@@ -32,6 +32,9 @@ LICENSE: http://hail2u.mit-license.org/2009
 
     if (envUrl) {
       data.env = envUrl;
+      // Hard-coded fix for issues with datatables.org
+      // "No definition found for Table data.headers"
+      data.q = "use 'https://raw.githubusercontent.com/yql/yql-tables/master/data/data.headers.xml' as data.headers; " + data.q
     }
 
     return $.get(url, data, callback, "json");
