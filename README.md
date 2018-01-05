@@ -2,9 +2,9 @@
 Plan your perfect timetable with this free open-source utility for QUT students.
 
 ## Screenshots
-![alt text](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot.png "Timetable Screenshot")
+![alt text](https://raw.githubusercontent.com/DeathIsUnknown/qut-timetable/master/screenshot.png "Timetable Screenshot")
 
-![alt text](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot2.png "Timetable Screenshot")
+![alt text](https://raw.githubusercontent.com/DeathIsUnknown/qut-timetable/master/screenshot2.png "Timetable Screenshot")
 
 ## Installation
 View the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgabpdhboja) and click 'ADD TO CHROME'.
@@ -26,13 +26,13 @@ View the extension on the [Chrome Web Store](https://chrome.google.com/webstore/
 ## Development
 If you're interested in contributing, download the project and its dependencies with the following commands:
 ```
-git clone https://github.com/benmag/Timetable.git
+git clone https://github.com/DeathIsUnknown/qut-timetable.git
 cd Timetable
 bower install
 ```
 
 ## Versioning
-This project adheres to [Semantic Versioning](http://semver.org/). For the versions available, see the [tags on this repository](https://github.com/benmag/Timetable/tags).
+This project adheres to [Semantic Versioning](http://semver.org/). For the versions available, see the [tags on this repository](https://github.com/DeathIsUnknown/qut-timetable/tags).
 
 ## License
 This project uses the [ISC License](http://opensource.org/licenses/ISC).

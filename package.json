@@ -2,12 +2,12 @@
   "name": "qut-timetabler",
   "version": "2.0.3",
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
-  "homepage": "https://github.com/benmag/Timetable",
-  "bugs": "https://github.com/benmag/Timetable/issues",
+  "homepage": "https://github.com/DeathIsUnknown/qut-timetable",
+  "bugs": "https://github.com/DeathIsUnknown/qut-timetable/issues",
   "main": "app/index.html",
   "repository": {
     "type": "git",
-    "url": "https://github.com/benmag/Timetable.git"
+    "url": "https://github.com/DeathIsUnknown/qut-timetable.git"
   },
   "license": "ISC",
   "devDependencies": {
