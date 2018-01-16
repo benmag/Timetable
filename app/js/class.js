@@ -1,38 +1,38 @@
-/**
- * Create a unique identifier for classes on the calendar, following the
- * Format: [unitID][classIndex]
- */
-function getClassID(classElement) {
-  const unitElement = ($(classElement).parents().eq(2))[0],
-        unitID = unitElement.getAttribute("unitID"),
-        classIndex = classElement.getAttribute("classIndex");
-  return unitID + classIndex;
-}
-
-/**
- * Create a human-readable description of the class to be used in the calendar
- */
-function getClassText(classElement) {
-    const classTypeElement = classElement.parentNode,
+const Class = {
+    // Grabs unit element from class element
+    getUnitElement: (element)=>($(element).parents().eq(2))[0],
+    
+    // Grabs unit index from class element
+    getUnitID: function(element){
+        this.getUnitElement(element).getAttribute("unitID");
+    },
+    
+    // Grabs class index from class element
+    getClassIndex: (element)=>{element.getAttribute("classIndex")},
+    
+    //Create a unique identifier for classes on the calendar, [unitID][classIndex]
+    getUID: function (classElement) {
+        return this.getUnitID(classElement) + this.getClassIndex(classElement);
+    },
+    
+    // Generates textual description of class
+    getDescription: (classElement) => {
+        const classTypeElement = classElement.parentNode,
           unitElement = ($(classElement).parents().eq(2))[0];
-    return `${unitElement.getAttribute("unitID")}
-            ${classTypeElement.getAttribute("classType")} `+ 
-           `${classElement.getAttribute("location")}\n
-            ${unitElement.getAttribute("unitName")}`;
-
-  // TODO Include number of sessions (requires parsing)
+        return `${unitElement.getAttribute("unitID")}
+                ${classTypeElement.getAttribute("classType")} `+ 
+               `${classElement.getAttribute("location")}\n
+                ${unitElement.getAttribute("unitName")}`;
+    },
+    
+    // Creates a human-readable overview of the class to be used in the class output
+    getOverview: (classElement) => {
+        return `${classElement.getAttribute("day")}
+                ${classElement.getAttribute("start")} - 
+                ${classElement.getAttribute("end")}
+                ${classElement.getAttribute("location")}`;
+    }
 }
-
-/**
- * Create a human-readable overview of the class to be used in the class output
- */
-function getClassOverview(classElement) {
-    return `${classElement.getAttribute("day")}
-            ${classElement.getAttribute("start")} - 
-            ${classElement.getAttribute("end")}
-            ${classElement.getAttribute("location")}`;
-}
-
 /**
  * Add a list of classes
  */
@@ -99,8 +99,8 @@ function updateClassSelected(classElement) {
 function addClassEvent(calendar, classElement) {
     const classTypeElement = classElement.parentNode;
     calendar.fullCalendar("renderEvent", {
-        id: getClassID(classElement),
-        title: getClassText(classElement),
+        id: Class.getUID(classElement),
+        title: Class.getDescription(classElement),
         start: Date.parse(`${classElement.getAttribute("day")} ${classElement.getAttribute("start")}`),
         end: Date.parse(`${classElement.getAttribute("day")} ${classElement.getAttribute("end")}`),
         className: classTypeElement.getAttribute("classType").toLowerCase()
@@ -111,7 +111,7 @@ function addClassEvent(calendar, classElement) {
  * Remove a class event from the calendar
  */
 function removeClassEvent(calendar, classElement) {
-    calendar.fullCalendar("removeEvents", getClassID(classElement));
+    calendar.fullCalendar("removeEvents", Class.getUID(classElement));
     classElement.selected = false;
     $(classElement).find(".remove-class").remove();
 }
@@ -132,7 +132,7 @@ function createEvent(classElement) {
     const classTypeElement = classElement.parentNode;
     return {
         id: "preview",
-        title: getClassText(classElement),
+        title: Class.getDescription(classElement),
         start: Date.parse(`$(classElement.getAttribute("day")) ${classElement.getAttribute("start")}`),
         end: Date.parse(`$(classElement.getAttribute("day") ${classElement.getAttribute("end")}`),
         className: `preview ${classTypeElement.getAttribute("classType").toLowerCase()}`
@@ -149,7 +149,7 @@ function previewClass(calendar, classElement) {
         calendar.fullCalendar("renderEvent", createEvent(classElement));
     } else {
         // Find the event on the calendar and make it a preview
-        const id = getClassID(classElement);
+        const id = Class.getUID(classElement);
         let events = $("#calendar").fullCalendar("clientEvents", id);
         if (events[0].className.indexOf("preview") === -1) {
             events[0].className.push("preview");
@@ -167,7 +167,6 @@ function previewClasses(calendar, classElements) {
     [].slice.call(classElements).forEach((v, i, o) => {
         events.push(createEvent(v))
     })
-    console.log(events);
     // Render all of the events together
     calendar.fullCalendar("renderEvents", events);
 }
@@ -177,7 +176,7 @@ function previewClasses(calendar, classElements) {
  */
 function removeClassPreview(calendar, classElement) {
     // Get the event from the calendar
-    let id = getClassID(classElement),
+    let id = Class.getUID(classElement),
         events = calendar.fullCalendar("clientEvents", id);
 
     // Check if the preview for this class exists
@@ -196,8 +195,8 @@ function removeClassPreview(calendar, classElement) {
  */
 function getTimes(classElement) {
     const day = classElement.getAttribute("day"),
-          start = Date.parse(day + " " + classElement.getAttribute("start")),
-          end = Date.parse(day + " " + classElement.getAttribute("end"));
+          start = Date.parse(`${day} ${classElement.getAttribute("start")}`),
+          end = Date.parse(`${day} ${classElement.getAttribute("end")}`);
     return {
         "start": start,
         "end": end
@@ -226,8 +225,8 @@ function checkClassOverlap(newClass) {
           // TODO Add "do not ask again" checkbox
             $.confirm({
                 title: "Class Overlap!",
-                content: `This new class:<br> ${getClassText(newClass)} <br><br>
-                          Clashes with the old:<br> ${getClassText(oldClass)} + <br><br>
+                content: `This new class:<br> ${Class.getDescription(newClass)} <br><br>
+                          Clashes with the old:<br> ${Class.getDescription(oldClass)} + <br><br>
                           Which should be kept?`,
                 buttons: {
                     both: { /* Do nothing */ },
@@ -279,7 +278,7 @@ function updateClassBadges(classElement) {
                 "src": "img/done.png"
             })
         ));
-    } else {
+    } else if (!title.has(".badge-warn").length) {
         title.prepend(crel("div", {
                 "class": "list-button badge-warn",
                 "title": "Duplicate classes!"
@@ -287,7 +286,7 @@ function updateClassBadges(classElement) {
                 "src": "img/warn.png"
             })
         ));
-    }
+    } else {}
 
     // Remove the warning badge
     if (classCount < 2) $(classElement.parentNode).find(".badge-warn").remove();
