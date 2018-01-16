@@ -31,7 +31,28 @@ const Class = {
                 ${classElement.getAttribute("start")} - 
                 ${classElement.getAttribute("end")}
                 ${classElement.getAttribute("location")}`;
-    }
+    },
+    
+    /*
+    updateSelected: function(classEle){
+        let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
+        storedData[this.getUnitID(classEle)].classes[this.getClassIndex(classEle)].selected = classElement.selected;
+        localStorage.setItem("unitData", JSON.stringify(storedData));
+    }*/
+}
+/**
+ * Update the selected status of a class in localStorage
+ */
+function updateClassSelected(classElement) {
+    // Get the class data
+    const unitElement = ($(classElement).parents().eq(2))[0],
+          unitID = unitElement.getAttribute("unitID"),
+          classIndex = classElement.getAttribute("classIndex");
+
+    // Update the 'selected' state in localStorage
+    let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
+    storedData[unitID].classes[classIndex].selected = classElement.selected;
+    localStorage.setItem("unitData", JSON.stringify(storedData));
 }
 /**
  * Add a list of classes
@@ -78,20 +99,7 @@ function removeClass(classElement) {
     updateClassOutput(classElement);
 }
 
-/**
- * Update the selected status of a class in localStorage
- */
-function updateClassSelected(classElement) {
-    // Get the class data
-    const unitElement = ($(classElement).parents().eq(2))[0],
-          unitID = unitElement.getAttribute("unitID"),
-          classIndex = classElement.getAttribute("classIndex");
 
-    // Update the 'selected' state in localStorage
-    let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
-    storedData[unitID].classes[classIndex].selected = classElement.selected;
-    localStorage.setItem("unitData", JSON.stringify(storedData));
-}
 
 /**
  * Add a new class event to the calendar

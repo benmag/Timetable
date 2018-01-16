@@ -78,7 +78,7 @@ function generateClassOutput() {
     // TODO Convert 12-hour to 24-hour time format
     var cardText = crel("p", {
       "class": "card-text"
-    }, getClassOverview(selectedClasses[i]));
+    }, Class.getOverview(selectedClasses[i]));
     typeBlock.append(cardText);
   }
 }
@@ -106,7 +106,7 @@ function updateClassOutput(classElement) {
     // Get the class-text
     var cardText = crel("p", {
       "class": "card-text"
-    }, getClassOverview(selectedClasses[i]));
+    }, Class.getOverview(selectedClasses[i]));
 
     classTextList[i] = cardText;
   }
