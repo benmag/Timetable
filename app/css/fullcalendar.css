@@ -1,0 +1,34 @@
+/* FullCalendar Customisation */
+
+.fc-unthemed td.fc-today {
+  background: #fff; /* default: #fcf8e3 */
+}
+
+.fc td.fc-today {
+  border-style: solid; /* default: double */
+}
+
+.fc-event {
+  background-color: #ccc; /* default: #3a87ad */
+  border-radius: 0; /* default: 3px */
+  border-color: #ddd; /* default: #3a87ad */
+  color: #000; /* default TEXT color */
+  margin: 0 -1px -1px -1px;
+  padding: 5px;
+}
+
+.fc-event:hover {
+  color: #000;  /* default TEXT color */
+}
+
+.ui-widget .fc-event {
+  color: #000;  /* default TEXT color */
+}
+
+.fc-ltr .fc-time-grid .fc-event-container,
+.fc-rtl .fc-time-grid .fc-event-container {
+  /* space on the sides of events for RTL */
+  /* defaultLTR: 0 2.5% 0 2px; */
+  /* defaultRTL: 0 2px 0 2.5%; */
+  margin: 0;
+}

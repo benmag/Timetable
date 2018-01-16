@@ -8,7 +8,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed incorrect padding on sidebar input
 - Added warning icon when user selects multiple classes of the same type
 - Added calendar highlight when user hovers over a selected class in the sidebar
-- Updated jQuery to version ???
+- Added Bower package management to the project
+- Added class overlap detection and controls
+- Performance improvements for recursive functions
+- Localised all assets for improved speed
+- Storing units as JSON instead of saving the entire 'class-container' HTML
+- Changed time range from 07:00-22:00 to 08:00-23:00
+- Improved unit summary by breaking down selected classes into unit cards
 
 ## [2.0.2] - 2016-06-08
 ### Added
@@ -66,7 +72,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 - Fixed event overlap and padding. Classes now accurately resize depending on how many units are in the same time slot
 - Fixed calendar stretching when modifying inline element sizing (Seems to be fixed by FullCalendar update)
 
-[Unreleased]: https://github.com/benmag/Timetable/compare/2.0.2
-[2.0.2]: https://github.com/benmag/Timetable/compare/2.0.1...2.0.2
-[2.0.1]: https://github.com/benmag/Timetable/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/benmag/Timetable/compare/1.1.1...2.0.0
+[Unreleased]: https://github.com/DeathIsUnknown/qut-timetable/compare/2.0.2
+[2.0.2]: https://github.com/DeathIsUnknown/qut-timetable/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/DeathIsUnknown/qut-timetable/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/DeathIsUnknown/qut-timetable/compare/1.1.1...2.0.0

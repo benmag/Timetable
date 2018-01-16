@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, maximum-scale=1, user-scalable=0"/>
+
+  <meta name="description" content="Plan your perfect timetable with this free open-source utility for QUT students" />
+  <meta name="author" content="Ben M, Dave A and Andrew C" />
+
+  <title>QUT Timetable Planner</title>
+
+  <!-- Mobile Support -->
+  <link rel="manifest" href="mobile-manifest.json" />
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <link rel="apple-touch-icon" sizes="128x128" href="img/icon128.png" />
+  <link rel="icon" sizes="128x128" href="img/icon128.png">
+
+  <!-- Fonts -->
+  <link href="lib/font-roboto/dist/styles/roboto.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Core CSS -->
+  <link href="lib/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet" type="text/css" />
+  <link href="lib/fullcalendar/dist/fullcalendar.min.css" rel="stylesheet" type="text/css" />
+  <!-- <link href="lib/fullcalendar/dist/fullcalendar.print.css" rel="stylesheet" type="text/css" media="print" /> -->
+  <link href="lib/jquery-confirm2/dist/jquery-confirm.min.css" rel="stylesheet" type="text/css" />
+
+  <!-- Custom CSS -->
+  <link href="css/loader.css" rel="stylesheet" type="text/css" />
+  <link href="css/sidebar.css" rel="stylesheet" type="text/css" />
+  <link href="css/scrollbar.css" rel="stylesheet" type="text/css" />
+  <link href="css/fullcalendar.css" rel="stylesheet" type="text/css" />
+  <link href="css/events.css" rel="stylesheet" type="text/css" />
+  <link href="css/main.css" rel="stylesheet" type="text/css" />
+</head>
+
+<body>
+  <div id="wrapper">
+
+    <nav class="sidebar-wrapper">
+      <ul class="sidebar-nav">
+
+        <li class="sidebar-brand">
+          <span>Timetable Planner</span>
+        </li>
+
+        <li class="sidebar-search">
+          <div class="search-icon">
+            <img src="img/search.png" />
+          </div>
+
+          <div class="search-control">
+            <input id="unit-search" placeholder="Unit Search" type="text" tabindex="0" />
+          </div>
+
+          <div id="loader" style="display:none">
+            <svg class="circular" viewbox="25 25 50 50">
+              <circle class="path" cx="50" cy="50" r="20" fill="none" stroke-width="5" stroke-miterlimit="10"></circle>
+            </svg>
+          </div>
+        </li>
+
+        <li class="sidebar-search">
+          <div class="search-icon">
+            <img src="img/campus.png" />
+          </div>
+
+          <div class="search-control campus-selector">
+            <select id="campus-selector">
+              <option value="0">Loading...</option>
+            </select>
+          </div>
+        </li>
+
+        <li id="class-container"></li>
+
+      </ul>
+    </nav>
+
+    <main class="page-content-wrapper">
+      <div class="container-fluid">
+
+        <!-- Calendar Placeholder -->
+        <div id="calendar"></div>
+
+        <!-- Disclaimer -->
+        <div class="alert alert-danger alert-dismissible fade show hidden-print" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          Available classes are subject to change at QUT's discretion. Selected classes may not be available when enrolment opens.
+        </div>
+
+        <!-- Helpful Hints -->
+        <div id="hints" class="alert alert-info alert-dismissible fade show hidden-print" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <!-- Placeholder for helpful hints text -->
+        </div>
+
+        <!-- Controls -->
+        <div class="row mb-3">
+          <div class="col">
+            <button type="button" class="btn btn-secondary" id="menu-toggle">Toggle Sidebar</button>
+            <a href="https://www.paypal.me/deathisunknown/5" target="_blank" rel="noopener noreferrer" class="btn btn-warning" id="donate">Support Development</a>
+          </div>
+          <div class="col">
+            <a href="https://qutvirtual3.qut.edu.au/qv/ttab_student_p.show" target="_blank" rel="noopener noreferrer" class="btn btn-primary float-right" id="view-enrolled">View Enrolled Units</a>
+          </div>
+        </div>
+
+        <!-- Donation Info -->
+        <div class="alert alert-warning alert-dismissible fade show hidden-print" role="alert">
+          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+          <span>
+            Development of this timetable planner is done in the spare time of a QUT student just like you.
+            If you've found that this app has saved you time, or if you'd like to support continued development of new features, please consider
+            <a href="https://www.paypal.me/deathisunknown/5" target="_blank" rel="noopener noreferrer" class="alert-link">donating</a>
+            any amount by clicking the button above.
+          </span>
+        </div>
+
+        <!-- Selected Class Output Placeholder -->
+        <div id="unitOverview" data-columns></div>
+
+      </div>
+    </main>
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Libraries -->
+  <script src="lib/jquery/dist/jquery.min.js"></script>
+  <script src="lib/tether/dist/js/tether.min.js"></script>
+  <script src="lib/bootstrap/dist/js/bootstrap.min.js"></script>
+  <script src="lib/moment/moment.js"></script>
+  <script src="lib/fullcalendar/dist/fullcalendar.min.js"></script>
+  <script src="lib/crel/crel.min.js"></script>
+  <script src="lib/date.js/build/date.js"></script>
+  <script src="lib/salvattore/dist/salvattore.js"></script>
+
+  <!-- Extensions -->
+  <script src="lib/jquery-confirm2/dist/jquery-confirm.min.js"></script>
+  <script src="lib/jquery-scrollLock/jquery-scrollLock.min.js"></script>
+
+  <!-- Custom -->
+  <script src="js/extract.js"></script>
+  <script src="js/import.js"></script>
+  <script src="js/overview.js"></script>
+  <script src="js/class.js"></script>
+  <script src="js/jquery-yql.js"></script>
+  <script src="js/search.js"></script>
+  <script src="js/sidebar.js"></script>
+  <script src="js/hints.js"></script>
+  <script src="js/main.js"></script>
+</body>
+
+</html>
