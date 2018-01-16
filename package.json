@@ -1,35 +1,16 @@
 {
-  "name": "timetabler",
-  "version": "2.0.2",
+  "name": "qut-timetabler",
+  "version": "2.0.3",
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
-  "main": "start.js",
-  "scripts": {
-    "start": "electron ./app",
-    "postinstall": "install-app-deps",
-    "dev": "NODE_ENV='development' npm run start",
-    "dist": "npm run dist:osx && npm run dist:win32 && npm run dist:win64",
-    "dist:osx": "build --platform darwin",
-    "dist:win32": "build --platform win32 --arch ia32",
-    "dist:win64": "build --platform win32 --arch x64"
-  },
+  "homepage": "https://github.com/DeathIsUnknown/qut-timetable",
+  "bugs": "https://github.com/DeathIsUnknown/qut-timetable/issues",
+  "main": "app/index.html",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/benmag/Timetable.git"
+    "url": "https://github.com/DeathIsUnknown/qut-timetable.git"
   },
-  "author": "Ben M, Dave A & Andrew C",
   "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/benmag/Timetable/issues"
-  },
-  "homepage": "https://github.com/benmag/Timetable#readme",
-  "build": {
-    "app-bundle-id": "qut.timetable.app",
-    "app-category-type": "public.app-category.productivity",
-    "iconUrl": "https://raw.githubusercontent.com/benmag/Timetable/master/app/img/icon.ico"
-  },
   "devDependencies": {
-    "electron-builder": "^4.2.3",
-    "electron-packager": "^7.0.3",
-    "electron-prebuilt": "^0.37.8"
+    "bower": "^1.8.2"
   }
 }
