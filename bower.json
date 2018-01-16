@@ -11,6 +11,7 @@
     "jquery-confirm2": "craftpip/jquery-confirm#^3.0.3",
     "jquery-scrollLock": "^3.0.0",
     "respond": "^1.4.2",
-    "tether": "^1.4.0"
+    "tether": "^1.4.0",
+    "salvattore": "1.0.9"
   }
 }
