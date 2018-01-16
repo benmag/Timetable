@@ -3,9 +3,9 @@
  * Format: [unitID][classIndex]
  */
 function getClassID(classElement) {
-  var unitElement = ($(classElement).parents().eq(2))[0];
-  var unitID = unitElement.getAttribute("unitID");
-  var classIndex = classElement.getAttribute("classIndex");
+  const unitElement = ($(classElement).parents().eq(2))[0],
+        unitID = unitElement.getAttribute("unitID"),
+        classIndex = classElement.getAttribute("classIndex");
   return unitID + classIndex;
 }
 
@@ -13,12 +13,12 @@ function getClassID(classElement) {
  * Create a human-readable description of the class to be used in the calendar
  */
 function getClassText(classElement) {
-  var classTypeElement = classElement.parentNode;
-  var unitElement = ($(classElement).parents().eq(2))[0];
-  return unitElement.getAttribute("unitID") + "\n" +
-    classTypeElement.getAttribute("classType") + " " +
-    classElement.getAttribute("location") + "\n\n" +
-    unitElement.getAttribute("unitName");
+    const classTypeElement = classElement.parentNode,
+          unitElement = ($(classElement).parents().eq(2))[0];
+    return `${unitElement.getAttribute("unitID")}
+            ${classTypeElement.getAttribute("classType")} `+ 
+           `${classElement.getAttribute("location")}\n
+            ${unitElement.getAttribute("unitName")}`;
 
   // TODO Include number of sessions (requires parsing)
 }
@@ -27,24 +27,20 @@ function getClassText(classElement) {
  * Create a human-readable overview of the class to be used in the class output
  */
 function getClassOverview(classElement) {
-  return classElement.getAttribute("day") + " " +
-    classElement.getAttribute("start") + " - " +
-    classElement.getAttribute("end") + " " +
-    classElement.getAttribute("location");
+    return `${classElement.getAttribute("day")}
+            ${classElement.getAttribute("start")} - 
+            ${classElement.getAttribute("end")}
+            ${classElement.getAttribute("location")}`;
 }
 
 /**
  * Add a list of classes
  */
 function addClasses(classes) {
-  var length = classes.length;
-  if (length > 0) {
-    var i = 0;
-    for (i; i < length; i++) {
-      addClass(classes[i]);
+    if (classes.length> 0) for (i = 0; i < classes.length; i++) {
+        addClass(classes[i]);
     }
-  }
-  generateClassOutput();
+    generateClassOutput();
 }
 
 /**
@@ -88,9 +84,9 @@ function removeClass(classElement) {
  */
 function updateClassSelected(classElement) {
   // Get the class data
-  var unitElement = ($(classElement).parents().eq(2))[0];
-  var unitID = unitElement.getAttribute("unitID");
-  var classIndex = classElement.getAttribute("classIndex");
+  const unitElement = ($(classElement).parents().eq(2))[0],
+        unitID = unitElement.getAttribute("unitID"),
+        classIndex = classElement.getAttribute("classIndex");
 
   // Update the 'selected' state in localStorage
   var storedData = JSON.parse(localStorage.getItem("unitData")) || {};
@@ -168,8 +164,8 @@ function previewClass(calendar, classElement) {
  */
 function previewClasses(calendar, classElements) {
   // Convert the list of classes into events
-  var events = [];
-  var len = classElements.length, i = 0;
+  var events = [], 
+      len = classElements.length, i = 0;
   for (i; i < len; i++) {
     var event = createEvent(classElements[i]);
     events.push(event);
@@ -184,8 +180,8 @@ function previewClasses(calendar, classElements) {
  */
 function removeClassPreview(calendar, classElement) {
   // Get the event from the calendar
-  var id = getClassID(classElement);
-  var events = calendar.fullCalendar("clientEvents", id);
+  var id = getClassID(classElement),
+      events = calendar.fullCalendar("clientEvents", id);
 
   // Check if the preview for this class exists
   if (events.length === 1) {
@@ -202,9 +198,9 @@ function removeClassPreview(calendar, classElement) {
  * Extract the beginning and end of a class element
  */
 function getTimes(classElement) {
-  var day = classElement.getAttribute("day");
-  var start = Date.parse(day + " " + classElement.getAttribute("start"));
-  var end = Date.parse(day + " " + classElement.getAttribute("end"));
+  var day = classElement.getAttribute("day"),
+      start = Date.parse(day + " " + classElement.getAttribute("start")),
+      end = Date.parse(day + " " + classElement.getAttribute("end"));
 
   return {
     "start": start,
@@ -217,8 +213,8 @@ function getTimes(classElement) {
  */
 function checkClassOverlap(newClass) {
   // Check if there are at least two classes
-  var selectedClasses = $(".classes").find(".class:selected").not(newClass);
-  var len = selectedClasses.length, i = 0;
+  var selectedClasses = $(".classes").find(".class:selected").not(newClass),
+      len = selectedClasses.length, i = 0;
   if (len < 1) {
     return false;
   }
@@ -226,8 +222,8 @@ function checkClassOverlap(newClass) {
   var newClassTimes = getTimes(newClass);
 
   for (i; i < len; i++) {
-    var oldClass = selectedClasses[i];
-    var oldClassTimes = getTimes(oldClass);
+    var oldClass = selectedClasses[i],
+        oldClassTimes = getTimes(oldClass);
 
     if (newClassTimes.start < oldClassTimes.end && newClassTimes.end > oldClassTimes.start) {
       // TODO Make sure these classes aren't meant to overlap (e.g. PR1 & PR2)
@@ -267,57 +263,41 @@ function checkClassOverlap(newClass) {
  * BUG: This may be run after importing from inject script, causing duplicate units.
  */
 function loadClassData(calendar) {
-  var unitData = JSON.parse(localStorage.getItem("unitData")) || {};
-  for (var unitID in unitData) {
-    if (unitData.hasOwnProperty(unitID)) {
-      updateUnitList(unitData[unitID]);
-    }
-  }
-
-  var classes = $(".classes").find(".class:selected");
-  addClasses(classes);
+    const unitData = JSON.parse(localStorage.getItem("unitData")) || {};
+    for (let unitID in unitData) if (unitData.hasOwnProperty(unitID)) updateUnitList(unitData[unitID]);
+    const classes = $(".classes").find(".class:selected");
+    addClasses(classes);
 }
 
 /**
  * Add a warning badge for duplicate classes or a done badge for valid ones
  */
 function updateClassBadges(classElement) {
-  var classCount = $(classElement.parentNode).find(".class:selected").length;
-  var title = $(classElement.parentNode).find(".class-type");
+    const classCount = $(classElement.parentNode).find(".class:selected").length,
+          title = $(classElement.parentNode).find(".class-type");
 
-  // Add a warning badge
-  if (classCount > 1) {
-    if (!title.has(".badge-warn").length) {
-      title.prepend(crel("div", {
-          "class": "list-button badge-warn",
-          "title": "Duplicate classes!"
-        }, crel("img", {
-          "src": "img/warn.png"
-        })
-      ));
+    // Check to see if a status badge should be added
+    if (classCount == 1 && !title.has(".badge-done").length) {
+        title.prepend(crel("div", {
+                "class": "list-button badge-done",
+                "title": "Done!"
+            }, crel("img", {
+                "src": "img/done.png"
+            })
+        ));
+    } else {
+        title.prepend(crel("div", {
+                "class": "list-button badge-warn",
+                "title": "Duplicate classes!"
+            }, crel("img", {
+                "src": "img/warn.png"
+            })
+        ));
     }
-  }
 
-  // Add a done badge
-  if (classCount === 1) {
-    if (!title.has(".badge-done").length) {
-      title.prepend(crel("div", {
-          "class": "list-button badge-done",
-          "title": "Done!"
-        }, crel("img", {
-          "src": "img/done.png"
-        })
-      ));
-    }
-  }
-
-  // Remove the warning badge
-  if (classCount < 2) {
-    $(classElement.parentNode).find(".badge-warn").remove();
-  }
-
-  // Remove the done badge
-  if (classCount !== 1) {
-    $(classElement.parentNode).find(".badge-done").remove();
-  }
+    // Remove the warning badge
+    if (classCount < 2) $(classElement.parentNode).find(".badge-warn").remove();
+ 
+    // Remove the done badge
+    if (classCount !== 1) $(classElement.parentNode).find(".badge-done").remove();
 }
