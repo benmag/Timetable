@@ -118,7 +118,7 @@ $(document).on("click", ".class-text", function() {
   // If the class is selected, it is already on the calendar
   var classElement = this.parentNode;
   if (!classElement.selected) {
-    addClass(classElement);
+    Class.add(classElement);
     generateClassOutput();
   }
 });
@@ -128,7 +128,7 @@ $(document).on("click", ".class-text", function() {
  */
 $(document).on("click", ".remove-class", function() {
   var classElement = this.parentNode;
-  removeClass(classElement);
+  Class.remove(classElement);
   generateClassOutput();
 });
 
@@ -146,7 +146,7 @@ $(document).on("click", ".remove-unit", function() {
 
   // Remove the unit listing
   unitHeader.remove();
-  removeUnit(subjectCode);
+  Class.removeUnit(subjectCode);
   generateClassOutput();
 
   // Trigger a resize event to resize the sidebar

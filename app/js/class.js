@@ -1,4 +1,4 @@
-const Class = {
+let Class = {
     // Grabs unit element from class element
     getUnitElement: (element)=>($(element).parents().eq(2))[0],
     
@@ -10,9 +10,11 @@ const Class = {
     // Grabs class index from class element
     getClassIndex: (element) => element.getAttribute("classIndex"),
     
+    // Grabs ID & Index Data
+    getMarkers: (element) => [Class.getUnitID(element), Class.getClassIndex(element)],
+    
     //Create a unique identifier for classes on the calendar, [unitID][classIndex]
     getUID: function (classElement) {
-        console.log(this.getUnitID(classElement), this.getClassIndex(classElement))
         return this.getUnitID(classElement) + this.getClassIndex(classElement);
     },
     
@@ -45,110 +47,155 @@ const Class = {
         };
     },
     
-    // Add a list of classes
+    // Add a list of classes 
     addMulti: (classes) => {
-        if (classes.length> 0) for (i = 0; i < classes.length; i++) addClass(classes[i]);
+        if (classes.length> 0) for (i = 0; i < classes.length; i++) Class.add(classes[i]);
         generateClassOutput();
-    }
-}
-
-/**
- * Update the selected status of a class in localStorage
- */
-function updateClassSelected(classElement) {
-    // Get the class data
-    const unitElement = ($(classElement).parents().eq(2))[0],
-          unitID = unitElement.getAttribute("unitID"),
-          classIndex = classElement.getAttribute("classIndex");
-
-    // Update the 'selected' state in localStorage
-    let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
-    storedData[unitID].classes[classIndex].selected = classElement.selected;
-    localStorage.setItem("unitData", JSON.stringify(storedData));
-}
-
-/**
- * Add a new class to the calendar
- */
-function addClass(classElement) {
-    classElement.selected = true;
-
-    // Remove the event previes
-    let cal = $("#calendar");
-    cal.fullCalendar("removeEvents", "preview");
-
-    // Add a button to remove the selected class
-    classElement.prepend(crel("div", {
-        "class": "list-button remove-class",
-        "aria-hidden": true
-    }, "x"));
-
-    // Add the event to the calendar and perform checks
-    checkClassOverlap(classElement);
-    addClassEvent(cal, classElement);
-    updateClassSelected(classElement);
-    updateClassBadges(classElement);
-    updateClassOutput(classElement);
-}
-
-/**
- * Remove an existing class from the calendar
- */
-function removeClass(classElement) {
-    const cal = $("#calendar");
-    removeClassEvent(cal, classElement);
-    updateClassSelected(classElement);
-    updateClassBadges(classElement);
-    updateClassOutput(classElement);
-}
-
-
-
-/**
- * Add a new class event to the calendar
- */
-function addClassEvent(calendar, classElement) {
-    const classTypeElement = classElement.parentNode;
-    calendar.fullCalendar("renderEvent", {
-        id: Class.getUID(classElement),
-        title: Class.getDescription(classElement),
-        start: Date.parse(`${classElement.getAttribute("day")} ${classElement.getAttribute("start")}`),
-        end: Date.parse(`${classElement.getAttribute("day")} ${classElement.getAttribute("end")}`),
-        className: classTypeElement.getAttribute("classType").toLowerCase()
-    });
-}
-
-/**
- * Remove a class event from the calendar
- */
-function removeClassEvent(calendar, classElement) {
-    console.log("checl", Class.getUID(classElement), classElement, calendar)
-    calendar.fullCalendar("removeEvents", Class.getUID(classElement));
-    classElement.selected = false;
-    $(classElement).find(".remove-class").remove();
-}
-
-/**
- * Remove a unit from localStorage
- */
-function removeUnit(unitID) {
-    let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
-    delete storedData[unitID];
-    localStorage.setItem("unitData", JSON.stringify(storedData));
-}
-
-/*
- * Create an event to be added to the calendar
- */
-function createEvent(classElement) {
-    const classTypeElement = classElement.parentNode;
-    return {
+    },
+    
+    // Generate preview event to be added to calendar
+    genPreview: (classElement) => ({
         id: "preview",
         title: Class.getDescription(classElement),
-        start: Date.parse(`$(classElement.getAttribute("day")) ${classElement.getAttribute("start")}`),
-        end: Date.parse(`$(classElement.getAttribute("day") ${classElement.getAttribute("end")}`),
-        className: `preview ${classTypeElement.getAttribute("classType").toLowerCase()}`
-    };
+        start: Date.parse(Class.getTimes(classElement).start),
+        end:  Date.parse(Class.getTimes(classElement).end),
+        className: `preview ${classElement.parentNode.getAttribute("classType").toLowerCase()}`
+    }),
+    
+    
+    // Re-gen class related dom material
+    update: {
+        main: (classEle) => {
+            Class.save(classEle);
+            Class.update.badges(classEle);
+            updateClassOutput(classEle);
+        },
+        badges: (classEle) => {
+            const classCount = $(classEle.parentNode).find(".class:selected").length,
+                  title = $(classEle.parentNode).find(".class-type");
+
+            if (classCount != 0 && !title.has(`.badge-${classCount == 1 ? 'done' : 'warn'}`).length){
+                title.prepend(crel("div", {
+                        "class": `list-button badge-${classCount == 1 ? 'done' : 'warn'}`,
+                        "title": "Done!"
+                    }, crel("img", {
+                        "src": `img/${classCount == 1 ? 'done' : 'warn'}.png`
+                    })
+                ));
+            }
+
+            // Remove the warning badge
+            if (classCount < 2) $(classEle.parentNode).find(".badge-warn").remove();
+
+            // Remove the done badge
+            if (classCount !== 1) $(classEle.parentNode).find(".badge-done").remove();
+        }
+    },
+    
+    // Add a new class to the calendar
+    add: (classEle) => {
+        classEle.selected = true;
+        let cal = $("#calendar");
+        cal.fullCalendar("removeEvents", "preview");
+        classEle.prepend(crel("div", {
+            "class": "list-button remove-class",
+            "aria-hidden": true
+        }, "x"));
+        Class.checkOverlap(classEle);
+        Class.addCalEvent(cal, classEle);
+        Class.update.main(classEle);
+    },
+    
+    // Remove an existing class from the calendar
+    remove: (classEle) => {
+        Class.removeCalEvent($("#calendar"), classEle);
+        Class.update.main(classEle);
+    },
+    
+    // Add class calendar event to calendar
+    addCalEvent: (cal, classEle) => {
+        cal.fullCalendar("renderEvent", {
+            id: Class.getUID(classEle),
+            title: Class.getDescription(classEle),
+            start: Date.parse(Class.getTimes(classEle).start),
+            end:  Date.parse(Class.getTimes(classEle).end),
+            className: classEle.parentNode.getAttribute("classType").toLowerCase()
+        });
+    },
+    
+    // Update the selected status of a class in localStorage
+    save: (classEle) => {
+        let storedData = JSON.parse(localStorage.getItem("unitData")) || {},
+            [unitID, classIndex] = Class.getMarkers(classEle);
+        storedData[unitID].classes[classIndex].selected = classEle.selected;
+        localStorage.setItem("unitData", JSON.stringify(storedData));
+    }, 
+    
+    // Load saved classes from local storage
+    load: (cal) => {
+        const unitData = JSON.parse(localStorage.getItem("unitData")) || {};
+        for (let unitID in unitData) if (unitData.hasOwnProperty(unitID)) updateUnitList(unitData[unitID]);
+        Class.addMulti($(".classes").find(".class:selected"));
+    },
+    
+    // Check for class overlaps
+    checkOverlap: (newClass) => {
+        // Check if there are at least two classes
+        const selectedClasses = $(".classes").find(".class:selected").not(newClass),
+              len = selectedClasses.length;
+
+        // Break as conflict is impossible
+        if (len < 1) return false;
+
+        const newClassTimes = Class.getTimes(newClass);
+
+        for (let i=0; i < len; i++) {
+            const oldClass = selectedClasses[i],
+                  oldClassTimes = Class.getTimes(oldClass);
+
+            if (newClassTimes.start < oldClassTimes.end && newClassTimes.end > oldClassTimes.start) {
+              // TODO Make sure these classes aren't meant to overlap (e.g. PR1 & PR2)
+              // TODO Add "do not ask again" checkbox
+                $.confirm({
+                    title: "Class Overlap!",
+                    content: `This new class:<br> ${Class.getDescription(newClass)} <br><br>
+                              Clashes with the old:<br> ${Class.getDescription(oldClass)} + <br><br>
+                              Which should be kept?`,
+                    buttons: {
+                        both: { /* Do nothing */ },
+                            old: {
+                            keys: ["esc"],
+                            action: function() {
+                              Class.remove(newClass);
+                            }
+                        }, new: {
+                            btnClass: "btn-primary",
+                            keys: ["enter"],
+                            action: function() {
+                              Class.remove(oldClass);
+                        }}
+                    }
+                });
+
+                // Break the loop so we don't keep checking classes
+                return false;
+            }
+        }
+    },
+    
+    // Remove class element from calendar element
+    removeCalEvent: (cal, classEle) => {
+        cal.fullCalendar("removeEvents", Class.getUID(classEle));
+        classEle.selected = false;
+        $(classEle).find(".remove-class").remove();
+    },
+    
+    // Remove a unit from local storage
+    removeUnit: (unitID) => {
+        let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
+        delete storedData[unitID];
+        localStorage.setItem("unitData", JSON.stringify(storedData));
+    }
 }
 
 /**
@@ -158,7 +205,7 @@ function previewClass(calendar, classElement) {
     // Check if the class has been added to the calendar
     if (!classElement.selected) {
         // Add the event details to the calendar as a preview
-        calendar.fullCalendar("renderEvent", createEvent(classElement));
+        calendar.fullCalendar("renderEvent", Class.genPreview(classElement));
     } else {
         // Find the event on the calendar and make it a preview
         const id = Class.getUID(classElement);
@@ -173,12 +220,10 @@ function previewClass(calendar, classElement) {
 /*
  * Add a list of class previews to the calendar
  */
-function previewClasses(calendar, classElements) {
+function previewClasses(calendar, classEle) {
     // Generate list of events from classes
     let events = [];
-    [].slice.call(classElements).forEach((v, i, o) => {
-        events.push(createEvent(v))
-    })
+    for (let i=0; i < classEle.length; i++) events.push(Class.genPreview(classEle[i]));
     // Render all of the events together
     calendar.fullCalendar("renderEvents", events);
 }
@@ -200,96 +245,4 @@ function removeClassPreview(calendar, classElement) {
                 calendar.fullCalendar("updateEvent", events[0]);
         }
     }
-}
-
-/**
- * Determine if any selected classes are overlapping
- */
-function checkClassOverlap(newClass) {
-    // Check if there are at least two classes
-    const selectedClasses = $(".classes").find(".class:selected").not(newClass),
-          len = selectedClasses.length;
-    
-    // Break as conflict is impossible
-    if (len < 1) return false;
-  
-    const newClassTimes = Class.getTimes(newClass);
-
-    for (let i=0; i < len; i++) {
-        const oldClass = selectedClasses[i],
-              oldClassTimes = Class.getTimes(oldClass);
-
-        if (newClassTimes.start < oldClassTimes.end && newClassTimes.end > oldClassTimes.start) {
-          // TODO Make sure these classes aren't meant to overlap (e.g. PR1 & PR2)
-          // TODO Add "do not ask again" checkbox
-            $.confirm({
-                title: "Class Overlap!",
-                content: `This new class:<br> ${Class.getDescription(newClass)} <br><br>
-                          Clashes with the old:<br> ${Class.getDescription(oldClass)} + <br><br>
-                          Which should be kept?`,
-                buttons: {
-                    both: { /* Do nothing */ },
-                        old: {
-                        keys: ["esc"],
-                        action: function() {
-                          removeClass(newClass);
-                        }
-                    }, new: {
-                        btnClass: "btn-primary",
-                        keys: ["enter"],
-                        action: function() {
-                          removeClass(oldClass);
-                    }}
-                }
-            });
-
-            // Break the loop so we don't keep checking classes
-            return false;
-        }
-    }
-}
-
-/**
- * Restore saved subjects from localStorage
- * TODO Delay injected import until this has completed, or check for duplicates within this function.
- * BUG: This may be run after importing from inject script, causing duplicate units.
- */
-function loadClassData(calendar) {
-    const unitData = JSON.parse(localStorage.getItem("unitData")) || {};
-    for (let unitID in unitData) if (unitData.hasOwnProperty(unitID)) updateUnitList(unitData[unitID]);
-    const classes = $(".classes").find(".class:selected");
-    Class.addMulti(classes);
-}
-
-/**
- * Add a warning badge for duplicate classes or a done badge for valid ones
- */
-function updateClassBadges(classElement) {
-    const classCount = $(classElement.parentNode).find(".class:selected").length,
-          title = $(classElement.parentNode).find(".class-type");
-
-    // Check to see if a status badge should be added - NH) look at using turnary on badge name
-    if (classCount == 1 && !title.has(".badge-done").length) {
-        title.prepend(crel("div", {
-                "class": "list-button badge-done",
-                "title": "Done!"
-            }, crel("img", {
-                "src": "img/done.png"
-            })
-        ));
-    } else if (!title.has(".badge-warn").length) {
-        title.prepend(crel("div", {
-                "class": "list-button badge-warn",
-                "title": "Duplicate classes!"
-            }, crel("img", {
-                "src": "img/warn.png"
-            })
-        ));
-    } else {}
-
-    // Remove the warning badge
-    if (classCount < 2) $(classElement.parentNode).find(".badge-warn").remove();
- 
-    // Remove the done badge
-    if (classCount !== 1) $(classElement.parentNode).find(".badge-done").remove();
 }
