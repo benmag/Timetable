@@ -4,14 +4,15 @@ const Class = {
     
     // Grabs unit index from class element
     getUnitID: function(element){
-        this.getUnitElement(element).getAttribute("unitID");
+        return this.getUnitElement(element).getAttribute("unitID");
     },
     
     // Grabs class index from class element
-    getClassIndex: (element)=>{element.getAttribute("classIndex")},
+    getClassIndex: (element) => element.getAttribute("classIndex"),
     
     //Create a unique identifier for classes on the calendar, [unitID][classIndex]
     getUID: function (classElement) {
+        console.log(this.getUnitID(classElement), this.getClassIndex(classElement))
         return this.getUnitID(classElement) + this.getClassIndex(classElement);
     },
     
@@ -33,13 +34,24 @@ const Class = {
                 ${classElement.getAttribute("location")}`;
     },
     
-    /*
-    updateSelected: function(classEle){
-        let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
-        storedData[this.getUnitID(classEle)].classes[this.getClassIndex(classEle)].selected = classElement.selected;
-        localStorage.setItem("unitData", JSON.stringify(storedData));
-    }*/
+    // Extracts the beginning and end times of a class element
+    getTimes: (classElement) => {
+        const day = classElement.getAttribute("day"),
+              start = Date.parse(`${day} ${classElement.getAttribute("start")}`),
+              end = Date.parse(`${day} ${classElement.getAttribute("end")}`);
+        return {
+            "start": start,
+            "end": end
+        };
+    },
+    
+    // Add a list of classes
+    addMulti: (classes) => {
+        if (classes.length> 0) for (i = 0; i < classes.length; i++) addClass(classes[i]);
+        generateClassOutput();
+    }
 }
+
 /**
  * Update the selected status of a class in localStorage
  */
@@ -54,15 +66,6 @@ function updateClassSelected(classElement) {
     storedData[unitID].classes[classIndex].selected = classElement.selected;
     localStorage.setItem("unitData", JSON.stringify(storedData));
 }
-/**
- * Add a list of classes
- */
-function addClasses(classes) {
-    if (classes.length> 0) for (i = 0; i < classes.length; i++) {
-        addClass(classes[i]);
-    }
-    generateClassOutput();
-}
 
 /**
  * Add a new class to the calendar
@@ -71,7 +74,7 @@ function addClass(classElement) {
     classElement.selected = true;
 
     // Remove the event previes
-    const cal = $("#calendar");
+    let cal = $("#calendar");
     cal.fullCalendar("removeEvents", "preview");
 
     // Add a button to remove the selected class
@@ -119,6 +122,7 @@ function addClassEvent(calendar, classElement) {
  * Remove a class event from the calendar
  */
 function removeClassEvent(calendar, classElement) {
+    console.log("checl", Class.getUID(classElement), classElement, calendar)
     calendar.fullCalendar("removeEvents", Class.getUID(classElement));
     classElement.selected = false;
     $(classElement).find(".remove-class").remove();
@@ -199,19 +203,6 @@ function removeClassPreview(calendar, classElement) {
 }
 
 /**
- * Extract the beginning and end of a class element
- */
-function getTimes(classElement) {
-    const day = classElement.getAttribute("day"),
-          start = Date.parse(`${day} ${classElement.getAttribute("start")}`),
-          end = Date.parse(`${day} ${classElement.getAttribute("end")}`);
-    return {
-        "start": start,
-        "end": end
-    };
-}
-
-/**
  * Determine if any selected classes are overlapping
  */
 function checkClassOverlap(newClass) {
@@ -222,11 +213,11 @@ function checkClassOverlap(newClass) {
     // Break as conflict is impossible
     if (len < 1) return false;
   
-    const newClassTimes = getTimes(newClass);
+    const newClassTimes = Class.getTimes(newClass);
 
     for (let i=0; i < len; i++) {
         const oldClass = selectedClasses[i],
-              oldClassTimes = getTimes(oldClass);
+              oldClassTimes = Class.getTimes(oldClass);
 
         if (newClassTimes.start < oldClassTimes.end && newClassTimes.end > oldClassTimes.start) {
           // TODO Make sure these classes aren't meant to overlap (e.g. PR1 & PR2)
@@ -267,7 +258,7 @@ function loadClassData(calendar) {
     const unitData = JSON.parse(localStorage.getItem("unitData")) || {};
     for (let unitID in unitData) if (unitData.hasOwnProperty(unitID)) updateUnitList(unitData[unitID]);
     const classes = $(".classes").find(".class:selected");
-    addClasses(classes);
+    Class.addMulti(classes);
 }
 
 /**
@@ -277,7 +268,7 @@ function updateClassBadges(classElement) {
     const classCount = $(classElement.parentNode).find(".class:selected").length,
           title = $(classElement.parentNode).find(".class-type");
 
-    // Check to see if a status badge should be added
+    // Check to see if a status badge should be added - NH) look at using turnary on badge name
     if (classCount == 1 && !title.has(".badge-done").length) {
         title.prepend(crel("div", {
                 "class": "list-button badge-done",
