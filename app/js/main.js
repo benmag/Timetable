@@ -76,7 +76,7 @@ var cal = $("#calendar").fullCalendar({
 });
 
 // Load the class data into the sidebar and calendar
-loadClassData(cal);
+Class.load(cal);
 
 /**
  * Open a new tab to the selected unit's outline
