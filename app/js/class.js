@@ -195,54 +195,46 @@ let Class = {
         let storedData = JSON.parse(localStorage.getItem("unitData")) || {};
         delete storedData[unitID];
         localStorage.setItem("unitData", JSON.stringify(storedData));
-    }
-}
-
-/**
- * Add a class preview to the calendar
- */
-function previewClass(calendar, classElement) {
-    // Check if the class has been added to the calendar
-    if (!classElement.selected) {
-        // Add the event details to the calendar as a preview
-        calendar.fullCalendar("renderEvent", Class.genPreview(classElement));
-    } else {
-        // Find the event on the calendar and make it a preview
-        const id = Class.getUID(classElement);
-        let events = $("#calendar").fullCalendar("clientEvents", id);
-        if (events[0].className.indexOf("preview") === -1) {
-            events[0].className.push("preview");
-            calendar.fullCalendar("updateEvent", events[0]);
+    },
+    
+    // Add a class preview to the calendar
+    preview: (cal, classEle) => {
+        // Check if the class has been added to the calendar
+        if (!classEle.selected) {
+            // Add the event details to the calendar as a preview
+            cal.fullCalendar("renderEvent", Class.genPreview(classEle));
+        } else {
+            // Find the event on the calendar and make it a preview
+            const id = Class.getUID(classEle);
+            let events = $("#calendar").fullCalendar("clientEvents", id);
+            if (events[0].className.indexOf("preview") === -1) {
+                events[0].className.push("preview");
+                cal.fullCalendar("updateEvent", events[0]);
+            }
         }
-    }
-}
+    },
+    
+    //
+    previewAll: (cal, classEle) => {
+        let events = [];
+        for (let i=0; i < classEle.length; i++) events.push(Class.genPreview(classEle[i]));
+        cal.fullCalendar("renderEvents", events);
+    },
+    
+    // Remove a class preview from the calendar
+    removePreview: (cal, classEle) => {
+        // Get the event from the calendar
+        let id = Class.getUID(classEle),
+            events = cal.fullCalendar("clientEvents", id);
 
-/*
- * Add a list of class previews to the calendar
- */
-function previewClasses(calendar, classEle) {
-    // Generate list of events from classes
-    let events = [];
-    for (let i=0; i < classEle.length; i++) events.push(Class.genPreview(classEle[i]));
-    // Render all of the events together
-    calendar.fullCalendar("renderEvents", events);
-}
-
-/**
- * Remove a class preview from the calendar
- */
-function removeClassPreview(calendar, classElement) {
-    // Get the event from the calendar
-    let id = Class.getUID(classElement),
-        events = calendar.fullCalendar("clientEvents", id);
-
-    // Check if the preview for this class exists
-    if (events.length === 1) {
-        // Remove the preview' className
-        const index = events[0].className.indexOf("preview");
-        if (index > -1) {
-                events[0].className.splice(index, 1);
-                calendar.fullCalendar("updateEvent", events[0]);
+        // Check if the preview for this class exists
+        if (events.length === 1) {
+            // Remove the preview' className
+            const index = events[0].className.indexOf("preview");
+            if (index > -1) {
+                    events[0].className.splice(index, 1);
+                    cal.fullCalendar("updateEvent", events[0]);
+            }
         }
     }
 }

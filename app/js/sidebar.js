@@ -87,21 +87,21 @@ $(document).on("click", ".unit-name", function() {
  */
 $(document).on("mouseover", ".class-type", function() {
   var classes = $(this.parentNode).find(".class").not(":selected");
-  previewClasses(cal, classes);
+  Class.previewAll(cal, classes);
 });
 
 /**
  * Preview a class on the calendar when the user hovers over it in the sidebar
  */
 $(document).on("mouseover", ".class", function() {
-  previewClass(cal, this);
+  Class.preview(cal, this);
 });
 
 /**
  * Remove higlight once user stops hovering over a selected class
  */
 $(document).on("mouseout", ".class:selected", function() {
-  removeClassPreview(cal, this);
+  Class.removePreview(cal, this);
 });
 
 /**
