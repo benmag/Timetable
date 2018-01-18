@@ -88,8 +88,7 @@ function generateClassOutput() {
  */
 function updateClassOutput(classElement) {
   // Get the card to modify
-  var unitElement = ($(classElement).parents().eq(2))[0];
-  var unitID = unitElement.getAttribute("unitID");
+  const unitID = Class.getUnitID(classElement);
   var unitOverview = document.getElementById("unitOverview");
   var unitCard = $(unitOverview).find(".card." + unitID);
 
