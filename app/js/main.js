@@ -75,7 +75,6 @@ var cal = $("#calendar").fullCalendar({
   }
 });
 
-// Load the class data into the sidebar and calendar
 Class.load(cal);
 
 /**

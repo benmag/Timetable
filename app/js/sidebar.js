@@ -102,6 +102,7 @@ $(document).on("mouseover", ".class", function() {
  */
 $(document).on("mouseout", ".class:selected", function() {
   Class.removePreview(cal, this);
+  removeClassPreview(cal, this);
 });
 
 /**
