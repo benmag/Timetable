@@ -1,6 +1,6 @@
 {
   "name": "qut-timetabler",
-  "version": "2.0.3",
+  "version": "2.1.0",
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
   "homepage": "https://github.com/benmag/Timetable",
   "bugs": "https://github.com/benmag/Timetable/issues",
@@ -12,8 +12,7 @@
   "license": "ISC",
   "devDependencies": {
     "cross-env": "^5.2.0",
-    "laravel-mix": "^4.0.15",
-    "vue-template-compiler": "^2.6.10"
+    "laravel-mix": "^4.0.15"
   },
   "scripts": {
     "dev": "npm run development",
