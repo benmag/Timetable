@@ -1,0 +1,15 @@
+{
+    "/app/lib/bootstrap/dist/css/bootstrap.min.css": "/app/lib/bootstrap/dist/css/bootstrap.min.css",
+    "/app/lib/jquery-confirm2/dist/jquery-confirm.min.css": "/app/lib/jquery-confirm2/dist/jquery-confirm.min.css",
+    "/app/lib/fullcalendar/dist/fullcalendar.min.css": "/app/lib/fullcalendar/dist/fullcalendar.min.css",
+    "/app/lib/bootstrap/dist/js/bootstrap.min.js": "/app/lib/bootstrap/dist/js/bootstrap.min.js",
+    "/app/lib/jquery-confirm2/dist/jquery-confirm.min.js": "/app/lib/jquery-confirm2/dist/jquery-confirm.min.js",
+    "/app/lib/jquery-scrollLock/jquery-scrollLock.min.js": "/app/lib/jquery-scrollLock/jquery-scrollLock.min.js",
+    "/app/lib/jquery/dist/jquery.min.js": "/app/lib/jquery/dist/jquery.min.js",
+    "/app/lib/moment/moment.js": "/app/lib/moment/moment.js",
+    "/app/lib/tether/dist/js/tether.min.js": "/app/lib/tether/dist/js/tether.min.js",
+    "/app/lib/fullcalendar/dist/fullcalendar.min.js": "/app/lib/fullcalendar/dist/fullcalendar.min.js",
+    "/app/lib/crel/crel.min.js": "/app/lib/crel/crel.min.js",
+    "/app/lib/salvattore/dist/salvattore.js": "/app/lib/salvattore/dist/salvattore.js",
+    "/app/lib/date.js/build/date.js": "/app/lib/date.js/build/date.js"
+}

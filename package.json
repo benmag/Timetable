@@ -2,15 +2,40 @@
   "name": "qut-timetabler",
   "version": "2.0.3",
   "description": "Plan your perfect timetable with this free, open-source utility for QUT students.",
-  "homepage": "https://github.com/DeathIsUnknown/qut-timetable",
-  "bugs": "https://github.com/DeathIsUnknown/qut-timetable/issues",
+  "homepage": "https://github.com/benmag/Timetable",
+  "bugs": "https://github.com/benmag/Timetable/issues",
   "main": "app/index.html",
   "repository": {
     "type": "git",
-    "url": "https://github.com/DeathIsUnknown/qut-timetable.git"
+    "url": "https://github.com/benmag/Timetable"
   },
   "license": "ISC",
   "devDependencies": {
-    "bower": "^1.8.2"
+    "cross-env": "^5.2.0",
+    "laravel-mix": "^4.0.15",
+    "vue-template-compiler": "^2.6.10"
+  },
+  "scripts": {
+    "dev": "npm run development",
+    "development": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "watch": "cross-env NODE_ENV=development node_modules/webpack/bin/webpack.js --watch --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "hot": "cross-env NODE_ENV=development webpack-dev-server --inline --hot --config=node_modules/laravel-mix/setup/webpack.config.js",
+    "prod": "npm run production",
+    "production": "cross-env NODE_ENV=production node_modules/webpack/bin/webpack.js --progress --hide-modules --config=node_modules/laravel-mix/setup/webpack.config.js"
+  },
+  "dependencies": {
+    "bootstrap": "v4.0.0-beta.3",
+    "crel": "*",
+    "datejs": "^1.0.0-rc3",
+    "font-roboto": "^0.0.2",
+    "fullcalendar": "^3.10.0",
+    "html5shiv": "^3.7.3",
+    "jquery": "^3.1.1",
+    "jquery-confirm": "^3.0.3",
+    "jquery-scroll-lock": "^3.0.0",
+    "moment": "^2.24.0",
+    "respond.js": "^1.4.2",
+    "salvattore": "1.0.9",
+    "tether": "^1.4.0"
   }
 }
