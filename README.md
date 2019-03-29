@@ -2,37 +2,48 @@
 Plan your perfect timetable with this free open-source utility for QUT students.
 
 ## Screenshots
-![alt text](https://raw.githubusercontent.com/DeathIsUnknown/qut-timetable/master/screenshot.png "Timetable Screenshot")
+![QUT Timetable Planner - Screenshot 1](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot.png "Timetable Screenshot")
 
-![alt text](https://raw.githubusercontent.com/DeathIsUnknown/qut-timetable/master/screenshot2.png "Timetable Screenshot")
+![QUT Timetable Planner - Screenshot 2](https://raw.githubusercontent.com/benmag/Timetable/master/screenshot2.png "Timetable Screenshot")
 
 ## Installation
 View the extension on the [Chrome Web Store](https://chrome.google.com/webstore/detail/iakogcgjbbfakakbpmlocfgabpdhboja) and click 'ADD TO CHROME'.
 
 ## Noteworthy Features
 - Easy unit navigation
-- Colour-coded class types for
+- Colour-coded class types 
 - Browser integration for assisted unit imports
 - Unit summary
 
-## Planned Changes
-- Colour-code by subject in the calendar view, not by class type
-- Switch between unit grouping and class type grouping in the sidebar
-- Export as QUT-formatted timetable HTML or PNG (and/or on print)
-- Find a way to increase hour (row) height when an event has overflow on the y-axis
-- Make the subject overview interactive, allowing the user to see more info (e.g. teaching staff)
-- Show how many class categories have at least one class selected (to prevent missing classes)
-
 ## Development
-If you're interested in contributing, download the project and its dependencies with the following commands:
+If you're interested in contributing, download the project and install it's dependencies you need to be able to run the Chrome Extension locally with the following commands:
 ```
-git clone https://github.com/DeathIsUnknown/qut-timetable.git
+git clone https://github.com/benmag/Timetable.git
 cd Timetable
-bower install
+npm install
+npm run dev
 ```
 
-## Versioning
-This project adheres to [Semantic Versioning](http://semver.org/). For the versions available, see the [tags on this repository](https://github.com/DeathIsUnknown/qut-timetable/tags).
+To install your development extension in Chrome, go to `chrome://extensions/` and make sure `Developer mode` is enabled. Then click the `Load unpacked` button and select the `app/` folder. 
+
+
+The simple PHP scripts to extract external data are stored in the `scripts/` folder and deployed via now. If you wish to change those scripts, make sure you modify the `REMOTE_URL` in `app/js/search.js`.
+
+## Deployment
+
+1. Install and prepare dependencies (`npm install`, `npm run prod`)
+2. Update the version accordingly in `app/manifest.json`
+2. Make sure the latest script changes are deployed (in the `scripts/` directory run `now`) 
+4. Zip the `app/` folder and upload then publish it in the developer dashboard [Developer Dashboard](https://chrome.google.com/webstore/developer/dashboard) 
+
+
+## Contributors 
+- Ben M 
+- Dave A
+- Andrew C
+- Mitch H
+- Nathan H
+
 
 ## License
 This project uses the [ISC License](http://opensource.org/licenses/ISC).
