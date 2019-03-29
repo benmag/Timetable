@@ -40,10 +40,10 @@ jconfirm.defaults = {
 };
 
 // Load the campus selector options for unit search
-getSemesterIDs().done(function() {
+getSemesterIDs().then(function() {
   // Load the previous campus into the dropdown
   loadCampus();
-}).fail(function() {
+}).catch(function() {
   // TODO Retry
   $("#campus-selector").
   alert("Unable to retrieve QUT semesters. The search will not function.");
