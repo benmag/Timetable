@@ -1,10 +1,11 @@
 /**
- * This class enables data extraction from QUT pages using Yahoo Query Language
- * (YQL) and Open Data Tables to ignore the server's robots.txt
+ * This class enables data extraction from QUT pages by using 
+ * the simple PHP scripts located in `/scripts` to fetch content
  */
 
 /* GLOBAL */
 var ALWAYS_ASK = "0";
+var REMOTE_URL = "https://timetable.benm.now.sh";
 var BASE_URL = "https://qutvirtual3.qut.edu.au/qvpublic/ttab_unit_search_p.";
 
 /**
@@ -39,8 +40,9 @@ function checkInvalidSelectName(select, name) {
 function getSemesterIDs() {
   // TODO Add a fallback for if this functions fails, maybe retry
   // TODO Store semester IDs in localStorage with expiration for offline use
-  return $.queryYQL(createYQLStatement("show_search_adv"), "all", function(response) {
-    data = response.query.results.resources.content;
+  return $.get(REMOTE_URL + "/semesters.php", {url: 'show_search_adv'}, function(response) {
+    
+    data = response.html;
 
     // Get the semester list from the response data
     var select = extractSelect(data);
@@ -61,7 +63,8 @@ function getSemesterIDs() {
     campusSelector[0].options[0].textContent = "Always Ask...";
     campusSelector.append(select.options);
     campusSelector[0].value = 0; // Default to 'Always Ask'
-  });
+
+  }, "json");
 }
 
 /**
@@ -80,8 +83,8 @@ function searchUnitCode(unitID, semesterID) {
   var semesterIDs = null;
 
   // Get available semesterIDs for this unit
-  $.queryYQL(createYQLStatement(url), "all", function(response) {
-    data = response.query.results.resources.content;
+  $.get(REMOTE_URL + "/semesters.php", {url: url}, function(response) {
+    data = response.html;
 
     // Get the list of semesters from the response
     var semesters = extractSelect(data);
@@ -222,8 +225,9 @@ function importUnit(semesterID, unitID) {
   });
 
   // Fetch the page containing the unit details
-  $.queryYQL(createYQLStatement(url), "all", function(response) {
-    data = response.query.results.resources.content;
+  $.get(REMOTE_URL + "/import-subject.php", {url: url}, function(response) {
+
+    data = response.html;
 
     // Extract the class data table
     var table = $(data).find(".qv_table")[0];
@@ -292,13 +296,6 @@ function openSearchResults(description, semesterID) {
 
   // Open the window in a new tab
   window.open(url, "_blank");
-}
-
-/**
- * Return the YQL statement necessary for getting cross-origin source code
- */
-function createYQLStatement(url) {
-  return "select content from data.headers where url='" + BASE_URL + url + "'";
 }
 
 /**
