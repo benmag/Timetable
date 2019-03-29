@@ -1,0 +1,26 @@
+/* Custom event colours */
+/* https://www.google.com/design/spec/style/color.html */
+
+.lec, .yellow-fill {
+  background-color: #FFEE58; /* Yellow 400 */
+}
+
+.tut, .blue-fill {
+  background-color: #42A5F5; /* Blue 400 */
+}
+
+.prc, .green-fill {
+  background-color: #66BB6A; /* Green 400 */
+}
+
+.wor, .pink-fill {
+  background-color: #EC407A; /* Pink 400 */
+}
+
+.clb, .purple-fill {
+  background-color: #BA68C8; /* Purple 300 */
+}
+
+.preview {
+  opacity: .4;
+}

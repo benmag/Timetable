@@ -1,31 +1,47 @@
-.btn {
+.btn-timetable {
+  /* Custom CSS */
   color: #fff;
+  margin-bottom: 10px;
   /* Bootstrap CSS */
   display: inline-block;
-  padding: 6px 12px;
-  font-size: 14px;
   font-weight: 400;
-  line-height: 1.42857143;
+  line-height: 1.25;
   text-align: center;
   white-space: nowrap;
   vertical-align: middle;
-  /*-ms-touch-action: manipulation;
-  touch-action: manipulation;*/
-  cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
-  background-image: none;
   border: 1px solid transparent;
-  border-radius: 4px;
-  margin-bottom: 10px;
+  padding: .5rem 1rem;
+  font-size: 14px; /* 1rem; */
+  border-radius: .25rem;
+  -webkit-transition: all .2s ease-in-out;
+  -o-transition: all .2s ease-in-out;
+  transition: all .2s ease-in-out;
 }
 
-.importButton {
-  background-color: #1E88E5; /* Blue */
+.importUnitButton {
+  background-color: #f0ad4e;
+}
+
+.importUnitButton:hover {
+  background-color: #ec971f;
+}
+
+.importSemesterButton {
+  background-color: #0275d8;
+}
+
+.importSemesterButton:hover {
+  background-color: #025aa5;
 }
 
 .importAllButton {
-  background-color: #F44336; /* Red */
+  background-color: #d9534f;
+}
+
+.importAllButton:hover {
+  background-color: #c9302c;
 }
